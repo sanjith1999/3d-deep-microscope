@@ -1,0 +1,8 @@
+torch>=2.0
+numpy
+scipy
+matplotlib
+imageio
+jax
+scico>=0.0.6
+ipywidgets
