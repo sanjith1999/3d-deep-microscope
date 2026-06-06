@@ -1,3 +1,8 @@
-# FRIS
+# dmd-baseline
 
-Scan-reduced 3D fluorescence microscopy with a diffractive illumination coder and a single camera.
+In-focus DMD = axially symmetric illumination, so +d and -d look the same.
+
+- `python -u scripts/recon/build_fast.py --coder dmd --name dmd_fast`
+- `python -u scripts/recon/compare.py --designed <run>/speckle_volume.pt`
+
+DMD reconstructions come out flat in depth.
