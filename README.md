@@ -1,3 +1,8 @@
-# FRIS
+# model-mismatch
 
-Scan-reduced 3D fluorescence microscopy with a diffractive illumination coder and a single camera.
+Patch (sum of fine columns) vs point-sampled vs coarse-simulated operator, same measurements.
+
+- `python -u scripts/recon/mismatch_ablation.py all --op random1L_gap66 --label one_plate`
+- `python -u scripts/recon/mismatch_report.py --dir results/paper/mismatch/one_plate`
+
+Patch wins.
