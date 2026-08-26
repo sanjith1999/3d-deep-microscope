@@ -29,7 +29,9 @@ class DnCNN_ZX(functional.DnCNN):
 # lmda_xy, lmda_yz, lmda_zx weight the default (zx), DnCNN_YZ (xy) and DnCNN_ZX (yz) denoisers
 RECON = dict(variant="17M", rho=5.0, lmda=0.2, l1_rho=10.0, l1_lmda=0.2,
              lmda_xy=None, lmda_yz=None, lmda_zx=None,
-             max_iter=20, f_iter=20, f_tol=1e-5)
+             max_iter=20, f_iter=20, f_tol=1e-5,
+             nonneg_rho=0.0, bm4d_lmda=0.0, bm4d_rho=None,
+             td2=None, td3=None, td3_lmda=0.0, td3_rho=None)
 
 # Named prior presets: overrides passed to run_pnp. "dncnn" is the default (3 DnCNN + L1); "l1"
 # drops the denoisers for a sparsity-only prior. Shared by the comparison scripts.
@@ -54,10 +56,22 @@ def run_pnp(phi, measure, obj_shape, gt=None, n_measure=None, verbose=False, ret
 
     v = cfg["variant"]; lm = cfg["lmda"]
     pick = lambda k: lm if cfg.get(k) is None else cfg[k]           # per-axis weight, None -> lmda
-    terms = [(pick("lmda_xy"), functional.DnCNN(variant=v), cfg["rho"]),
-             (pick("lmda_yz"), DnCNN_YZ(variant=v), cfg["rho"]),
-             (pick("lmda_zx"), DnCNN_ZX(variant=v), cfg["rho"]),
-             (cfg["l1_lmda"], functional.L1Norm(), cfg["l1_rho"])]
+    if cfg.get("td2"):
+        from pipeline.learned_denoiser import make_functional
+        slices = [(pick("lmda_xy"), make_functional(cfg["td2"], "xz"), cfg["rho"]),
+                  (pick("lmda_yz"), make_functional(cfg["td2"], "xy"), cfg["rho"]),
+                  (pick("lmda_zx"), make_functional(cfg["td2"], "yz"), cfg["rho"])]
+    else:
+        slices = [(pick("lmda_xy"), functional.DnCNN(variant=v), cfg["rho"]),
+                  (pick("lmda_yz"), DnCNN_YZ(variant=v), cfg["rho"]),
+                  (pick("lmda_zx"), DnCNN_ZX(variant=v), cfg["rho"])]
+    if cfg.get("td3") and cfg.get("td3_lmda", 0.0) > 0:
+        from pipeline.learned_denoiser import make_functional
+        slices.append((cfg["td3_lmda"], make_functional(cfg["td3"], "3d"), cfg.get("td3_rho") or cfg["rho"]))
+    terms = [*slices,
+             (cfg["l1_lmda"], functional.L1Norm(), cfg["l1_rho"]),
+             (cfg.get("bm4d_lmda", 0.0), functional.BM4D(), cfg.get("bm4d_rho") or cfg["rho"]),
+             (1.0 if cfg.get("nonneg_rho", 0.0) > 0 else 0.0, functional.NonNegativeIndicator(), cfg.get("nonneg_rho", 0.0))]
     terms = [(w, g, r) for (w, g, r) in terms if w > 0]             # drop zero-weight terms
     g_list = [w * g for (w, g, _) in terms]
     C_list = [linop.Identity(obj_shape)] * len(terms)
