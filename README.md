@@ -1,7 +1,9 @@
-# FRIS - base model
+# learned-pnp-prior
 
-- grids: analysis 32x96x96 @ 0.32 um, recon 16x48x48 @ 0.64 um
-- build operator: `python -u scripts/recon/build_fast.py --coder random --seed 0 --n_layers 1 --name random1L_gap66`
-- compression: `scripts/recon/compression_subsets.py select | tune | run | report`
-- noise: q = 15 + 5 log10(256/k), tune only on validation specimens
-- specimen volumes in `backup_fyp/D2NN/`, outputs in `results/`
+Neuron-trained 2D + 3D DnCNN inside PnP (`td2` / `td3` in `run_pnp`).
+Training crops overlapping any test crop are dropped first (`scripts/denoise/screen_overlap.py`).
+
+- `python -u scripts/denoise/train_denoiser.py --dim 2 --name nc2d` (and `--dim 3 --name nc3d`)
+- `python -u scripts/recon/solver_lab.py test --configs base,t23n --val nc --seeds 0,1,2`
+
+~30% lower depth error at full scan; 1/8 of the frames ~ baseline full scan.
