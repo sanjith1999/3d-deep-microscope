@@ -1,9 +1,7 @@
-# learned-pnp-prior
+# detector-na-sampling
 
-Neuron-trained 2D + 3D DnCNN inside PnP (`td2` / `td3` in `run_pnp`).
-Training crops overlapping any test crop are dropped first (`scripts/denoise/screen_overlap.py`).
+NA {0.1, 0.2, 0.3} x pixels {12, 24, 48}^2 at equal measurement count (256 / 64 / 16 frames).
 
-- `python -u scripts/denoise/train_denoiser.py --dim 2 --name nc2d` (and `--dim 3 --name nc3d`)
-- `python -u scripts/recon/solver_lab.py test --configs base,t23n --val nc --seeds 0,1,2`
+- `python -u scripts/recon/detector_study.py build | tune | test`
 
-~30% lower depth error at full scan; 1/8 of the frames ~ baseline full scan.
+NA 0.3 + 48x48 at 16 frames beats NA 0.1 + 12x12 at 256 frames. Pixels alone don't help.
