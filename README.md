@@ -1,7 +1,8 @@
-# detector-na-sampling
+# detector-aware-plate
 
-NA {0.1, 0.2, 0.3} x pixels {12, 24, 48}^2 at equal measurement count (256 / 64 / 16 frames).
+Plate trained to decorrelate depth-stacked operator columns through the real detector, starting from the random plate.
 
-- `python -u scripts/recon/detector_study.py build | tune | test`
+- `python -u scripts/coder/train_detector_aware.py --na_em 0.1 --d 8 --frames patterns_d8.json --name da_na01_d8`
+- `python -u scripts/recon/detector_study.py test --designed da_na01_d8:0.1:8:da_na01_d8.pt`
 
-NA 0.3 + 48x48 at 16 frames beats NA 0.1 + 12x12 at 256 frames. Pixels alone don't help.
+Beats random plates on every test crop at the NA 0.1 detector.
