@@ -1,0 +1,33 @@
+\section{Evidence index and reproducibility notes}
+
+All paths below are relative to {\small\texttt{\textasciitilde{}/\allowbreak{}research/\allowbreak{}FRIS/\allowbreak{}}}. Final numerical authority is {\small\texttt{paper\_\allowbreak{}results/\allowbreak{}final/\allowbreak{}}}; historical conclusions are read in their dated configuration, with later corrections taking precedence.
+
+\par\medskip\noindent\begin{minipage}{\linewidth}
+\captionof{table}{Source index for the extended experiments. Paths are relative to FRIS.}
+\centering
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.280000\linewidth}@{\hspace{0.03\linewidth}}>{\raggedright\arraybackslash}p{0.690000\linewidth}@{}}\toprule
+Evidence & Location \\
+\midrule
+Chronology and decision rationale & {\small\texttt{plan/\allowbreak{}history.\allowbreak{}md}}; {\small\texttt{plan/\allowbreak{}design\_\allowbreak{}decisions.\allowbreak{}md}}, D1--D27 \\
+Final aggregation and definitions & {\small\texttt{paper\_\allowbreak{}results/\allowbreak{}final/\allowbreak{}README.\allowbreak{}md}}; {\small\texttt{tables/\allowbreak{}master\_\allowbreak{}table.\allowbreak{}csv}}; {\small\texttt{tables/\allowbreak{}paired\_\allowbreak{}comparisons.\allowbreak{}csv}} \\
+Final uncertainty metrics & {\small\texttt{paper\_\allowbreak{}results/\allowbreak{}final/\allowbreak{}tables/\allowbreak{}gpnp\_\allowbreak{}uncertainty.\allowbreak{}csv}} \\
+Generic-prior baseline, layers, noise, mismatch and paraxial bridge & {\small\texttt{paper\_\allowbreak{}results/\allowbreak{}package\_\allowbreak{}1L/\allowbreak{}}} \\
+Learned priors, leakage screen, screening logs and qualitative controls & {\small\texttt{paper\_\allowbreak{}results/\allowbreak{}solver\_\allowbreak{}learned/\allowbreak{}}} \\
+Encoder training and archived objectives & {\small\texttt{coder/\allowbreak{}losses.\allowbreak{}py}}; {\small\texttt{scripts/\allowbreak{}coder/\allowbreak{}train\_\allowbreak{}designed.\allowbreak{}py}}; {\small\texttt{scripts/\allowbreak{}coder/\allowbreak{}train\_\allowbreak{}detector\_\allowbreak{}aware.\allowbreak{}py}}; {\small\texttt{scratchpad/\allowbreak{}}} diagnostics \\
+Denoiser training and reconstruction & {\small\texttt{scripts/\allowbreak{}denoise/\allowbreak{}train\_\allowbreak{}denoiser.\allowbreak{}py}}; {\small\texttt{screen\_\allowbreak{}overlap.\allowbreak{}py}}; {\small\texttt{pipeline/\allowbreak{}learned\_\allowbreak{}denoiser.\allowbreak{}py}}; {\small\texttt{scripts/\allowbreak{}recon/\allowbreak{}solver\_\allowbreak{}lab.\allowbreak{}py}} \\
+Detector and posterior experiments & {\small\texttt{scripts/\allowbreak{}recon/\allowbreak{}detector\_\allowbreak{}study.\allowbreak{}py}}; {\small\texttt{gpnp.\allowbreak{}py}}; final raw-row folders \\
+Integrated operator and numerical checks & {\small\texttt{scripts/\allowbreak{}recon/\allowbreak{}build\_\allowbreak{}fast.\allowbreak{}py}}; {\small\texttt{mismatch\_\allowbreak{}ablation.\allowbreak{}py}}; package operator metadata \\
+Final result figures & {\small\texttt{paper\_\allowbreak{}results/\allowbreak{}final/\allowbreak{}figures/\allowbreak{}}}; copied without scientific edits into this record \\
+\bottomrule\end{tabular}
+\end{minipage}\par\medskip
+
+
+The final package is rebuilt by {\small\texttt{scripts/\allowbreak{}recon/\allowbreak{}final\_\allowbreak{}package.\allowbreak{}py}} from saved CSV rows without running reconstruction. Its master table contains 70 conditions, each with eight test subvolumes. This document rounds selected means for readability; full precision, subvolume variation, repeat counts and per-condition source files remain in the CSVs. Original figure labels such as ``paper PnP'' identify the generic-prior solver, not a request to update the main manuscript; the extended controls use the validation protocol stated here.
+
+Software recorded for the final server runs was SCICO 0.0.6, JAX 0.4.35, PyTorch 2.7.1+cu118 and Python 3.10.10. After a CUDA fault during concurrent work, the remaining runs used a serial GPU queue. No new experiment or remote job was launched to prepare this document.
+
+\subsection{Corrections that should not be lost}
+
+Earlier headings marked ``active'' can describe superseded architecture choices; the one-plate final state takes precedence over the initial two-layer default. Pre-vectorial and sub-feature-scale headline scores are historical and are not final evidence. Old field-statistics proxy claims of an optimal random plate are narrower than the later detector-aware results. The final GPnP summary excludes showcase crops and replaces older ten-crop averages. Different three-realisation, five-subset and detector-study tables should not be merged into one apparent condition. Crop p576's residual training overlap remains documented, even though exclusion and cross-domain controls support the learned-prior conclusion.
+
+Sections are in \texttt{contents/}. Compile \texttt{main.tex} to rebuild the PDF. The CSV tables and source notes are included in \texttt{data/}.

@@ -1,0 +1,47 @@
+\section{Illumination-design directions and what they taught us}
+
+\subsection{Why illumination statistics were a tempting surrogate}
+
+The initial idea was to learn useful illumination without unrolling PnP. A surrogate is a cheaper objective used in place of the full reconstruction task. Here, the proposed losses included intensity-distribution matching, axial decorrelation, mirror separation, temporal decorrelation and phase smoothness. Different depths should produce distinguishable illumination signatures; the question was whether improving field statistics also improved the measurements retained after emission blur and detector averaging.
+
+The important distinction emerged between raw illumination diversity and detector-visible information. A random complex field already achieved much of the desired fine-scale decorrelation. Improving a field statistic could therefore reduce the training loss without producing a useful advantage in the inverse problem.
+
+\subsection{Evolution of the objectives}
+
+\par\medskip\noindent\begin{minipage}{\linewidth}
+\captionof{table}{Historical illumination-design objectives and their practical outcomes.}
+\centering
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.313333\linewidth}@{\hspace{0.03\linewidth}}>{\raggedright\arraybackslash}p{0.313333\linewidth}@{\hspace{0.03\linewidth}}>{\raggedright\arraybackslash}p{0.313333\linewidth}@{}}\toprule
+Direction & Change tested & Outcome and next decision \\
+\midrule
+Fine-plane decorrelation & Separate raw illumination planes; match a target intensity distribution & Random phase fields already performed well on these statistics; use reconstruction-scale and measurement-aware checks. \\
+Voxel-scale depth decorrelation & Pool illumination and compare depth signatures & Mirror ambiguity was reduced, but sampled operator conditioning did not consistently beat random. \\
+Single-plane distribution and temporal loss & Exponential PDF, temporal correlation, phase smoothness & Mean pattern correlation improved sharply, but near-angle redundancy and excessive contrast remained. \\
+Near-angle and contrast guards & Gaussian angular weighting and per-pattern contrast penalty & Corrected those field statistics, but the weakest sampled operator direction still lagged random. \\
+Loss-plane and smoothness changes & Remove phase smoothness; use pre-aperture or random axial planes; train longer & Small diagnostic changes, no consistent reconstruction advantage. \\
+Additional layers and PDF removal & Five layers; two/five layers without the PDF term & More layers did not deliver the expected proxy-reconstruction gain; the PDF term had little effect on that score. \\
+Output-characteristic loss & Retained light, voxel-scale contrast and axial decorrelation & Large changes in the intended characteristics, but little gain over efficient untrained diffusers. \\
+Light-first loss & Increase the light-efficiency weight & More delivered light came with worse pattern quality and worse proxy reconstruction. \\
+\bottomrule\end{tabular}
+\end{minipage}\par\medskip
+
+
+These variants were investigated mainly on physical two-layer configurations in September. Their scores should not be mixed with the October one-plate test-set results.
+
+\subsection{A diagnostic example: lower correlation was not enough}
+
+In the single-plane v2 experiment, mean pattern correlation fell from 0.204 for the random baseline to 0.024, while nearest-tilt correlation increased from 0.34 to 0.43 and contrast rose to 1.95. Contrast here is intensity standard deviation divided by mean intensity. The smallest singular value of a normalised 256-column sample fell from 0.0136 to 0.0034. The v3 near-angle/contrast correction improved that singular value to about 0.0100, still below random. Removing smoothness, changing the loss plane and increasing training duration did not close the gap reliably.
+
+A centre-versus-edge diagnostic showed that removing peripheral columns did not remove the gap. The weak sampled direction involved separation of nearby depths around focus, rather than simply poor illumination at the field boundary. This shifted attention from one global conditioning number to noise-aware reconstruction diagnostics: a device should be judged by the recovery problem, not by whether one summary statistic improves.
+
+Wiener-based surrogate reconstruction was then used to screen candidate encoders cheaply. Its rankings were checked against existing full reconstructions. It captured several encoder trends, but missed the designed-versus-random crossover at the lowest tested SNR and did not predict PnP's absolute PSNR. It became a screening tool, not a substitute for the final solver.
+
+\subsection{Normalisation, light efficiency and the limits of the early conclusion}
+
+Equal-mean illumination scoring removed differences in how much light passed through the aperture. A fixed-source-power proxy comparison instead preserved retained-light differences and initially favoured trained designs. Smoothed, untrained phase baselines then matched or exceeded those gains. In the historical 15-coder analysis, retained light strongly tracked the fixed-source-power proxy score, whereas pattern-to-pattern correlation tracked it weakly. These correlations motivated a light/contrast/axial loss, but optimising those characteristics did not reproduce a strong recovery gain.
+
+An independent-speckle proxy produced nearly the same equal-illumination score as the random encoder, suggesting little room for improvement in that particular linear test. This did not prove that a random plate was globally optimal. The later detector-aware result changes that conclusion: field-statistics losses had failed, but training against the actual detector-visible voxel responses did improve recovery.
+
+\textbf{Conclusion:} statistical field quality, average column correlation and one worst singular value are useful diagnostics, but none alone establishes recovery quality. Evaluate the proposed improvement through the measurement model and a held-out reconstruction test.
+
+Evidence: decisions D8--D11o; {\small\texttt{scratchpad/\allowbreak{}metric\_\allowbreak{}new.\allowbreak{}py}}, {\small\texttt{validate\_\allowbreak{}metric.\allowbreak{}py}}, {\small\texttt{metric\_\allowbreak{}power.\allowbreak{}py}}, {\small\texttt{char\_\allowbreak{}analysis.\allowbreak{}py}} and {\small\texttt{upper\_\allowbreak{}bound.\allowbreak{}py}}; corresponding {\small\texttt{results/\allowbreak{}recon/\allowbreak{}}} JSON records.

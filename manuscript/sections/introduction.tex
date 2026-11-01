@@ -1,0 +1,25 @@
+\section{Introduction}
+
+Fluorescence microscopy reveals labelled structures within cells and tissues. Their spatial organisation often requires three-dimensional imaging, conventionally obtained by recording successive focal planes. Recovering a volume at a fixed detection focus avoids this axial acquisition, but each planar image mixes fluorescence from different depths. The question is how to encode these overlapping contributions so that reconstruction can separate them.
+
+Depth can be encoded in detection or illumination. Light-field microscopy records spatial and angular information, while DiffuserCam and Miniscope3D assign different depths distinct sensor responses \cite{broxton2013,antipa2018,yanny2020}. Structured and speckle illumination instead weight the volume with known excitation patterns. Prior work demonstrates multilayer fluorescence recovery, compressive recovery from lateral speckle scans, and joint phase and fluorescence imaging \cite{guo2016,pascucci2019,yeh2019}. Illumination-based depth recovery is therefore established; the question here concerns a fixed phase encoder varied through its input angle.
+
+DEEP and DEEP² combine patterned excitation with computational reconstruction to recover fluorescence images through scattering media. Our work follows this excitation-coding approach but addresses volumetric recovery under a negligible-scattering model \cite{zheng2021,wijethilake2023}.
+
+We place a phase encoder away from an intermediate illumination image plane and vary the incident angle to generate depth-dependent excitation. A camera records one planar image per angle while the specimen and detection focus remain fixed. Fine illumination structure modulates the fluorescence before detection, and changing the angle gives locations at different depths different intensity sequences. These illumination signatures allow reconstruction to separate contributions that overlap in individual camera images.
+
+Recovering the volume requires a model that connects fine optical structure to the fluorescence represented by each reconstruction voxel. Simulating directly on the reconstruction grid can misrepresent the measurements. We retain fine-grid optical simulation and integrate the response over each voxel. An analytical illumination--emission factorisation makes this construction tractable by reusing detector responses instead of repeating volumetric convolutions. The derivation was essential to making the simulation and reconstruction workflow computationally feasible within the available resources.
+
+Multi-slice plug-and-play (PnP) reconstruction then combines measurement consistency with a pretrained two-dimensional denoiser applied in three orthogonal orientations. The slice priors refine a shared volume rather than separate reconstructions, following established PnP and multi-slice fusion principles \cite{venkat2013,majee2021}. This avoids training a dedicated three-dimensional network, an important practical advantage when volumetric training data and computational resources are limited. Reconstruction is training-agnostic in the sense that it reuses the pretrained prior without task-specific network training.
+
+The main contributions of this work are:
+
+\begin{enumerate}
+\item \textbf{Angle-controlled volumetric illumination:} A fixed phase-only encoder generates depth-dependent excitation patterns through changes in illumination angle, enabling volume recovery without axial specimen scanning or detection refocusing.
+\item \textbf{Voxel-integrated reconstruction modelling:} Fine-grid optical responses are integrated over each reconstruction voxel to reduce discretisation-induced model mismatch. An analytical factorisation makes this construction computationally feasible without repeated volumetric simulations.
+\item \textbf{Training-agnostic multi-slice recovery:} A shared pretrained two-dimensional denoiser regularises the volume through orthogonal slices, avoiding task-specific three-dimensional network training. Representative reconstructions retain dominant dendritic structures and their depth ordering at eight-fold measurement compression.
+\end{enumerate}
+
+We evaluate depth placement and foreground structure in eight prespecified mouse pyramidal neuron subvolumes. Eight-fold compression means one scalar detector measurement per eight reconstructed voxel values. Ablations examine voxel modelling, illumination geometry and slice fusion, while scan-design analysis explains the angular coverage and measurement allocation.
+
+The paper is organised as follows. Section 2 presents the acquisition model and reconstruction method, Section 3 describes the simulation setup, Section 4 presents recovery results and ablations, and Section 5 concludes.

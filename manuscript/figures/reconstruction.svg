@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1140" height="680" viewBox="0 60 1140 680">
+  <title>Multi-slice PnP reconstruction</title>
+  <desc>Measurement consistency and orthogonal-slice denoising update a shared volume.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#495760"/></marker>
+    <style>
+      text{font-family:DejaVu Sans,Arial,sans-serif;fill:#27333c}
+      .label{font-size:23px}.small{font-size:18px;fill:#53616c}
+      .flow{fill:none;stroke:#495760;stroke-width:1.8;marker-end:url(#arrow)}
+      .plane{fill:#9db9c5;fill-opacity:.35;stroke:#7d9ba9;stroke-width:1.2}
+    </style>
+  </defs>
+  <rect width="1140" height="780" fill="white"/>
+  <!-- Feedback path -->
+  <path d="M70 498H28V85H965V118" class="flow"/>
+  <path d="M185 85V118" class="flow"/>
+  <path d="M445 85V118" class="flow"/>
+  <path d="M705 85V118" class="flow"/>
+
+  <!-- Measurements -->
+  <rect x="70" y="120" width="230" height="280" fill="#f5f5f5" stroke="#9da7ae" stroke-width="1.4"/>
+  <text x="185" y="169" class="label" text-anchor="middle">Measurements</text>
+  <rect x="126" y="216" width="56" height="65" fill="white" stroke="#a6afb5" stroke-width="1.2"/>
+  <rect x="144" y="228" width="56" height="65" fill="white" stroke="#a6afb5" stroke-width="1.2"/>
+  <rect x="162" y="240" width="56" height="65" fill="white" stroke="#a6afb5" stroke-width="1.2"/>
+  <text x="191" y="280" class="label" text-anchor="middle">y</text>
+  <path d="M70 326H300" stroke="#c4cbd0" stroke-width="1.2"/>
+  <text x="185" y="355" class="label" text-anchor="middle">Data consistency</text>
+
+  <!-- Orthogonal slices -->
+  <rect x="330" y="120" width="230" height="280" fill="#f0f5f7" stroke="#9daeb8" stroke-width="1.4"/>
+  <text x="445" y="155" class="label" text-anchor="middle">xy slices</text>
+  <text x="445" y="184" class="label" text-anchor="middle">DnCNN</text>
+  <path d="M365 312L445 269L525 312L445 355Z" class="plane"/>
+  <path d="M365 291L445 248L525 291L445 334Z" class="plane"/>
+  <path d="M365 270L445 227L525 270L445 313Z" class="plane"/>
+  <path d="M365 249L445 206L525 249L445 292Z" class="plane"/>
+
+  <rect x="590" y="120" width="230" height="280" fill="#f0f5f7" stroke="#9daeb8" stroke-width="1.4"/>
+  <text x="705" y="155" class="label" text-anchor="middle">yz slices</text>
+  <text x="705" y="184" class="label" text-anchor="middle">DnCNN</text>
+  <path d="M643 249L708 213V319L643 355Z" class="plane"/>
+  <path d="M666 249L731 213V319L666 355Z" class="plane"/>
+  <path d="M689 249L754 213V319L689 355Z" class="plane"/>
+  <path d="M712 249L777 213V319L712 355Z" class="plane"/>
+
+  <rect x="850" y="120" width="230" height="280" fill="#f0f5f7" stroke="#9daeb8" stroke-width="1.4"/>
+  <text x="965" y="155" class="label" text-anchor="middle">zx slices</text>
+  <text x="965" y="184" class="label" text-anchor="middle">DnCNN</text>
+  <path d="M883 246L971 254V359L883 351Z" class="plane"/>
+  <path d="M900 233L988 241V346L900 338Z" class="plane"/>
+  <path d="M917 220L1005 228V333L917 325Z" class="plane"/>
+  <path d="M934 207L1022 215V320L934 312Z" class="plane"/>
+
+  <path d="M185 400V468" class="flow"/>
+  <path d="M445 400V468" class="flow"/>
+  <path d="M705 400V468" class="flow"/>
+  <path d="M965 400V468" class="flow"/>
+
+  <!-- Consensus update, not an arithmetic average -->
+  <path d="M70 474H1080V498L575 605L70 498Z" fill="#e7efeb" stroke="#96a99e" stroke-width="1.4"/>
+  <text x="575" y="535" font-size="25" text-anchor="middle">Multi-slice fusion</text>
+  <path d="M575 605V649" class="flow"/>
+  <rect x="400" y="655" width="350" height="62" fill="#f5f5f5" stroke="#9da7ae" stroke-width="1.4"/>
+  <text x="575" y="695" font-size="25" text-anchor="middle">3D reconstruction</text>
+</svg>

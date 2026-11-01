@@ -1,0 +1,30 @@
+\section{Experimental framework and reading conventions}
+
+\subsection{Reference configuration}
+
+The later experiments use vectorial NA-0.8 excitation, linear fluorescence, a homogeneous medium and negligible specimen-induced scattering. Excitation and detection wavelengths are approximated as equal at 532 nm. A phase plate is propagated to an intermediate illumination plane and relayed into the specimen; the detection focus remains fixed while input angle changes.
+
+Optical propagation uses a 384\ensuremath{\times}384 grid at 0.08 \ensuremath{\mu}m. The analysis object is 32\ensuremath{\times}96\ensuremath{\times}96 at 0.32 \ensuremath{\mu}m, and reconstruction uses 16\ensuremath{\times}48\ensuremath{\times}48 voxels at 0.64 \ensuremath{\mu}m. The represented volume is 30.72\ensuremath{\times}30.72\ensuremath{\times}10.24 \ensuremath{\mu}m. The original detector has NA 0.1 and 12\ensuremath{\times}12 samples per image. A single phase plate has 0.32 \ensuremath{\mu}m phase features and a 6.6 \ensuremath{\mu}m final gap. These are simulation and reconstruction sampling choices, not measured optical resolution.
+
+The baseline reconstruction uses PnP-ADMM with the generic pretrained DnCNN-17M in three orthogonal slice orientations and a sparsity branch. The extended learned solver replaces the slice denoiser and adds a 3D denoising branch. Both use a 20-iteration reconstruction budget. Baseline bead tests in the original package used sparsity alone; the later learned-prior bead control instead compares PnP solvers using their neuronal-validation settings.
+
+\subsection{Measurements, noise and fair comparisons}
+
+Let \(P\) be detector samples per image, \(k\) illumination directions, \(M=Pk\) scalar measurements and \(N=36{,}864\) reconstructed values. Measurement compression is \(C=N/M\). At the original 12\ensuremath{\times}12 detector, \(k=256,64,32,16,8\) corresponds to \(C=1,4,8,16,32\).
+
+The final comparisons use the relative-Gaussian convention
+\[
+q(M)=15+5\log_{10}(N/M),\qquad
+\sigma(M)=\operatorname{mean}(\mathbf y_N^0)\,10^{-q(M)/10}.
+\]
+Here \(\mathbf y_N^0\) is the relevant encoder/detector's noise-free reference stack at M=N. At a fixed detector this gives the square-root count scaling used in the main work. FRIS calls it the total-dose or equal-detected-photon convention. These names identify a normalisation assumption, not calibrated photon counts or a Poisson detector model. Earlier fixed-source-power and equal-illumination studies are labelled separately because their normalisation changes device rankings.
+
+Image-count reduction and measurement compression must not be confused. A 48\ensuremath{\times}48 detector with 16 images and a 12\ensuremath{\times}12 detector with 256 images both supply 36,864 scalar measurements. The former uses sixteen times fewer images, but both have \(C=1\).
+
+\subsection{Test sets, tuning and evidence levels}
+
+The final quantitative test set contains eight prespecified mouse pyramidal neuron subvolumes with dendritic arbors: p64, p128, p192, p320, p448, p576, p704 and p832. Repeated noise realisations and illumination subsets are averaged within each subvolume before computing across-subvolume statistics. Subvolume 0 and the reference-selected qualitative examples p384/p973 are reported separately. PSNR, foreground SSIM and local depth error measure different aspects of recovery; depth error is a centroid-based metric, not axial resolution.
+
+Extended solver and detector comparisons are tuned on held-out neuronal validation subvolumes p303, p10 and p693. This differs from the main manuscript's earlier vascular tuning. Each solver/encoder/detector/measurement setting is tuned independently, with boundary checks on the search grid. Consequently, extended baseline rows are not automatically interchangeable with the manuscript's baseline rows.
+
+Evidence has three levels in this record. Final results are drawn from the consolidated 70-condition master table and paired comparisons. Earlier reconstruction results retain their original configuration and object labels. Historical surrogate scores describe what guided exploration; they are not final PnP results or measured resolution. The source index at the end identifies the relevant logs, scripts and exports.

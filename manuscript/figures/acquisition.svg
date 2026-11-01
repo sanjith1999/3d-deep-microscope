@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="750" viewBox="0 100 1400 750">
+  <title>Angle-scanned fluorescence microscope</title>
+  <desc>Laser, phase plate, excitation relay, specimen and fluorescence camera.</desc>
+  <defs>
+    <linearGradient id="metal" x1="0" x2="1"><stop stop-color="#69747d"/><stop offset=".48" stop-color="#414c55"/><stop offset="1" stop-color="#69747d"/></linearGradient>
+    <marker id="exc-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#187ca7"/></marker>
+    <marker id="em-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#ba6c21"/></marker>
+    <style>
+      text{font-family:DejaVu Sans,Arial,sans-serif;fill:#27333c}
+      .label{font-size:25px;font-weight:600}
+      .small{font-size:20px;fill:#53616c}
+      .callout{stroke:#8897a3;stroke-width:1.5;fill:none}
+      .ex{stroke:#187ca7;stroke-width:2;fill:none}
+      .em{stroke:#ba6c21;stroke-width:2;fill:none}
+      .lens{fill:#21a6c3;stroke:#1688a8;stroke-width:1.8}
+    </style>
+  </defs>
+  <rect width="1400" height="920" fill="white"/>
+
+  <!-- Laser and angle scan -->
+  <rect x="60" y="209" width="139" height="86" rx="6" fill="url(#metal)"/>
+  <rect x="191" y="231" width="17" height="43" rx="2" fill="#37414a"/>
+  <ellipse cx="209" cy="252" rx="5" ry="14" fill="#21a6c3"/>
+  <text x="55" y="185" class="label">Laser</text>
+  <path d="M210 242L440 238L440 262L210 263Z" fill="#a8ddea" opacity=".62"/>
+  <path d="M212 250H440" class="ex"/>
+  <path d="M264 194L440 247M264 310L440 253" class="ex" stroke-dasharray="6 5"/>
+  <path d="M275 204Q288 250 275 297" class="ex" stroke-width="1.5"/>
+  <text x="245" y="174" class="label">Angle scan</text>
+  <path d="M357 182L303 210" class="callout"/>
+
+  <!-- Phase plate -->
+  <path d="M442 193L457 180V310L442 323Z" fill="#dbedf2" stroke="#2787a5" stroke-width="2.5"/>
+  <path d="M445 211L455 201M445 230L455 220M445 249L455 239M445 268L455 258M445 287L455 277" stroke="#7eafb9" stroke-width="1.1"/>
+  <text x="394" y="137" class="label">Phase plate</text>
+  <path d="M449 154V174" class="callout"/>
+  <path d="M494 197V302" stroke="#9eb4c1" stroke-width="1.4" stroke-dasharray="5 5"/>
+  <text x="475" y="361" class="small">Image plane</text>
+  <path d="M505 340L494 306" class="callout"/>
+
+  <!-- Excitation relay -->
+  <path d="M458 240L594 215L604 215L850 232L850 268L604 285L594 285L458 260Z" fill="#a8ddea" opacity=".60"/>
+  <ellipse cx="599" cy="250" rx="10" ry="70" class="lens"/>
+  <path d="M457 250H850V365" class="ex"/>
+  <path d="M832 233H868V365H832Z" fill="#a8ddea" opacity=".62"/>
+  <path d="M814 214L886 286" stroke="#7f8991" stroke-width="12"/>
+  <path d="M814 208L886 280" stroke="#bdc5cb" stroke-width="2"/>
+  <path d="M698 250H752" class="ex" marker-end="url(#exc-arrow)"/>
+  <text x="620" y="162" class="label">Lₑₓ</text>
+  <text x="934" y="231" class="label">M₁</text>
+  <path d="M921 237L885 247" class="callout"/>
+
+  <!-- Excitation objective -->
+  <rect x="782" y="348" width="136" height="24" rx="3" fill="#69747d"/>
+  <path d="M790 372H910V417L881 450H819L790 417Z" fill="url(#metal)"/>
+  <path d="M801 385H899M801 395H899" stroke="#83909a" stroke-width="2"/>
+  <ellipse cx="850" cy="447" rx="31" ry="5" fill="#21a6c3"/>
+  <path d="M818 454L837 510L818 550H882L863 510L882 454Z" fill="#94d6e6" opacity=".62"/>
+  <path d="M850 451V507" class="ex" marker-end="url(#exc-arrow)"/>
+  <text x="969" y="390" class="label">Objₑₓ</text>
+  <path d="M948 395L914 398" class="callout"/>
+  <path d="M649 198V442" stroke="#9eb4c1" stroke-width="1.2" stroke-dasharray="4 6"/>
+  <text x="623" y="423" class="small" text-anchor="end">Relay</text>
+
+  <!-- Specimen -->
+  <path d="M767 501L809 480H928L886 501Z" fill="#dfe7eb" stroke="#7892a1" stroke-width="1.6"/>
+  <path d="M767 501H886V551H767Z" fill="#eaf0f3" fill-opacity=".72" stroke="#7892a1" stroke-width="1.6"/>
+  <path d="M886 501L928 480V530L886 551Z" fill="#d9e5eb" fill-opacity=".72" stroke="#7892a1" stroke-width="1.6"/>
+  <path d="M777 518H883M777 535H883" stroke="#a4b9c4" stroke-width="1.1"/>
+  <text x="804" y="538" font-size="23">X₀</text>
+  <path d="M851 529L800 585H900Z" fill="#f0c994" opacity=".68"/>
+  <path d="M740 542H691" class="callout"/>
+  <text x="682" y="523" class="label" text-anchor="end">Specimen</text>
+  <text x="971" y="515" class="label">Iₜ</text>
+  <path d="M950 520L921 519" class="callout"/>
+  <path d="M850 550V580" class="em" marker-end="url(#em-arrow)"/>
+
+  <!-- Collection objective -->
+  <ellipse cx="850" cy="588" rx="47" ry="6" fill="#21a6c3"/>
+  <path d="M801 589H899L915 618V667H785V618Z" fill="url(#metal)"/>
+  <path d="M798 640H902M798 649H902" stroke="#83909a" stroke-width="2"/>
+  <rect x="780" y="667" width="140" height="21" rx="3" fill="#69747d"/>
+  <text x="971" y="620" class="label">Objₑₘ</text>
+  <path d="M950 625L918 628" class="callout"/>
+
+  <!-- Detection path -->
+  <path d="M829 689H871V729H1100V771H829Z" fill="#f0c994" opacity=".64"/>
+  <path d="M850 689V750H1294" class="em"/>
+  <path d="M814 714L886 786" stroke="#7f8991" stroke-width="12"/>
+  <path d="M814 708L886 780" stroke="#bdc5cb" stroke-width="2"/>
+  <ellipse cx="1100" cy="750" rx="10" ry="65" class="lens"/>
+  <path d="M1110 722L1294 742V758L1110 778Z" fill="#f0c994" opacity=".64"/>
+  <path d="M950 750H1004" class="em" marker-end="url(#em-arrow)"/>
+  <text x="754" y="805" class="label">M₂</text>
+  <text x="1140" y="703" class="label">Lₑₘ</text>
+  <path d="M1131 706L1111 691" class="callout"/>
+  <rect x="1294" y="709" width="13" height="82" fill="#34424d"/>
+  <rect x="1307" y="692" width="50" height="116" rx="3" fill="url(#metal)"/>
+  <text x="1240" y="665" class="label">Camera</text>
+
+  <!-- Colour key -->
+  <path d="M66 646H114" stroke="#187ca7" stroke-width="5"/>
+  <text x="130" y="653" class="small">Excitation</text>
+  <path d="M66 685H114" stroke="#ba6c21" stroke-width="5"/>
+  <text x="130" y="692" class="small">Fluorescence</text>
+  <text x="65" y="754" class="label">Measurements</text>
+  <text x="65" y="799" font-size="28">Ŷ₁ → Ŷ₂ → ··· → Ŷₜ</text>
+</svg>

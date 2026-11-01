@@ -1,0 +1,23 @@
+\section{Architecture, scan allocation and noise studies}
+
+\subsection{How many phase layers were needed?}
+
+A one-versus-two-layer experiment used 16 angularly spread directions, q=25, three random elements and three noise realisations. The neuronal example improved from 34.26 to 35.11 dB PSNR, with depth error decreasing from 0.74 to 0.50 reconstruction planes. Bead depth error and mirror leakage also decreased. One plate passed more light through the relay and was sufficient for the demonstrated depth encoding. This motivated the one-plate reference, rather than retaining extra layers merely because earlier training had used them.
+
+The five-layer surrogate experiment was a different study: it accelerated some field-statistics improvements but did not improve the screened reconstruction score over matched random baselines. Together, these tests favoured a simpler acquisition architecture, not a claim that additional layers can never be useful.
+
+\subsection{Which angles, and how many spatial samples per image?}
+
+The FYP scan-allocation analysis favoured balanced azimuth/elevation sampling when judged by maximum pattern correlation. Direction-space geometry explains why equal angle steps are not equal phase-gradient steps. The later reference uses 16 azimuths and 16 signed elevations, covering an annulus of transverse directions. Short sequences taken from the beginning of scan order can concentrate along one azimuth, motivating random subsets across the full grid. First, grid, random, spread and Wiener-guided subset rules were implemented; the later decoder-screen summary reports less than 1 dB selection gains, not a robust universally best rule.
+
+An earlier two-layer pixels-versus-images test held the scalar measurement count fixed. At M=2,304, 12\ensuremath{\times}12 samples over 16 images gave 34.01 dB, while 6\ensuremath{\times}6 over 64 gave 33.98 dB; coarser 4\ensuremath{\times}4 and 3\ensuremath{\times}3 sampling reduced PSNR to 32.78 and 32.47 dB. Modest binning could exchange spatial samples for more illumination patterns, but aggressive binning discarded useful lateral information. The later detection-NA study revisited this trade-off with changed optics and a stronger solver.
+
+\subsection{Noise sensitivity and validation boundaries}
+
+At the earlier q=15/25 conditions, neuronal recovery changed little with noise, so additional q=10/5 experiments tested a more noise-limited regime. With the one-plate baseline, full-measurement depth error on subvolume 0 was 0.177, 0.263 and 0.396 \ensuremath{\mu}m at q=15,10,5. Full PSNR was 37.22, 35.43 and 33.80 dB. At q=5, the 16-image result was 33.48 dB: acquisition compression added a relatively small PSNR cost once noise already limited recovery under the chosen count-dependent convention.
+
+Several initial noise runs selected penalties at the edge of the tuning grid and produced misleading comparisons. Those rows were moved aside, the search ranges were expanded and the tests repeated. Bead validation also exposed how using the same bead positions for tuning and testing overstated recovery. A held-out phantom and stricter specimen-keyed tuning cache were adopted.
+
+\textbf{Conclusion:} scan allocation and detector sampling interact with noise and regularisation. A tuning-boundary failure or reused validation object should not be interpreted as an optical result.
+
+Evidence: 8 October history, D20--D21, {\small\texttt{paper\_\allowbreak{}results/\allowbreak{}package/\allowbreak{}layers/\allowbreak{}}}, {\small\texttt{package\_\allowbreak{}1L/\allowbreak{}noise/\allowbreak{}one\_\allowbreak{}plate/\allowbreak{}}}, the original pixels-versus-images report and {\small\texttt{compression\_\allowbreak{}subsets.\allowbreak{}py}}.

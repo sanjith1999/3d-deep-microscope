@@ -1,0 +1,34 @@
+\section{Purpose and main conclusions}
+
+This document records the experimental directions explored in FRIS from June to October 2026, including work outside the scope of the main manuscript. It explains the questions behind the experiments, what was changed, what the results showed, and why the next direction was chosen. The evidence snapshot closes on 12 October 2026. It is a research record, not a revised paper or a claim that every explored method is ready for publication.
+
+The work began by shaping illumination statistics and gradually separated three questions: what information reaches the detector, how accurately it is modelled, and how reconstruction uses it. The strongest extended results are learned 2D/3D PnP priors, joint changes to detection NA and sampling, and detector-aware training of a single phase plate. Their gains can combine, but not every combination or compression level improves every metric.
+
+Five conclusions summarise the final state:
+
+\begin{enumerate}
+\item A phase encoder provides depth-distinguishing measurements in the evaluated geometry; a stronger learned prior does not remove the in-focus DMD's mirror ambiguity.
+\item Learned 2D and 3D denoisers improve the PnP reconstruction. At the original detector, the learned solver at eight-fold compression approaches the generic-prior solver's full-measurement mean depth error.
+\item Increasing detection NA together with detector sampling can replace many sequential illumination images. More pixels alone do not produce the same benefit.
+\item Training a plate against detector-visible responses improves recovery at the original detector and adds to the learned-prior gain. At higher NA it improves mean depth placement but can reduce intensity fidelity.
+\item Early illumination-statistics objectives, additional layers, alternative decoders and posterior sampling provided useful diagnostics, but were not consistently better reconstruction strategies.
+\end{enumerate}
+
+The main manuscript remains unchanged. In particular, its training-agnostic reconstruction is a distinct operating point from the task-trained priors documented here.
+
+The path through the experiments was not linear. Each stage changed the question asked next:
+
+\par\medskip\noindent\begin{minipage}{\linewidth}
+\captionof{table}{Experimental progression and the questions that changed the next direction.}
+\centering
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.280000\linewidth}@{\hspace{0.03\linewidth}}>{\raggedright\arraybackslash}p{0.690000\linewidth}@{}}\toprule
+Period & Direction and turning point \\
+\midrule
+June 2026 & Test whether a cheap illumination-design objective could break mirror-depth symmetry. \\
+September 2026 & Correct the excitation physics, phase-feature scale and relay geometry before comparing encoders. \\
+Late September & Find that improved field statistics and extra layers did not reliably improve recovery. \\
+8 October & Restore fast voxel-integrated construction and settle on a single-plate reference. \\
+9--10 October & Keep acquisition fixed and improve reconstruction with learned 2D/3D priors. \\
+10--12 October & Study the detector, train against detector-visible signatures and consolidate the controls. \\
+\bottomrule\end{tabular}
+\end{minipage}\par\medskip

@@ -1,0 +1,20 @@
+\section{Overall conclusions and directions left open}
+
+The experiments did not lead to a single universal optimisation rule. They showed where improvements could be made and why some promising directions did not carry through to recovery. Changes in configuration, normalisation, validation and metrics also explained several apparent contradictions.
+
+The results identify three useful routes to improvement. Phase-structured illumination separates depth contributions, while fine-grid integration and the analytical construction make its measurement model practical. Reusing a 2D prior gives a simple training-agnostic reconstruction; learning 2D/3D priors improves the extended result. Finally, detection NA, spatial sampling and detector-aware phase training determine how much useful information each image contributes.
+
+The most useful methodological lesson is to judge design changes at the detector and in held-out reconstruction, not solely by the appearance or correlation of illumination fields. A second lesson is to distinguish localisation, intensity fidelity and calibrated uncertainty: better depth error can coexist with worse PSNR, and uncertainty correlated with error can still under-cover the reference.
+
+The following directions remained untested at the closing snapshot:
+
+\begin{itemize}
+\item A high-NA plate trained specifically for two to eight images, rather than reusing a plate trained for 16.
+\item Joint or end-to-end phase training through the selected learned PnP solver.
+\item Hardware calibration and experimental microscopy validation of the intermediate-image implementation.
+\item A calibrated photon-noise model, a direct optical-resolution study and uncertainty intervals that attain the intended foreground coverage.
+\end{itemize}
+
+These are recorded as open directions, not automatically requested experiments. The extended record can support a later manuscript decision without altering the current draft's scope or claims.
+
+The completed directions should not be left labelled as future work in this record: task-trained 2D/3D PnP, higher-NA detector comparisons, detector-aware phase training and the paraxial recovery control all have results. What remains open is their further optimisation or experimental implementation.

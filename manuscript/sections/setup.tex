@@ -1,0 +1,56 @@
+\section{Simulation setup}
+
+\subsection{Optical model and sampling}
+
+We simulate a stationary specimen with linear, unsaturated single-photon fluorescence, a homogeneous medium and negligible sample-induced scattering. The excitation objective is modelled with \(n=1\), corresponding to a dry objective. Table 1 lists the numerical configuration. Recovery uses the angular-spectrum implementation.
+
+\begin{table}[htbp]
+\centering\caption{Optical parameters, sampling grids and measurement counts used in the simulations.}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.280000\linewidth}@{\hspace{0.03\linewidth}}>{\raggedright\arraybackslash}p{0.690000\linewidth}@{}}\toprule
+Parameter & Value \\
+\midrule
+Excitation / detection wavelength & \(532\,\mathrm{nm}\), equal-wavelength approximation \\
+Refractive index & \(n=1\) \\
+Excitation / detection NA & \(0.8\) / \(0.1\) \\
+Phase-feature pitch / final gap & \(0.32\,\mu\mathrm m\) / \(6.6\,\mu\mathrm m\) \\
+Illumination directions & 16 azimuths \ensuremath{\times} 16 signed transverse directions; 256 camera images \\
+Optical grid & \(384\times384\), lateral spacing \(0.08\,\mu\mathrm m\) \\
+Analysis grid, \((z,x,y)\) & \(32\times96\times96\), spacing \(0.32\,\mu\mathrm m\) \\
+Reconstruction grid & \(16\times48\times48\), spacing \(0.64\,\mu\mathrm m\) \\
+Camera & \(12\times12\) samples; \(8\times8\) detector averaging \\
+\bottomrule\end{tabular}
+\end{table}
+
+Excitation intensity is averaged over \(4\times4\) lateral optical-grid blocks before analysis. Each reconstruction voxel covers a \(2\times2\times2\) analysis patch. These spacings describe sampling, not optical resolution. Phase values are uniform on \([0,2\pi)\).
+
+The scan samples \(\alpha_i=i\pi/16\), \(i=0,\ldots,15\), with eight equally spaced elevations in each of \([30^\circ,60^\circ]\) and \([120^\circ,150^\circ]\). Opposite signs of \(\cos\theta\) provide opposite transverse directions. This covers an annulus in transverse-direction space, \(0.5\leq\|\mathbf s\|\leq\sqrt{3}/2\), rather than concentrating measurements along one azimuth. The balanced angular grid follows the preliminary scan analysis described in Section 4.2.
+
+The volume contains \(N=16\times48\times48=36{,}864\) reconstructed voxel values. Each camera image contributes \(12\times12=144\) scalar detector measurements, so \(M=144k\) for \(k\) illumination patterns. The 256-direction sequence gives the nominal \(M=N\) reference condition. We define the compression factor as \(C=N/M\), or equivalently report the measurement-to-voxel ratio \(M:N\). The main conditions \(C=1,4,8\) use 256, 64 and 32 directions, with ratios \(1:1\), \(1:4\) and \(1:8\). Thus eight-fold compression uses 4,608 scalar measurements to estimate 36,864 voxel values.
+
+For the proposed intermediate-image layout, paraxial scaling with relay demagnification \(m_{\mathrm{relay}}=60\) maps the reference-scale polar tilts of \(30^\circ\)--\(60^\circ\) to approximately \(8\)--\(14\,\mathrm{mrad}\) element-side tilts, with \(19\,\mu\mathrm m\) plate features and \(24\,\mathrm{mm}\) defocus.
+
+\subsection{Reference objects and noise}
+
+Fluorescence reference volumes are drawn from the DEEP² dataset of mouse pyramidal neurons with dendritic arbors. We use \(32\times128\times128\) crops from one parent stack, apply min--max normalisation, and area-resample the lateral dimensions to the analysis grid. Each resampled volume is normalised to unit peak intensity and assigned the simulation spacing in Table 1 \cite{wijethilake2023}.
+
+Eight subvolumes selected before reconstruction form the quantitative evaluation set. The separate qualitative example was chosen before reconstruction by ranking reference volumes with 1--8\% foreground occupancy by projected neurite area multiplied by depth spread, followed by reference-only visual inspection. This selects visible three-dimensional morphology rather than favourable reconstruction quality. Synthetic beads provide a complementary localisation test, with distinct validation and test positions. Measurements are generated from the fine-grid reference objects using the forward model.
+
+The illumination stack is globally normalised to a mean intensity of 30 arbitrary units. Independent zero-mean Gaussian noise is added without clipping. For \(k\) illumination patterns, its standard deviation is
+\[
+\sigma_k=\operatorname{mean}(\mathbf y_{256}^0)
+\,10^{-q/10}\sqrt{k/256},\qquad q=15.
+\tag{8}
+\]
+Here \(\mathbf y_{256}^0\) is the complete noise-free measurement stack; its mean sets the noise scale for every measurement subset. The square-root scaling represents concentrating acquisition effort into fewer images through improved relative measurement precision, rather than keeping per-image noise fixed. Compressed acquisitions use five random illumination subsets at each compression factor. The ablation example, subvolume 0, is evaluated with three noise realisations; the eight-subvolume test set uses one noise realisation per subvolume and the same five subsets.
+
+\subsection{Recovery and evaluation}
+
+Mouse pyramidal neuron reconstructions use multi-slice PnP with the same pretrained DnCNN-17M denoising convolutional neural network in all orientations; bead localisation tests use the sparsity prior \cite{zhang2017}. We select ADMM penalties and the sparsity weight by maximising validation peak signal-to-noise ratio (PSNR) on a separate cortical vascular volume or bead phantom. Parameters are selected for each measurement count and held fixed during testing. For mouse pyramidal neuron recovery at \(C=1,4,8\), the denoiser penalties are 5, 1.25 and 1.25 in every orientation; sparsity penalties are 10, 2.5 and 2.5, with weight 0.0125.
+
+All reconstructions use 20 ADMM iterations. Each shared-volume update uses at most 20 conjugate-gradient iterations with tolerance \(10^{-5}\), providing a common computational budget for comparison.
+
+We measure intensity fidelity with PSNR, foreground structure with the structural similarity index (SSIM), and depth placement with local depth error. PSNR uses the reference intensity range and is interpreted alongside foreground and depth metrics because background can dominate a volume-wide error measure. Foreground SSIM averages a 3D Gaussian-window SSIM map (\(\sigma=1.5\) voxels, data range 1) over reference support above 10\% of peak intensity, dilated by two voxels. Local depth error is the reference-intensity-weighted absolute difference between axial centroids of corresponding lateral columns. Columns below 10\% of the maximum reference depth-summed intensity are excluded.
+
+For the test set, we average the five illumination subsets within each subvolume, then report the mean and sample standard deviation across the eight subvolumes. Changes are paired with each subvolume's uncompressed reconstruction using matched noise realisations. Separate-example summaries average their noise and illumination-subset repeats.
+
+Bead reconstructions provide a complementary assessment of detection and depth ambiguity. Beads are detected as local maxima after Gaussian smoothing (\(\sigma=0.7\) voxel), with a threshold of 30\% of the reconstruction peak. Detections within two voxels laterally and two planes axially of a reference bead are matched, and detection accuracy is summarised by the Jaccard index. The mirror energy ratio compares integrated intensity in \(3\times3\) lateral regions and three-plane windows around the mirror and true depths. Smoothing is used only for detection, not for displayed reconstructions.

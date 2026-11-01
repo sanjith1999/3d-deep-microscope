@@ -1,0 +1,17 @@
+\begin{abstract}
+Conventional volumetric fluorescence imaging acquires images at successive focal planes.
+Depth-dependent illumination offers an alternative: encode the volume into planar
+measurements and reconstruct it at a fixed detection focus. We combine angle-scanned
+phase illumination with multi-slice plug-and-play reconstruction. Varying the input angle
+at a fixed phase encoder changes the volumetric excitation while the specimen and
+detection focus remain stationary. Reconstruction couples measurement consistency with
+a pretrained two-dimensional denoiser applied in three orthogonal slice orientations,
+recovering a shared volume without task-specific three-dimensional network training.
+Numerical evaluation with reference volumes of mouse pyramidal neurons with dendritic
+arbors demonstrates recovery over a
+\(30.72\times30.72\times10.24\,\mu\mathrm m^3\) volume with isotropic
+\(0.64\,\mu\mathrm m\) reconstruction sampling. Dominant dendritic structures and their
+depth ordering remain recognisable in representative reconstructions at eight-fold
+measurement compression. The framework supports compressive volumetric fluorescence
+recovery without axial specimen scanning or detection refocusing.
+\end{abstract}
