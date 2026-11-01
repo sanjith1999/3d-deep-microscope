@@ -7,7 +7,7 @@
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\linewidth]{depth_encoding.pdf}
-\caption{\textbf{Defocus under the angle scan encodes depth; in-focus patterns and a plain scan do not} (full-size field, equal deposited excitation dose, overfilled illumination aperture; phase plate: the random plate). (a) One excitation pattern per encoder, $xz$ section through the specimen depth ($\pm5\um$, focus dotted), each tile scaled to its own 99.5th percentile. (b) Lateral shift of the plate's excitation between two scan angles at every depth, from the cross-correlation peak, for plate defocus $D=3.3$, $6.6$ and $13.2\um$; lines: thin-screen prediction of \cref{sec:imaging}. (c) Point emitters assigned a wrong depth by maximum likelihood with unknown brightness at $k=32$ (dots: three plate and three mask realisations; hatched: mirror depth). (d, e) Reconstructions of 12 neuron crops from 6 cells: local depth error and foreground SSIM versus compression, pretrained PnP (solid, no plate dashed; plate and mask at $C=4,8$: mean and range over three realisations) and TV (dashed); the DMD's depth error of $2.17\um$ is off scale. No plate: simulated aperture four times the field in (a, d, e), twice in (c). All values are tabulated in the supplement.}
+\caption{\textbf{Defocus under the angle scan encodes depth; in-focus patterns and a plain scan do not} (full-size field, equal deposited excitation dose, overfilled illumination aperture; phase plate: the random plate). (a) One excitation pattern per encoder, $xz$ section through the specimen depth ($\pm5\um$, focus dotted), each tile scaled to its own 99.5th percentile. (b) Lateral shift of the plate's excitation between two scan angles at every depth, from the cross-correlation peak, for plate defocus $D=3.3$, $6.6$ and $13.2\um$; lines: thin-screen prediction of \cref{sec:imaging}. (c) Point emitters assigned a wrong depth by maximum likelihood with unknown brightness at $k=32$ (dots: three plate and three mask realisations; hatched: mirror depth). (d, e) Reconstructions of the 12 prespecified neuron crops from 6 cells: local depth error and foreground SSIM versus compression, pretrained PnP (solid, no plate dashed; plate and mask at $C=4,8$: mean and range over three realisations) and TV (dashed); the DMD's depth error of $2.17\um$ is off scale. No plate: simulated aperture four times the field in (a, d, e), twice in (c). All values are tabulated in the supplement.}
 \label{fig:encoders}
 \end{figure*}
 
@@ -36,7 +36,7 @@ We first test the untrained mechanism. \Cref{fig:encoders} compares the random p
 \begin{table}[t]
 \centering\small
 \resizebox{0.86\linewidth}{!}{\input{tables/objectives.tex}}
-\caption{\textbf{Plate objectives} with the same start, sampling, step budget and seed, decoded with learned PnP (12 test crops; depth in $\mu$m). Each plate has its own validation tuning. Last column: depth change of our plate against each row, paired by crop, with cell-bootstrap interval.}
+\caption{\textbf{Plate objectives} with the same start, sampling, step budget and seed, decoded with learned PnP (12 prespecified test crops; depth in $\mu$m). Each plate has its own validation tuning. Last column: depth change of our plate against each row, paired by crop, with cell-bootstrap interval.}
 \label{tab:objectives}
 \end{table}
 
@@ -49,7 +49,7 @@ We first test the untrained mechanism. \Cref{fig:encoders} compares the random p
 \centering\small
 \setlength{\tabcolsep}{4pt}
 \resizebox{\linewidth}{!}{\input{tables/uncertainty.tex}}
-\caption{\textbf{Depth intervals and bounds.} Conformal half-width of learned-PnP reconstructions, calibrated on 35 non-overlapping held-out crops (calibration-bootstrap 95\,\% interval), and the realised miscoverage on the 12 test crops $\times$ 5 draws (signal-weighted, target $\alpha=0.1$). Bound width: mean per-voxel width over $\C(\by)$ on the reduced field (15\,dB, 72 queries), relative to the random plate.}
+\caption{\textbf{Depth intervals and bounds.} Conformal half-width of learned-PnP reconstructions, calibrated on 35 non-overlapping held-out crops (calibration-bootstrap 95\,\% interval), and the realised miscoverage on the 12 prespecified test crops $\times$ 5 draws (signal-weighted, target $\alpha=0.1$). Bound width: mean per-voxel width over $\C(\by)$ on the reduced field (15\,dB, 72 queries), relative to the random plate.}
 \label{tab:guarantee}
 \end{table}
 
@@ -67,7 +67,7 @@ We first test the untrained mechanism. \Cref{fig:encoders} compares the random p
 \label{fig:wrong}
 \end{figure*}
 
-With the in-focus DMD every decoder stays at $2.17$--$2.37\um$, the error of a flat estimate (\cref{fig:anyprior,tab:anyprior}); on the 48 random crops learned PnP reaches $1.81\um$, above the depth-blind oracle ($1.42$) and near the flat estimate ($1.93\um$) of those crops. A second, independent DMD pattern set, run with TV and both PnP decoders, reproduces them to within $0.06$\,dB and $0.07\um$. Splitting each column's error into its mean over depth (lateral error) and the zero-mean remainder (depth error) shows where the prior's gain goes. At $C=8$ learned PnP shrinks the random plate's lateral error to $0.48\times$ of pretrained PnP's and its depth error to $0.71\times$ (median over crops; lower on 12 of 12), but for the DMD it shrinks the lateral error to $0.77\times$ and leaves the depth error at $1.04\times$, which is 99\,\% of the DMD's total. \Cref{fig:wrong} shows the consequence: the DMD's dendrites look sharper in $xy$, and its $xz$ section remains without depth. A prior could in principle guess depth from population statistics, but these measurements give it nothing to confirm the guess, and none of the tested priors recovered it.
+With the in-focus DMD every decoder stays at $2.17$--$2.37\um$, the error of a flat estimate (\cref{fig:anyprior,tab:anyprior}); on the 48 random crops learned PnP reaches $1.81\um$, above the depth-blind oracle ($1.42$) and near the flat estimate ($1.93\um$) of those crops. A second, independent DMD pattern set, run with TV and both PnP decoders, reproduces them to within $0.06$\,dB and $0.07\um$. Splitting each column's error into its mean over depth (lateral error) and the zero-mean remainder (depth error) shows where the prior's gain goes. At $C=8$ learned PnP shrinks the random plate's lateral error to $0.48\times$ of pretrained PnP's and its depth error to $0.71\times$ (median over the prespecified crops; lower on 12 of 12), but for the DMD it shrinks the lateral error to $0.77\times$ and leaves the depth error at $1.04\times$, which is 99\,\% of the DMD's total. \Cref{fig:wrong} shows the consequence: the DMD's dendrites look sharper in $xy$, and its $xz$ section remains without depth. A prior could in principle guess depth from population statistics, but these measurements give it nothing to confirm the guess, and none of the tested priors recovered it.
 
 \subsection{Calibration and tolerance}
 \label{sec:res:tolerance}
