@@ -36,11 +36,11 @@ We first test the untrained mechanism. \Cref{fig:encoders} compares the random p
 \begin{table}[t]
 \centering\small
 \resizebox{0.86\linewidth}{!}{\input{tables/objectives.tex}}
-\caption{\textbf{Plate objectives} with the same start, sampling, step budget and seed, decoded with learned PnP (12 test crops; depth in $\mu$m). Each plate has its own validation tuning.}
+\caption{\textbf{Plate objectives} with the same start, sampling, step budget and seed, decoded with learned PnP (12 test crops; depth in $\mu$m). Each plate has its own validation tuning. Last column: depth change of our plate against each row, paired by crop, with cell-bootstrap interval.}
 \label{tab:objectives}
 \end{table}
 
-\Cref{tab:objectives} trains the plate with three alternative decoder-free objectives under the same start, sampling and 1000 steps: a smooth worst-case coherence of the depth columns, following Miniscope3D \cite{yanny2020}; a Poisson Fisher-information objective on depth with unknown brightness, following \cite{shechtman2014}; and our loss without centring. All improve on the random plate. Coherence and Fisher information keep 50--63\,\% of our depth gain over it, and centring made no difference here. This is a controlled comparison of our implementations of these objectives (one seed, learned PnP, two compressions), not a ranking of the objectives in general or of the imaging systems they come from; none was tuned beyond the shared budget.
+\Cref{tab:objectives} trains the plate with three alternative decoder-free objectives under the same start, sampling and 1000 steps: a smooth worst-case coherence of the depth columns, following Miniscope3D \cite{yanny2020}; a Poisson Fisher-information objective on depth with unknown brightness, following \cite{shechtman2014}; and our loss without centring. All improve on the random plate. Coherence and Fisher information keep 50--63\,\% of our depth gain over it: paired on the same measurements, our objective lowers their depth error by 12 and 14\,\% at $C=8$ (intervals exclude zero; 11 and 10 of 12 crops) and by 19 and 14\,\% at $C=1$. Centring made no difference here. This is a controlled comparison of our implementations of these objectives (one seed, learned PnP, two compressions), not a ranking of the objectives in general or of the imaging systems they come from; none was tuned beyond the shared budget.
 
 \subsection{Calibrated depth intervals}
 \label{sec:res:guarantee}
