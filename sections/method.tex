@@ -1,0 +1,68 @@
+\section{Angle-scanned phase-encoded 3D imaging}
+\label{sec:imaging}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.585\linewidth]{acquisition.pdf}\hfill
+\includegraphics[width=0.40\linewidth]{reconstruction.pdf}
+\caption{\textbf{Fixed-focus acquisition and reconstruction.} Left: a tilted plane wave illuminates a fixed phase plate placed $6.6\um$ (specimen-space units) before an intermediate illumination image plane; an NA-0.8 vectorial relay maps the field into the specimen; a camera at a fixed detection focus records one image per illumination angle. Only the input angle changes: plate, specimen and focus are stationary, and nothing is scanned axially. Blue: excitation; orange: fluorescence. Right: multi-slice plug-and-play recovery alternates a conjugate-gradient data-consistency step with one pretrained 2D denoiser applied to the $xy$, $yz$ and $zx$ slices of a shared volume and an $\ell_1$ shrinkage, fused by ADMM.}
+\label{fig:system}
+\end{figure*}
+
+\paragraph{Acquisition.}
+We vary the illumination direction across two angular coordinates while keeping the phase plate fixed (\cref{fig:system}). For transverse position $\mathbf r=(x,y)$, the incident plane wave is $u_t^{\mathrm{in}}(\mathbf r)=a_t e^{\mathrm i k_{\mathrm{ex}}\mathbf s_t^\top\mathbf r}$, with $\mathbf s_t=\cos\theta_t(\cos\alpha_t,\sin\alpha_t)$, where $\alpha_t$ is the azimuth and $\theta_t$ parametrises the direction in the vertical plane containing that azimuth. The corresponding forward direction is $(\mathbf s_t,\sin\theta_t)$, and $k_{\mathrm{ex}}=2\pi/\lambda_{\mathrm{ex}}$ for the simulated refractive index of one. Thus, the two coordinates control the orientation and signed magnitude of the transverse phase gradient. The scan contains 256 distinct directions with $0.5\leq\|\mathbf s_t\|\leq\sqrt3/2$. Each incident field passes through the phase plate, $\tau(\mathbf r)=e^{\mathrm i\phi(\mathbf r)}$, and propagates a distance $D$ to the intermediate illumination image plane by angular-spectrum propagation. The NA-0.8 objective pupil filters the modulated field before a vectorial Richards--Wolf relay \cite{richards1959,marian2007} produces the specimen excitation $I_t=\sum_{c\in\{x,y,z\}}|E_{t,c}|^2$, assuming x-polarised illumination. Coordinates and distances are expressed in specimen-equivalent units. The camera records one fluorescence image per direction at a fixed detection focus. Acquisition is sequential, not single-shot.
+
+\paragraph{Why the angle encodes depth.}
+Propagation converts the plate's phase structure into spatially varying excitation. Scanning the incident angle shifts this pattern differently at different depths, giving each location a depth-dependent illumination sequence. An ideal scalar Fresnel model illustrates the mechanism: without pupil clipping, an angular change $\Delta\mathbf s$ displaces the pattern by $(D+z)\Delta\mathbf s$, where $D+z$ is the distance from the plate. Different depths therefore translate at different rates, while plate defocus positions the shear pivot outside the specimen. This relation provides intuition; our high-NA vectorial model captures the finite pupil and departures from pure translation.
+
+\paragraph{Image formation.}
+Let $X_0(\mathbf r,z)$ denote the specimen's fluorescence response per unit excitation. Under linear, unsaturated fluorescence, the emission source is proportional to $X_0I_t$. For laterally shift-invariant detection, the noiseless camera-plane irradiance is
+\begin{equation}
+g_t(\mathbf r)=\int_{\Omega}
+h_{\mathrm{em}}(\mathbf r-\mathbf r',z_{\mathrm{focal}}-z')
+X_0(\mathbf r',z')I_t(\mathbf r',z')
+\,\mathrm d^2\mathbf r'\,\mathrm dz',
+\label{eq:forward}
+\end{equation}
+where $h_{\mathrm{em}}$ is the emission intensity point-spread function and $\Omega$ is the specimen volume. Pixel $p$, occupying region $D_p$, records the normalised sample $\hat Y^0_{t,p}=|D_p|^{-1}\int_{D_p}g_t(\mathbf r)\,\mathrm d^2\mathbf r$. Fluorescence contributions therefore add incoherently before pixel averaging. Multiplication by the excitation pattern mixes specimen spatial frequencies before detection blur, so the camera need not resolve the illumination pattern itself. Depth discrimination depends on how these measurements vary across illumination angles.
+
+\paragraph{Voxel-integrated operator.}
+To capture excitation variations within reconstruction voxels, we evaluate the optics on a finer grid and integrate the measurement responses over each voxel. Let $\bB$ be the fine-grid measurement operator, including emission propagation and pixel averaging, and let $\bU$ replicate each reconstruction coefficient over its fine-grid cells. Then $\bA=\bB\bU$ preserves the fine-grid response for every specimen represented in this piecewise-constant basis.
+
+Sub-voxel specimen structure remains unrepresented. For a fine-grid specimen $\bx_f$, its coarse representation $\bx_{\mathrm{gt}}=\bR\bx_f$, obtained by voxel averaging, satisfies
+\begin{equation}
+\by=\bA\bx_{\mathrm{gt}}
++\underbrace{\bB(\bx_f-\bU\bR\bx_f)}_{\boldsymbol\delta_{\mathrm{disc}}}
++\boldsymbol\varepsilon.
+\label{eq:patch}
+\end{equation}
+Thus, integration retains within-voxel optical variation, while $\boldsymbol\delta_{\mathrm{disc}}$ captures specimen approximation error.
+
+Linear, incoherent fluorescence enables efficient assembly:
+\begin{equation}
+\bA_{(t,p),j}=\textstyle\sum_{i\in\mathcal P_j} I_t(\mathbf r_i,z_i)\,g_{p,i},
+\label{eq:factor}
+\end{equation}
+where $\mathcal P_j$ contains voxel $j$'s fine-grid cells, $(\mathbf r_i,z_i)$ is the location of cell $i$, and $g_{p,i}$ is its emission footprint at pixel $p$, including its integration weight. These footprints are computed once and reused across angles. After precomputation, direct assembly costs $O(TPF)$, compared with $O(TNF\log F)$ for constructing columns through separate FFT-based forward simulations, with $T$ patterns, $P$ detector samples, $F$ fine-grid cells and $N$ reconstruction voxels.
+
+\paragraph{Reconstruction.}
+We combine least-squares data fitting with multi-slice denoising and sparsity through plug-and-play ADMM \cite{venkatakrishnan2013,majee2021}. The branches $\mathcal J=\{xy,yz,zx,\mathrm{sp}\}$ comprise three slice-denoising branches and one sparsity branch. For orientation $o$, $\mathsf P_o$ rearranges the shared volume into slices, which a pretrained 2D DnCNN $\mathcal D$ \cite{zhang2017} denoises independently. The corresponding volume denoiser is $\mathcal D_o=\mathsf P_o^{-1}\mathcal D\mathsf P_o$. Each iteration solves
+\begin{equation}
+\bx^{k+1}=\arg\min_{\bx}\tfrac12\|\bA\bx-\by\|_2^2+\textstyle\sum_{j\in\mathcal J}\tfrac{\rho_j}{2}\|\bx-\mathbf v_j^k+\mathbf d_j^k\|_2^2
+\label{eq:admm}
+\end{equation}
+by conjugate gradients, followed by denoising $\mathbf v_o^{k+1}=\mathcal D_o(\bx^{k+1}+\mathbf d_o^k)$, soft thresholding $\mathbf v_{\mathrm{sp}}^{k+1}=\mathcal S_{\lambda/\rho_{\mathrm{sp}}}(\bx^{k+1}+\mathbf d_{\mathrm{sp}}^k)$, and dual updates $\mathbf d_j^{k+1}=\mathbf d_j^k+\bx^{k+1}-\mathbf v_j^{k+1}$. We initialise from normalised back-projection and clip the final estimate to $[0,1]$. These updates do not enforce the certification intervals; membership in $\C(\by)$ (\cref{eq:cset}) is checked separately when claimed. As a non-learned comparator, we use box-constrained least squares with isotropic 3D total variation \cite{rudin1992}, solved by ADMM \cite{boyd2011}. Solver parameters are given in the supplement.
+
+\paragraph{Learned prior.}
+To adapt the reconstruction prior to neuronal structure, we evaluate two neuron-trained alternatives to the pretrained natural-image DnCNN: a 2D network shared across the three slice orientations, and a 3D network that replaces all three slice-denoising branches \cite{zhang2021drunet,kamilov2023pnp}. Both are trained on neuron volumes from an animal excluded from testing, using Gaussian noise with $\sigma\sim\mathcal U(0,0.25)$ and spatial and intensity augmentation. The data term, sparsity branch, iteration count and parameter-selection protocol remain unchanged. Network architectures and training details are given in the supplement.
+
+\paragraph{Trained plate.}
+We optimise the plate phase $\phi$ to reduce correlations between measurement signatures at different depths, with the aim of improving depth discrimination. For a voxel at lateral position $\mathbf r$ and depth $z$, let $\mathbf a_{\mathbf r,z}$ denote its centred, unit-norm operator column (\cref{eq:factor}), collecting detector responses across illumination angles. We minimise
+\begin{equation}
+\mathcal L(\phi)=\mathbb E_{\mathbf r}\textstyle\sum_{z\neq z'}w_{zz'}
+\left(\mathbf a_{\mathbf r,z}^{\top}\mathbf a_{\mathbf r,z'}\right)^2,
+\label{eq:plate}
+\end{equation}
+where mirror-depth pairs about the detection focus receive weight two and other pairs receive weight one. Squaring penalises correlations of either sign; normalisation prevents uniform amplification of the signatures from reducing the loss.
+
+Training differentiates through the excitation, vectorial relay and detection model, without specimen examples or a reconstruction solver. The objective is a surrogate for depth discrimination, rather than a guarantee of stable volume recovery. We assess its benefits through reconstruction and measurement-supported connectivity under matched excitation dose. Training details are given in the supplement.

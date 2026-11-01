@@ -1,0 +1,12 @@
+\usepackage{adjustbox}
+\usepackage[section]{placeins}
+\renewcommand{\topfraction}{0.9}\renewcommand{\bottomfraction}{0.8}\renewcommand{\textfraction}{0.07}
+\renewcommand{\floatpagefraction}{0.75}\renewcommand{\dbltopfraction}{0.9}\renewcommand{\dblfloatpagefraction}{0.75}
+\setcounter{topnumber}{4}\setcounter{dbltopnumber}{3}\setcounter{totalnumber}{6}
+\renewcommand{\thesection}{S\arabic{section}}
+\renewcommand{\thetable}{S\arabic{table}}
+\renewcommand{\thefigure}{S\arabic{figure}}
+\renewcommand{\theequation}{S\arabic{equation}}
+\newcommand{\coltab}[1]{\begin{adjustbox}{max width=\linewidth}#1\end{adjustbox}}
+\newcommand{\widetab}[1]{\begin{adjustbox}{max width=\textwidth}#1\end{adjustbox}}
+

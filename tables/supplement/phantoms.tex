@@ -1,0 +1,27 @@
+\begin{tabular}{@{}llp{0.52\linewidth}cc@{}}\toprule
+id & family & structure (query region, $4\times4\times4$) & $p$ & $q$\\\midrule
+P01 & connected & straight filament through all depths & (0,5,5) & (3,5,5)\\
+P02 & connected & 3D staircase filament, U(0.5,1) & (0,4,4) & (3,7,7)\\
+P03 & connected & lateral staircase filament in one plane & (1,4,4) & (1,7,7)\\
+P04 & disconnected & two separated filaments (z=0 and z=3) & (0,4,4) & (3,7,7)\\
+P05 & disconnected & filament with one missing voxel & (0,5,4) & (3,6,7)\\
+P06 & disconnected & filament with one weak (0.3) bridge voxel & (0,6,4) & (3,5,7)\\
+P07 & connected & two alternative-depth routes (z=0 and via z=3), both bright & (0,4,5) & (0,7,5)\\
+P08 & connected & alternative-depth routes, shallow route dim (0.15-0.25) & (0,4,5) & (0,7,5)\\
+P09 & disconnected & laterally crossing filaments at different depths & (0,4,5) & (3,6,7)\\
+P10 & connected & crossing filaments joined by a vertical connector & (0,4,5) & (3,6,7)\\
+P11 & disconnected & four isolated beads (endpoints on beads) & (0,4,4) & (3,7,7)\\
+P12 & connected & bead chain (adjacent beads of varying brightness) & (0,7,4) & (3,7,7)\\
+P13 & connected & three alternative routes, intensities 0.5-0.8 & (0,4,4) & (1,4,7)\\
+P14 & connected & P01 filament + U(0,0.15) background over the field & (0,5,5) & (3,5,5)\\
+P15 & disconnected & P04 + bright distractor blobs outside the ROI & (0,4,4) & (3,7,7)\\
+P16 & connected & graded filament 1.0 $\to$ 0.45 & (0,7,4) & (3,4,7)\\
+P17 & connected & thick (2-voxel) vertical filament & (0,5,5) & (3,6,5)\\
+P18 & connected & in-plane filament at z=0 (mirror-depth control: mirror plane empty) & (0,4,6) & (0,7,6)\\
+P19 & connected & ring in plane z=1, endpoints opposite & (1,4,4) & (1,7,7)\\
+P20 & connected & dim filament (0.42-0.48), just above tau = 0.4 & (0,4,4) & (3,7,7)\\
+P21 & connected & random lattice walk (9 voxels) & (0,4,4) & (1,6,5)\\
+P22 & unknown & two random walks (connectivity decided by truth BFS) & (0,7,7) & (3,4,4)\\
+P23 & unknown & sparse random volume (15\% of ROI voxels U(0.3,1)); fixed corners & (0,4,4) & (3,7,7)\\
+P24 & unknown & dense random volume U(0,1) over the whole field & (0,4,4) & (3,7,7)\\
+\bottomrule\end{tabular}

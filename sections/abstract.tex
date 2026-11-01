@@ -1,0 +1,14 @@
+\begin{abstract}
+A computational microscope returns one volume, but its measurements may admit many.
+A reconstruction prior favours one explanation and can introduce connections that the images do not establish.
+We learn illumination to reduce this structural ambiguity in fixed-focus three-dimensional fluorescence microscopy.
+Scanning the incident angle through a fixed, defocused phase plate produces depth-dependent excitation patterns while the specimen and detection focus remain stationary.
+We train the plate to decorrelate measurement signatures across depth, without specimen examples or a reconstruction solver in the training loop.
+We assess both reconstruction quality and measurement-supported connectivity.
+A connectivity query is certified when every volume consistent with the images and stated error model agrees under a specified intensity threshold and connectivity definition.
+Two consistent volumes with opposite connectivity demonstrate ambiguity.
+On reduced-field synthetic volumes, certified connections increase from 3 to 12 of 48 connected queries, with none lost.
+On simulated measurements of mouse pyramidal neuron volumes, it reduces mean local depth error from 0.43 to 0.23\,\(\mu\mathrm{m}\) at eight-fold measurement compression with a pretrained prior.
+Neuron-trained denoisers further improve recovery, but do not resolve the tested in-focus amplitude encoder's depth ambiguity.
+This approach enables learned illumination to be evaluated by both reconstruction accuracy and the structural conclusions supported by its measurements.
+\end{abstract}

@@ -1,0 +1,11 @@
+\section{Discussion and limitations}
+\label{sec:discussion}
+
+\paragraph{Division of labour.}
+The two learned components did different jobs. Training the plate changed which volumes the measurements allow: more queries certified, narrower bounds, half the depth error. Training the prior changed which allowed volume was returned: better with the plate, unchanged in what is certified (by construction) and in depth for an encoder that records little. End-to-end training scores both with one reconstruction loss and cannot tell them apart; the consistency set can.
+
+\paragraph{What to report with a reconstruction.}
+At the operating SNR many connections a reconstruction shows are not determined by the data, and more directions at the same photon budget do not help. A connection reported from such a system should come with the outcome of the query. When one particular connection matters, the levers are the optics and the photon budget, not angular sampling or a stronger prior. Detection is part of the optics: at NA 0.3, 16 frames beat 256 at NA 0.1 (supplement).
+
+\paragraph{Limitations.}
+All results are simulations, without hardware validation, of linear fluorescence in a homogeneous non-scattering medium with an ideal relay and shot noise only. The test set has 12 crops from six cells of three animals, which are not independent; the plate is trained with two seeds, the prior on one animal, and the DMD has two pattern sets. The overfilled aperture was introduced after the first comparison revealed an aperture confound; both are reported. Certification runs on a $4\times12\times12$ field with oracle endpoints and a fixed threshold, never jointly with full-size reconstruction; certificates can be wrong when the model does not cover the object (one mismatch run), and their coverage is empirical.

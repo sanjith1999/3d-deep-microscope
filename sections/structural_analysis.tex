@@ -1,0 +1,18 @@
+\section{What the measurements establish}
+\label{sec:structural}
+
+A reconstruction is one volume that explains the images under a prior. For relational questions, such as whether a dendrite reaches a soma, we also ask whether \emph{every} volume that explains the images agrees.
+
+\paragraph{Consistency set and connectivity query.}
+Given measurements $\by\in\R^M$ from $k$ directions and per-row intervals $[\ell_i,h_i]$ that contain the noise-free measurement with stated probability, the measurement-consistency set is
+\begin{equation}
+\C(\by)=\{\bx\in[0,1]^N:\ \ell_i\le(\bA\bx)_i\le h_i,\ i=1,\dots,M\},
+\label{eq:cset}
+\end{equation}
+where the box is the reconstruction's intensity normalisation. For calibrated Gaussian noise we use the Bonferroni box $y_i\pm z\sigma$ with $z=\Phi^{-1}(1-\alpha/2M)$, $\alpha=0.05$, so that $\bx_{\mathrm{gt}}\in\C(\by)$ with probability at least $0.95$ under the noise model. In a query region with 6-adjacency, a voxel is active if $x_v\ge\tau$, and $p,q$ are connected if an active path joins them; equivalently the bottleneck $b(\bx)=\max_{P:p\to q}\min_{v\in P}x_v\ge\tau$. The query is \emph{certified connected} if $\min_{\C}b\ge\tau$, \emph{certified disconnected} if $\max_{\C}b<\tau$, and \emph{ambiguous} otherwise. Ambiguity is proven by exhibiting two volumes in $\C(\by)$ with opposite connectivity, both re-checked independently of the optimiser (unscaled residual, breadth-first search and union--find). Problems that a solver cannot decide within its budget are reported as undecided, never as ambiguous.
+
+\paragraph{Optics change $\C$, priors choose in it.}
+No prior enters \cref{eq:cset}: a reconstruction that fits the data is one member of $\C(\by)$, and a better prior moves it within the set without changing what is certified. Only $\bA$ and the noise level change $\C$. The plate objective (\cref{eq:plate}) acts on $\bA$ in the direction that matters. For two voxels with unit-norm columns of correlation $\rho$ in an $\ell_2$ consistency ball of radius $\varepsilon$, the range of either voxel is $\pm\varepsilon/\sqrt{1-\rho^2}$, from the Schur complement of the $2\times2$ Gram matrix. Lowering the correlation between the columns of voxels at different depths therefore narrows their bounds. We use this as an intuition, not a theorem, since it ignores coupling among more than two voxels; \cref{sec:res:optics} tests its size.
+
+\paragraph{Computation.}
+Per-voxel bounds $L_v=\min_{\C}x_v$, $U_v=\max_{\C}x_v$ (two linear programs per voxel) certify the query when the voxels with $L_v\ge\tau$ already connect $p,q$, or those with $U_v\ge\tau$ do not. Otherwise mixed-integer programs with separator and flow encodings search for the two witnesses, and a joint verifier bounds $\min b$ and $\max b$ exactly. These encodings are standard (formulations and validation in the supplement). A certificate covers all volumes allowed by the stated noise and object model; it is computed in floating point with independent re-checks, not a formal proof.

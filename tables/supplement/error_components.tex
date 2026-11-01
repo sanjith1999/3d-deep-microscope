@@ -1,0 +1,11 @@
+\begin{tabular}{@{}l c cc cc c@{}}\toprule
+ & & \multicolumn{2}{c}{depth part of error} & \multicolumn{2}{c}{learned / pretrained} & depth lower\\
+\cmidrule(lr){3-4}\cmidrule(lr){5-6}
+encoder & $C$ & pretrained & learned & lateral & depth & (crops)\\\midrule
+phase plate & 1 & 94\,\% & 96\,\% & 0.32 & 0.58 & 12 / 12\\
+ & 8 & 93\,\% & 95\,\% & 0.48 & 0.71 & 12 / 12\\
+amp.\ mask & 1 & 93\,\% & 96\,\% & 0.32 & 0.61 & 12 / 12\\
+ & 8 & 91\,\% & 95\,\% & 0.37 & 0.55 & 12 / 12\\
+in-focus DMD & 1 & 99\,\% & 99\,\% & 0.74 & 1.03 & 6 / 12\\
+ & 8 & 99\,\% & 99\,\% & 0.77 & 1.04 & 4 / 12\\
+\bottomrule\end{tabular}

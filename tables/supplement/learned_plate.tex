@@ -1,0 +1,17 @@
+\begin{tabular}{@{}ll cc cc cc@{}}\toprule
+ & & \multicolumn{2}{c}{$C=1$} & \multicolumn{2}{c}{$C=4$} & \multicolumn{2}{c}{$C=8$}\\
+\cmidrule(lr){3-4}\cmidrule(lr){5-6}\cmidrule(l){7-8}
+prior & encoder & PSNR & depth & PSNR & depth & PSNR & depth\\\midrule
+pretrained PnP & random plate, realisation 0 & 35.73 & 0.357 & 35.35 & 0.384 & 34.81 & 0.431\\
+ & random plate, realisation 1 & 35.76 & 0.371 & 35.38 & 0.391 & 34.93 & 0.422\\
+ & random plate, realisation 2 & 35.80 & 0.369 & 35.45 & 0.392 & 34.85 & 0.438\\
+ & trained plate, seed 0 & 37.03 & 0.184 & 36.47 & 0.212 & 36.15 & 0.230\\
+ & trained plate, seed 1 & 37.12 & 0.173 & 36.49 & 0.206 & 36.21 & 0.234\\
+\midrule
+TV & random plate, realisation 0 & 38.15 & 0.187 & 37.34 & 0.223 & 37.00 & 0.243\\
+ & trained plate, seed 0 & 39.29 & 0.135 & 38.18 & 0.166 & 38.61 & 0.153\\
+ & trained plate, seed 1 & 39.52 & 0.124 & 38.30 & 0.158 & 38.63 & 0.152\\
+\midrule
+learned & random plate, realisation 0 & 39.18 & 0.161 & 38.29 & 0.184 & 37.11 & 0.221\\
+ & trained plate, seed 0 & 40.82 & 0.109 & 39.89 & 0.130 & 38.83 & 0.164\\
+\bottomrule\end{tabular}

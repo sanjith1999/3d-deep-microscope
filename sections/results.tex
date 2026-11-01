@@ -1,0 +1,104 @@
+\section{Results}
+\label{sec:results}
+
+\subsection{The encoder}
+\label{sec:res:encoders}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\linewidth]{depth_encoding.pdf}
+\caption{\textbf{Defocus under the angle scan encodes depth; in-focus patterns and a plain scan do not} (full-size field, equal deposited excitation dose, overfilled illumination aperture). (a) One excitation pattern per encoder, $xz$ section through the specimen depth ($\pm5\um$, focus dotted), each tile scaled to its own 99.5th percentile. (b) Lateral shift of the plate's excitation between two scan angles at every depth for plate defocus $D=3.3$, $6.6$ and $13.2\um$; lines: thin-screen prediction, sheared about the plate's conjugate plane at distance $D$. (c) Point emitters assigned a wrong depth by maximum likelihood with unknown brightness at $k=32$ (dots: three plate and three mask realisations; hatched: mirror depth). (d, e) Reconstructions of 12 neuron crops from 6 cells: local depth error and foreground SSIM versus compression, multi-slice PnP (solid, no plate dashed; plate and mask at $C=4,8$: mean and range over three realisations) and box-constrained TV (dashed); the DMD's depth error of $2.17\um$ is off scale. No plate: simulated aperture four times the field in (a, d, e), twice in (c).}
+\label{fig:encoders}
+\end{figure*}
+
+\begin{table}[t]
+\centering\small
+\resizebox{\linewidth}{!}{\input{tables/supplement/encoders.tex}}
+\caption{\textbf{Encoder comparison} (mean over 12 test crops; depth errors in $\mu$m; beads: depth error of detected beads and mirror-ghost energy ratio). $^\dagger$PnP: mean over three plate or mask realisations; TV and all other rows: realisation 0. $^\ddagger$Simulated aperture four times the field (two times for all other rows; the plate changes by $\le0.07$\,dB). Equal deposited excitation dose; Poisson noise at a 15\,dB operating point for the plate. Depth-blind oracle $1.32\um$, flat estimate $2.15\um$ (\cref{sec:setup}).}
+\label{tab:encoders}
+\end{table}
+
+\Cref{fig:encoders,tab:encoders} compare the plate with three encoders that share its relay, detector, dose, objects, solvers and tuning protocol. As predicted (\cref{sec:imaging}), the plate's excitation shears with tilt at 0.7--0.9 of the thin-screen rate, per-pixel excitation sequences decorrelate within about $1\um$ of depth, and point emitters are assigned a wrong depth in 1.5--1.8\,\% of cases (three plates) against 4.4--5.3\,\% (three defocused masks), 25\,\% (DMD, half at the mirror depth) and 89\,\% without the plate. With every solver the plate and the mask reconstruct far better than the other two. The in-focus DMD stays at the depth error of a flat estimate ($2.17$ against $2.15\um$) while the plate reaches $0.36\um$ (pretrained prior, $C=1$). Without the plate the only depth signal leaks from the finite simulated aperture: enlarging it from two to four times the field cuts the angle-to-angle excitation modulation from $5.6$ to $1\,\%$ (plate: $70\,\%$) and raises the depth error from $0.38$ to $0.75\um$ ($C=1$), towards the depth-blind oracle; \cref{tab:encoders} reports the larger aperture. The defocused amplitude mask comes close to the plate: over three realisations of each, the plate leads in PSNR in all nine pairings ($+0.4$ to $+1.2$\,dB at $C=8$) but not in depth error, so most of the depth encoding comes from defocus under the angle scan. Defocus, tuning, convergence and aperture checks are in the supplement.
+
+\subsection{What the measurements leave open}
+\label{sec:res:e1}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\linewidth]{measurement_ambiguity.pdf}
+\caption{\textbf{One set of measurements, opposite topologies} (reduced field, 32 directions, 15\,dB). Each row shows the $4\times4\times4$ query region as four depth slices: ground truth; box-constrained least squares + TV reconstructed from the recorded measurements; a volume in $\C(\by)$ that connects $p$ (circle) to $q$ (square); a volume in $\C(\by)$ that does not. Cyan outlines: voxels above $\tau=0.4$; $b$: bottleneck. Right: sorted residuals $|(\bA\bx-\by)_i|/z\sigma$; all curves stay at or below 1, so all four volumes explain the same images within the 95\% box. The reconstruction is correct in the first three rows and wrong in the last; in all four the data do not decide the query.}
+\label{fig:ambiguity}
+\end{figure*}
+
+\begin{table}[t]
+\centering\small
+\setlength{\tabcolsep}{3pt}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{@{}lccc@{}}
+\toprule
+setting (reduced field, $\tau=0.4$) & certified & ambiguous & other\\
+\midrule
+$k=32$, 15\,dB (72 queries) & 24 & 48 & 0\\
+\quad trained plate (seeds 0 / 1) & 33 / 29 & 39 / 43 & 0\\
+$k=256$, same photons & 24 & 48 & 0\\
+$k=256$, $8\times$ photons & 30 & 42 & 0\\
+$k=32$, 25\,dB (72 queries) & 60 & 12 & 0\\
+\quad trained plate (seeds 0 / 1) & 63 / 63 & 9 / 9 & 0\\
+\midrule
+TV budget, truth inside (18 runs) & 0 & 18 & 0\\
+TV budget, truth outside (9 runs) & 0 & 4 & 5 empty\\
+\midrule
+mismatch: exact coarse model (16) & 0 & 1 & 15 empty\\
+mismatch: noise only (32) & 0 & 4 & 28 empty\\
+mismatch: noise + allowance (64) & 1$^\ast$ & 63 & 0\\
+\bottomrule
+\end{tabular}}
+\caption{\textbf{Structural outcomes.} Top: 24 phantoms $\times$ 3 noise seeds, random plate unless stated. Middle: the nine ambiguous cases of \cref{fig:ambiguity} and the supplement under a calibrated total-variation budget $R_{\mathrm{cal}},2R_{\mathrm{cal}},4R_{\mathrm{cal}}$. Bottom: eight held-out phantoms measured on the fine grid, under two sub-voxel models. $^\ast$This certificate contradicts the truth; the calibrated allowance failed to cover that object. Wrong certificates otherwise: 0.}
+\label{tab:reliability}
+\end{table}
+
+A reconstruction can show the true structure and still not be determined by the data. \Cref{fig:ambiguity} contrasts what a reconstruction shows with what the measurements support, on 13 reduced problems (nine proven ambiguous, four certified controls; all in the supplement). Every reconstruction (two estimators) lies inside $\C(\by)$, so it is one consistent volume chosen by a prior, like the witnesses. Reconstructions reproduce the true topology in 11 of 13 cases, often with a clear margin (P01: bottleneck $0.64$ against $\tau=0.4$), yet in nine of the 13 the same images are explained by a volume of the opposite topology. In the dense volume P24 the reconstruction reports a disconnection that is false, and it fits the data better than the truth does (largest normalised residual 0.24 against 0.83). The opposite-topology witnesses are not rough artefacts: for filament phantoms their total variation is within 15\,\% of the truth's, and they mostly move brightness between depth-adjacent voxels, the freedom the plate objective targets.
+
+\paragraph{Photons, not angles.}
+At 15\,dB, 48 of 72 queries are ambiguous with the random plate at $k=32$ (\cref{tab:reliability}). Spreading the same photons over all 256 directions resolves none of them and does not shrink per-voxel uncertainty; eight times the photons resolve 6. The trained plate resolves 9 at no photon cost (\cref{sec:res:optics}). Without noise, the operator certifies every query once it is square ($k=64$); its condition number of $8.9\times10^5$ is why this does not survive noise.
+
+\paragraph{A better prior does not decide.}
+A calibrated regularity prior, restricting $\C(\by)$ to volumes no rougher than the roughest of ten calibration phantoms (total variation $\le R_{\mathrm{cal}}$, also $2R_{\mathrm{cal}}$ and $4R_{\mathrm{cal}}$), leaves every query ambiguous whenever the truth satisfies the budget (18 of 18 runs): witnesses of the opposite topology exist that are as regular as the truth. When the budget excludes the truth, the set becomes empty or stays ambiguous; no run produced a certificate. Sub-voxel model mismatch makes the sets wider still, and a certificate is only as reliable as the error model (one wrong certificate in 64 runs, where the calibrated allowance missed the object; supplement).
+
+\subsection{Optics decide}
+\label{sec:res:optics}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{connectivity_certificates.pdf}
+\caption{\textbf{The trained plate enlarges what the measurements determine} (reduced field, $k=32$, 24 phantoms $\times$ 3 noise seeds). (a) Connectivity queries certified at 15 and 25\,dB for every encoder; two training seeds of the plate. (b) Mean per-voxel bound width of each query, trained plate (seed 0) against the random plate it started from; ringed: queries certified only with the trained plate. No query certified with the random plate is lost, and no certificate is wrong.}
+\label{fig:certificates}
+\end{figure}
+
+Training changes which volumes the measurements allow (\cref{fig:certificates}). On the reduced field the trained plate certifies 33 of 72 queries at 15\,dB against 24 for the random plate it started from, and 63 against 60 at 25\,dB; a second training seed gives 29 and 63. Paired query by query it gains 9 certificates at 15\,dB and loses none, and no certificate is wrong. Per-voxel bounds narrow to $0.79\times$; the two-column rule of \cref{sec:structural} predicts $0.80\times$ from the drop in mean depth correlation $|\rho|$ from $0.868$ to $0.761$ (across encoders it orders the widths correctly but overstates the differences where $\rho\to1$; supplement). The gain survives fabrication: rounding the trained phase to 8 or 4 levels, or adding 0.5\,rad of random phase error to the 8-level plate, keeps 32--33 certified queries with none lost.
+
+At full size the same objective, trained once for the full field, halves the depth error with the pretrained prior at every compression ($0.18$ against $0.36$--$0.37\um$ at $C=1$, $0.23$ against $0.42$--$0.44\um$ at $C=8$; three random plates tuned on the same grid) and adds 1.2--1.4\,dB. Against each random plate its depth error is lower on 12 of 12 crops at every $C$ and its PSNR on 10--12 of 12; a second training seed replicates this (PSNR on 9--12 of 12). With TV it lowers the depth error by 25--37\,\% ($0.15$ against $0.24\um$ at $C=8$, both seeds lower on 11--12 of 12 crops at every $C$) and with the learned prior by 26--32\,\% ($0.16$ against $0.22\um$ at $C=8$, lower on 11 of 12 crops), so the trained plate at $C=8$ matches the depth error of the random plate with all 256 frames (\cref{fig:frontier}).
+
+\subsection{Priors choose}
+\label{sec:res:prior}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{measurement_tradeoff.pdf}
+\caption{\textbf{Optics and prior gains add, where the optics record depth} (full-size field, 12 test crops, equal deposited dose). PSNR (a) and local depth error (b) against compression $C$; colour: encoder, line: solver (TV shown for the random plate and the DMD). Dashed lines in (b): a depth-blind oracle and a flat estimate. Training the plate and learning the prior each improve the plate; no solver moves the DMD off the flat estimate.}
+\label{fig:frontier}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{encoder_reconstructions.pdf}
+\caption{\textbf{A better prior, not a better answer} ($C=8$, prespecified display crop, draw 0, identical display). Top: lateral maximum-intensity projection, colour coding the depth of the brightest voxel; bottom: $xz$ projection; below: PSNR and local depth error. The learned prior sharpens the DMD's lateral structure but cannot give it depth; with the plate it recovers the depth layering. Bar: $5\um$.}
+\label{fig:wrong}
+\end{figure}
+
+Replacing the pretrained natural-image denoiser by denoisers trained on a held-out animal changes the volume chosen from the same measurements (\cref{fig:frontier}). With the random plate the learned prior gains 2.3--3.5\,dB and halves the depth error at every compression ($39.2$\,dB, $0.16\um$ at $C=1$; $37.1$\,dB, $0.22\um$ at $C=8$), on 12 of 12 crops in both measures. It also beats the tuned TV solver in depth (10 of 12 crops at $C=8$), though not consistently in PSNR; adding a TV term to it does not help on test (supplement).
+
+The same prior cannot create depth information that the optics did not record. With the in-focus DMD every solver, learned or not, stays at $2.17$--$2.33\um$, the depth error of a flat estimate, and a second DMD pattern set reproduces every solver to within $0.06$\,dB and $0.07\um$ (supplement). Splitting each column's error into its mean over depth (lateral error) and the zero-mean remainder (depth error) shows why. At $C=8$ the learned prior shrinks the plate's lateral error to $0.48\times$ and its depth error to $0.71\times$ (median over crops; depth error lower on 12 of 12 crops), and the mask's to $0.37\times$ and $0.55\times$. For the DMD it shrinks the lateral error to $0.77\times$ but leaves the depth error at $1.04\times$ (lower on 4 of 12 crops), and depth error is 99\,\% of the DMD's total. \Cref{fig:wrong} shows the consequence: with the learned prior the DMD's dendrites look sharper in $xy$, and its $xz$ section is still a depth-less smear. The mask follows the plate ($36.7$\,dB, $0.24\um$ at $C=8$); without the plate the learned prior improves depth error only from $1.10$ to $0.92\um$ ($C=8$).
+
+\paragraph{Forward-model accuracy.}
+In a separate modelling comparison, simulating the optics directly at the reconstruction spacing gives a forward discrepancy of $25.7\%$, compared with $1.07\%$ for the voxel-integrated operator. Voxel integration also considerably improves depth accuracy in the held-out reconstruction comparison (supplement).

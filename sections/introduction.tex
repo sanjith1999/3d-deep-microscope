@@ -1,0 +1,22 @@
+\section{Introduction}
+\label{sec:intro}
+
+Fixed-focus three-dimensional fluorescence microscopy encodes depth into planar measurements and recovers the volume computationally. When different volumes explain the same images, a reconstruction prior favours one explanation. The resulting volume may contain plausible structures that the measurements alone do not establish \cite{bhadra2021,gottschling2025}. For neuronal imaging, this distinction matters when assessing whether fluorescent branches are connected. A reconstruction may show a continuous path even when a disconnected alternative remains consistent with the images.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{teaser.pdf}
+\caption{\textbf{Reconstruction alone does not certify connectivity} (schematic). Left: with the random plate, the measurement-consistency set $\C(\by)$ contains both connected and disconnected volumes. A prior selects one reconstruction, but the alternative remains admissible. Right: an illustrative outcome of plate training, where every volume consistent with the new measurements and stated error model is connected, certifying the query. Reconstruction selects one explanation; certification establishes agreement across all admissible explanations.}
+\label{fig:teaser}
+\end{figure}
+
+Learning can improve both optical encoding and reconstruction. End-to-end methods optimise the optics together with a reconstruction model \cite{sitzmann2018,nehme2020deepstorm3d,haputhanthri2022}, while measurement-based approaches optimise optical responses or information capture independently of a decoder \cite{shechtman2014,yanny2020,pinkard2025}. Improved reconstruction accuracy, however, does not necessarily establish whether a particular connection is supported by the measurements. We therefore ask whether learning the illumination can reduce structural ambiguity, so that all volumes consistent with the images and stated error model agree on connectivity (\cref{fig:teaser}).
+
+We study this on a fixed-focus fluorescence microscope that encodes depth in the excitation (\cref{fig:system}). A plane wave is scanned in angle through one fixed phase plate placed a short distance before an intermediate image plane; a high-NA relay maps the field into the specimen; a low-NA camera at fixed focus records one image per angle. A tilt translates the diffracted pattern by an amount that grows with propagation distance, so each depth sees its own sequence of excitation values without axial specimen scanning or detection refocusing. A learnable phase map controls the depth encoding, while a voxel-integrated vectorial model allows us to evaluate candidate volumes against the measurements under explicit object and error assumptions.
+
+Our contributions are:
+\begin{enumerate}\itemsep0pt
+\item \textbf{Learning illumination for depth discrimination.} We develop a specimen-agnostic objective for optimising a fixed, defocused phase plate by decorrelating measurement signatures across depth. Training incorporates the illumination and detection model without a reconstruction solver.
+\item \textbf{Evaluating measurement-supported connectivity.} We apply connectivity certification to evaluate learned illumination independently of reconstruction quality. In reduced-field simulations, the trained plate increases certified queries from 24 to 33 of 72, retaining every query certified with the random plate. Connected and disconnected volumes consistent with the same measurements demonstrate the remaining ambiguity under the stated error model.
+\item \textbf{Separating illumination and prior gains.} Using a voxel-integrated vectorial forward model and matched excitation dose, we compare optical and prior improvements separately. At eightfold measurement compression, plate training reduces mean local depth error from 0.43 to 0.23\,\(\mu\mathrm{m}\) with a pretrained prior. Neuron-trained denoisers improve recovery with the phase plate, but do not resolve the tested in-focus amplitude encoder's depth ambiguity.
+\end{enumerate}
