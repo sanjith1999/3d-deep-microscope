@@ -1,0 +1,95 @@
+\section{Results}
+\label{sec:results}
+
+\subsection{Optical encoding under matched photon budgets}
+\label{sec:res:optics}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\linewidth]{depth_encoding.pdf}
+\caption{\textbf{Optical encoding under matched photon budgets} (full-size field, equal deposited excitation dose, overfilled illumination aperture). (a) One excitation pattern per encoder, $xz$ section through the specimen depth ($\pm5\um$, focus dotted), each tile scaled to its own 99.5th percentile. (b) Lateral shift of the plate's excitation between two scan angles at every depth for plate defocus $D=3.3$, $6.6$ and $13.2\um$; lines: thin-screen prediction, sheared about the plate's conjugate plane at distance $D$. (c) Point emitters assigned a wrong depth by maximum likelihood with unknown brightness at $k=32$ (dots: three plate and three mask realisations; hatched: mirror depth). (d, e) Reconstructions of 12 neuron crops from 6 cells: local depth error and foreground SSIM versus compression, multi-slice PnP (solid; plate and mask at $C=4,8$: mean and range over three realisations) and box-constrained TV (dashed); the DMD's depth error of $2.17\um$ is off scale.}
+\label{fig:encoders}
+\end{figure*}
+
+\begin{table}[t]
+\centering\small
+\resizebox{\linewidth}{!}{\input{tables/supplement/encoders.tex}}
+\caption{\textbf{Encoder comparison} (mean over 12 test crops; depth errors in $\mu$m; beads: depth error of detected beads and mirror-ghost energy ratio). $^\dagger$PnP: mean over three plate or mask realisations; TV and all other rows: realisation 0. Equal deposited excitation dose; Poisson noise at a 15\,dB operating point for the plate. Paired statistics in the text and supplement.}
+\label{tab:encoders}
+\end{table}
+
+\Cref{fig:encoders,tab:encoders} compare the phase plate with three encoders that share its relay, detector, dose, objects, solvers and tuning protocol. As predicted (\cref{sec:imaging}), the plate's excitation shears with tilt at 0.7--0.9 of the thin-screen rate about a pivot that follows the plate: $3.2$, $6.0$--$7.1$ (three realisations) and $15\um$ from focus for $D=3.3$, $6.6$ and $13.2\um$. Per-pixel excitation sequences decorrelate within about $1\um$ of depth and are uncorrelated at mirror depths (median 0.05), whereas without the plate every depth sees the same sequence and the in-focus DMD gives identical sequences at mirror depths. Point emitters at $k=32$ are assigned a wrong depth in 1.5--1.8\% of cases with the three plates, 4.4--5.3\% with three defocused amplitude masks, 25\% with the DMD (half at the mirror depth) and 89\% without the plate (94\% for guessing).
+
+The reconstructions follow the same order with both solvers. Against the DMD the plate reduces depth error from $2.17$--$2.33$ to $0.19$--$0.43\um$ and gains 6.0--9.7\,dB PSNR on every crop; DMD beads appear at their mirror depths. Against the no-plate scan it gains 2.4--3.8\,dB and 0.15--0.20 foreground SSIM on every crop (PnP, $C=8$: 95\% interval $[1.3,3.8]$\,dB), and no-plate bead errors reach $0.5\um$. The defocused amplitude mask comes closest; its first realisation proved the weakest of three at $C=8$ (33.7 vs.\ 34.4\,dB), so the 1.1\,dB margin over it alone overstates the gap. Over three realisations of each, seeds fixed in advance, the plate's PnP PSNR varies by at most 0.12\,dB; all nine plate--mask pairings favour the plate in PSNR ($+0.4$ to $+1.2$\,dB at $C=8$, $+0.4$ to $+0.6$ at $C=4$) and foreground SSIM ($+0.02$ to $+0.08$), each matched pair with an interval above zero, but not in depth error ($-0.04$ to $+0.10\um$). With TV the plate leads by 0.26\,dB at $C=8$ ($[-0.04,0.55]$; equal depth error) and 0.56\,dB at $C=4$ and $C=1$. Phase modulation thus adds a small, consistent gain in intensity fidelity, threefold fewer point-emitter depth errors and higher transmission (28\% vs.\ 21\% of the incident power, field-sized aperture); most depth information comes from defocus under the angle scan.
+
+\paragraph{Defocus, tuning and solver.}
+Halving the defocus to $3.3\um$ costs 1.0\,dB, 0.08 foreground SSIM and $0.15\um$ depth error at $C=8$ (12/12 crops; 0.4\,dB at $C=4$), as a smaller shear per angle step leaves neighbouring depths more alike; doubling it to $13.2\um$ changes PSNR by $-0.1$\,dB (interval includes zero). $D=6.6\um$ was fixed before this study. Widening every tuning grid, with automatic extension at its edges, changed one neuron selection (no plate, $C=8$: $+0.43$\,dB, gap to the plate 2.8 $\to$ 2.4\,dB) and reproduced all other results to $10^{-3}$\,dB. The non-learned TV solver, tuned by the same protocol, beats multi-slice PnP for every encoder but the DMD (plate, $C=8$: 37.0 vs.\ 34.8\,dB, $0.24$ vs.\ $0.43\um$) without changing the ranking; its 300-iteration solves are not converged to $10^{-3}$ relative change, but 1000 iterations change PSNR by at most 0.2\,dB (16 test solves at $C=8$ and $1$).
+
+\paragraph{A simulation confound.} When the simulated illuminated aperture equals the $30.7\um$ field, its hard edge, $6.6\um$ before the image plane, is itself a defocused amplitude encoder (edges sweep by $z\tan\theta$). With it, the no-plate scan and the mask matched or exceeded the plate in depth error (supplement). All results above use an aperture twice the field width; the DMD comparison holds in both geometries.
+
+\subsection{Volumetric recovery under compression}
+\label{sec:res:recon}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{neuronal_reconstructions.pdf}
+\caption{\textbf{Full-size recovery with the phase plate} on the median test crop (by plate PSNR at $C=8$), one direction subset. Top: lateral maximum-intensity projection, colour coding the depth of the brightest voxel; bottom: $xz$ projection. Identical display scale for all panels; below: PSNR and local depth error of this crop. Bar: $5\um$.}
+\label{fig:neurons}
+\end{figure}
+
+On the 12 test crops from six cells (overfilled aperture), the plate's reconstructions reach $35.7\pm2.4$\,dB PSNR, $0.81\pm0.11$ foreground SSIM and $0.36\pm0.18\um$ local depth error at $C=1$, and $34.8\pm2.1$\,dB, $0.78\pm0.12$ and $0.43\pm0.20\um$ at $C=8$, i.e.\ from $4{,}608$ measurements for $36{,}864$ voxels (mean $\pm$ s.d.\ over crops). Compression costs every crop: the paired changes from $C=1$ to $C=8$ are $-0.92\pm0.31$\,dB PSNR and $+0.074\pm0.024\um$ depth error, worse on 12 of 12 crops. With TV the plate reaches 38.1\,dB, 0.88 and $0.19\um$ at $C=1$ and 37.0\,dB, 0.85 and $0.24\um$ at $C=8$. With PnP, beads are all detected at every compression (Jaccard 1.00) with depth errors of at most $0.02\um$ and mirror-ghost ratios of 0.01--0.05. In \cref{fig:neurons} the bright shallow region and the main deep dendrite keep their depth order at every compression; PnP leaves granular background and axial elongation, TV a smoother volume.
+
+\subsection{Forward-model accuracy and ablations}
+\label{sec:res:ablation}
+
+On a held-out neuron crop of the preliminary study, voxel integration reduces the noise-free relative forward discrepancy from 25.7\% (direct simulation at the $0.64\um$ reconstruction spacing) to 1.07\%, and the reconstruction's depth error from $1.859$ to $0.177\um$ (PSNR 28.1 to 37.2\,dB), because the NA-0.8 excitation needs sampling finer than the $0.64\um$ grid. Three-orientation fusion improves PSNR over single orientations (37.22 vs.\ 36.26--36.81\,dB) and sparsity alone (33.99\,dB) but not depth error ($0.177$ vs.\ $0.163\um$ for the best orientation).
+
+\subsection{Reconstruction appearance versus measurement-supported connectivity}
+\label{sec:res:e1}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\linewidth]{measurement_ambiguity.pdf}
+\caption{\textbf{One set of measurements, opposite topologies} (reduced field, 32 directions, 15\,dB). Each row shows the $4\times4\times4$ query region as four depth slices: ground truth; box-constrained least squares + TV reconstructed from the recorded measurements; a volume in $\C(\by)$ that connects $p$ (circle) to $q$ (square); a volume in $\C(\by)$ that does not. Cyan outlines: voxels above $\tau=0.4$; $b$: bottleneck. Right: sorted residuals $|(\bA\bx-\by)_i|/z\sigma$; all curves stay at or below 1, so all four volumes explain the same images within the 95\% box. The reconstruction is correct in the first three rows and wrong in the last; in all four the data do not decide the query.}
+\label{fig:ambiguity}
+\end{figure*}
+
+\Cref{fig:ambiguity} contrasts what a reconstruction shows with what the measurements support, on 13 reduced problems (nine proven ambiguous, four certified controls; all cases in the supplement). All 26 reconstructions (two estimators) lie inside $\C(\by)$: they are measurement-consistent volumes chosen by a prior, like the witnesses. The reconstruction reproduces the true topology in 11 of 13 cases, often with a clear margin (P01: bottleneck $0.64$ vs.\ $\tau=0.4$), yet in nine of the 13 the same images are explained by a volume of the opposite topology. In the dense random volume P24 the reconstruction reports a disconnection at both SNRs while the truth is connected, and it fits the data more closely than the truth does (largest normalised residual 0.24 vs.\ 0.83). Certified controls agree with every reconstruction, as they must. The opposite-topology volumes are not rough artefacts: for the filament phantoms their total variation is within 15\% of the truth's, and they differ from it mainly by moving brightness between depth-adjacent voxels.
+
+\subsection{Reliability under noise, photons, priors and model mismatch}
+\label{sec:res:reliability}
+
+
+\begin{table}[t]
+\centering\small
+\setlength{\tabcolsep}{3pt}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{@{}lccc@{}}
+\toprule
+setting (reduced field, $\tau=0.4$) & certified & ambiguous & other\\
+\midrule
+$k=32$, 15\,dB (72 queries) & 24 & 48 & 0\\
+$k=256$, same photons & 24 & 48 & 0\\
+$k=256$, $8\times$ photons & 30 & 42 & 0\\
+$k=32$, 25\,dB (72 queries) & 60 & 12 & 0\\
+\midrule
+E2: TV $\le R$, truth feasible (18 runs) & 0 & 18 & 0\\
+E2: TV $\le R$, truth infeasible (9 runs) & 0 & 4 & 5 empty\\
+\midrule
+E3: exact coarse model (16) & 0 & 1 & 15 empty\\
+E3: noise only (32) & 0 & 4 & 28 empty\\
+E3: noise + calibrated mismatch (64) & 1$^\ast$ & 63 & 0\\
+\bottomrule
+\end{tabular}}
+\caption{\textbf{Structural outcomes.} Top: 24 phantoms $\times$ 3 seeds. E2: the nine ambiguous E1 cases under a calibrated total-variation budget at $R_{\mathrm{cal}},2R_{\mathrm{cal}},4R_{\mathrm{cal}}$. E3: eight held-out phantoms with fine-grid measurements under two sub-voxel models. $^\ast$This certificate contradicts the truth; the calibrated allowance failed to cover that object. Wrong certificates otherwise: 0.}
+\label{tab:reliability}
+\end{table}
+
+\paragraph{Noise and photons.}
+With exact data, the reduced operator certifies every query once it is square and full rank ($k=64$), uniqueness by linear algebra; its $8.9\times10^5$ condition number is why this does not survive noise. At 15\,dB, 48 of 72 queries are proven ambiguous at $k=32$ (the same 16 phantoms in every seed), and 12 at 25\,dB (\cref{tab:reliability}); an overfilled-aperture operator gives the same counts. On that field the no-plate control certifies 1 and 6 of 24 seed-0 queries at 15 and 25\,dB against 8 and 20 for the plate. Spreading the same photons over all 256 directions resolves none of the 60 ambiguous queries, nor shrinks per-voxel uncertainty (supplement); eight times the photons resolve 6 of 48 and 3 of 12, all through per-voxel bounds. The comparison followed a rule fixed before aggregation, and all solves that hit 60\,s were rerun at 600\,s, leaving none undecided. Joint reasoning adds little: on 1464 earlier screening queries, per-voxel bounds decide 78\% and the integer-programming verifier certifies 6 more (0.4\%), none under the calibrated noise model.
+
+\paragraph{A calibrated regularity prior (E2).}
+Restricting $\C(\by)$ to volumes with total variation at most $R_{\mathrm{cal}}=31.9$, the largest value among ten calibration phantoms (or $2R_{\mathrm{cal}}$, $4R_{\mathrm{cal}}$), leaves every query ambiguous whenever the true object satisfies the budget (18 of 18 runs): new opposite-topology witnesses exist that are as regular as the truth (P20: 17.3 and 17.5 vs.\ 17.5). When the budget excludes the truth, the set becomes empty (5 runs), which flags the conflict, or stays ambiguous; no run produced a certificate.
+
+\paragraph{Fine-grid model mismatch (E3).}
+With sub-voxel structure in the objects, the coarse model with calibrated noise is inconsistent with the data in most cases ($\C(\by)$ empty in 15 of 16 exact-model and 28 of 32 noise-only runs), which the method reports instead of a conclusion. An allowance $\epsilon_i=c(|y_i|+z\sigma)$ calibrated on separate phantoms covers the coarse truth for 83--92\% of held-out objects, but then every query is ambiguous, including the two coarse-model controls, with a median 52.5 of 64 query voxels uncertain. All coverage failures come from one held-out phantom whose residual (up to 25\%) exceeds the calibration range (13\%), and in one of its runs a disconnection was certified although the structure is connected. Certificates are only as reliable as the coverage of the error model, which simulation can calibrate but not guarantee.

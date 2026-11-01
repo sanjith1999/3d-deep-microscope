@@ -1,0 +1,19 @@
+\begin{tabular}{@{}cl ccc ccc cc@{}}\toprule
+ & & \multicolumn{3}{c}{multi-slice PnP} & \multicolumn{3}{c}{box-constrained TV} & \multicolumn{2}{c}{beads (PnP)}\\
+\cmidrule(lr){3-5}\cmidrule(lr){6-8}\cmidrule(l){9-10}
+$C$ & encoder & PSNR & FG-SSIM & depth & PSNR & FG-SSIM & depth & depth & ghost\\\midrule
+1 & phase plate & 35.73 & 0.814 & 0.357 & 38.15 & 0.881 & 0.187 & 0.00 & 0.033\\
+ & amp.\ mask & 35.24 & 0.788 & 0.347 & 37.59 & 0.857 & 0.191 & 0.00 & 0.030\\
+ & no plate & 33.06 & 0.655 & 0.378 & 34.39 & 0.682 & 0.295 & 0.21 & 0.085\\
+ & in-focus DMD & 28.96 & 0.501 & 2.168 & 28.48 & 0.435 & 2.285 & 3.84 & 1.007\\
+\midrule
+4 & phase plate$^\dagger$ & 35.40 & 0.801 & 0.389 & 37.34 & 0.852 & 0.223 & 0.01 & 0.013\\
+ & amp.\ mask$^\dagger$ & 34.88 & 0.778 & 0.382 & 36.79 & 0.823 & 0.239 & 0.01 & 0.017\\
+ & no plate & 32.49 & 0.618 & 0.501 & 34.74 & 0.703 & 0.302 & 0.32 & 0.160\\
+ & in-focus DMD & 28.91 & 0.493 & 2.168 & 28.49 & 0.465 & 2.326 & 2.94 & 1.013\\
+\midrule
+8 & phase plate$^\dagger$ & 34.86 & 0.784 & 0.430 & 37.00 & 0.847 & 0.243 & 0.01 & 0.039\\
+ & amp.\ mask$^\dagger$ & 34.14 & 0.744 & 0.446 & 36.74 & 0.827 & 0.237 & 0.08 & 0.048\\
+ & no plate & 32.42 & 0.623 & 0.521 & 34.34 & 0.676 & 0.342 & 0.49 & 0.211\\
+ & in-focus DMD & 28.83 & 0.482 & 2.169 & 28.53 & 0.473 & 2.311 & 2.60 & 1.013\\
+\bottomrule\end{tabular}
