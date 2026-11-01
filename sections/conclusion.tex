@@ -1,4 +1,4 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-In a computational microscope the optics decide which volumes the measurements allow; the prior only chooses one. On an angle-scanned phase encoder for 3D fluorescence, a plate trained with a data-free depth-decorrelation loss enlarges the set of connections the data certify, a learned prior improves the chosen volume but not what is certified, and photons, not angles, decide the rest. Learned optics should be judged by what their measurements determine, not only by how good the reconstruction looks.
+The optics decide how much depth the measurements contain; the prior can only use it. A phase plate learned once, with a specimen-free depth-decorrelation objective and no decoder in the loop, lowered the depth error of a regulariser, two denoisers and a diffusion posterior, matched a full scan with one eighth of the frames and tightened distribution-free depth intervals, while an in-focus encoder left every decoder depth-blind. Learned optics should be judged by their benefit to any decoder, not only to the one they were trained with.

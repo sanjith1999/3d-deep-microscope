@@ -1,14 +1,3 @@
 \begin{abstract}
-A computational microscope returns one volume, but its measurements may admit many.
-A reconstruction prior favours one explanation and can introduce connections that the images do not establish.
-We learn illumination to reduce this structural ambiguity in fixed-focus three-dimensional fluorescence microscopy.
-Scanning the incident angle through a fixed, defocused phase plate produces depth-dependent excitation patterns while the specimen and detection focus remain stationary.
-We train the plate to decorrelate measurement signatures across depth, without specimen examples or a reconstruction solver in the training loop.
-We assess both reconstruction quality and measurement-supported connectivity.
-A connectivity query is certified when every volume consistent with the images and stated error model agrees under a specified intensity threshold and connectivity definition.
-Two consistent volumes with opposite connectivity demonstrate ambiguity.
-On reduced-field synthetic volumes, certified connections increase from 3 to 12 of 48 connected queries, with none lost.
-On simulated measurements of mouse pyramidal neuron volumes, it reduces mean local depth error from 0.43 to 0.23\,\(\mu\mathrm{m}\) at eight-fold measurement compression with a pretrained prior.
-Neuron-trained denoisers further improve recovery, but do not resolve the tested in-focus amplitude encoder's depth ambiguity.
-This approach enables learned illumination to be evaluated by both reconstruction accuracy and the structural conclusions supported by its measurements.
+Computational 3D fluorescence microscopy relies on a reconstruction prior wherever the measurements are silent, and a strong prior can return a sharp volume whose depth the measurements never recorded. Depth must therefore be encoded by the optics, and an optical design is only as useful as its benefit to the decoders that will actually read it. We learn the illumination of a fixed-focus microscope once, without a decoder in the loop, and test it with four. A plane wave is scanned in angle through a fixed phase plate placed before an intermediate image plane, so that every depth receives its own sequence of excitation patterns while the specimen and the detection focus stay still. We train the plate with a specimen-free objective that decorrelates the measurement signatures of different depths. In simulations of mouse pyramidal neuron volumes at eight-fold measurement compression and equal excitation dose, the learned plate lowers the depth error of total variation, pretrained and neuron-trained plug-and-play denoisers, and a diffusion posterior by 26--63\,\% relative to a random plate, with cell-level confidence intervals that exclude zero. It reaches the random plate's full-scan depth accuracy with one eighth of the frames and tightens distribution-free conformal depth intervals by 27\,\%. An in-focus structured-illumination encoder stays at the error of a depth-blind flat estimate under every decoder: a better prior sharpens what the optics recorded but cannot create depth.
 \end{abstract}
