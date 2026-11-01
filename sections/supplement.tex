@@ -1,6 +1,6 @@
 \maketitlesupplementary
 
-This supplement gives the details of the optical study (\cref{sec:s:optics,sec:s:mech,sec:s:hard,sec:s:robust}), the learned plate and the four decoders (\cref{sec:s:trained,sec:s:extended,sec:s:learned,sec:s:diffusion,sec:s:objectives,sec:s:conformal,sec:s:tolerance,sec:s:detector}), the measurement-only analysis on the reduced field (\cref{sec:s:cert,sec:s:obred,sec:s:formulation,sec:s:operator,sec:s:e1,sec:s:photons,sec:s:e2,sec:s:e3}), a preliminary single-stack study (\cref{sec:s:prelim}) and implementation details (\cref{sec:s:impl}). Section, figure and table numbers of the main paper are written without the prefix S. Every experiment whose outcome could change a claim had its pass criterion fixed before it was run; failed criteria are reported as such.
+This supplement gives the details of the optical study (\cref{sec:s:optics,sec:s:mech,sec:s:hard,sec:s:robust}), the learned plate and the four decoders (\cref{sec:s:trained,sec:s:extended,sec:s:noise,sec:s:learned,sec:s:diffusion,sec:s:objectives,sec:s:conformal,sec:s:tolerance,sec:s:detector}), the measurement-only analysis on the reduced field (\cref{sec:s:cert,sec:s:obred,sec:s:formulation,sec:s:operator,sec:s:e1,sec:s:photons,sec:s:e2,sec:s:e3}), a preliminary single-stack study (\cref{sec:s:prelim}) and implementation details (\cref{sec:s:impl}). Section, figure and table numbers of the main paper are written without the prefix S. Every experiment whose outcome could change a claim had its pass criterion fixed before it was run; failed criteria are reported as such.
 
 \section{Optical encoders and photon model}
 \label{sec:s:optics}
@@ -217,6 +217,17 @@ The 12 prespecified test crops were chosen by a structure score (projected foreg
 \resizebox{\linewidth}{!}{\input{tables/supplement/additional_crops.tex}}
 \caption{Depth change of the learned plate against the random plate ($C=8$, 5 draws per crop, cell-bootstrap interval) on the prespecified crops, the randomly drawn crops and both together; crops: crops with a lower depth error.}
 \label{tab:s:extended}
+\end{table}
+
+\section{Background, read noise and low dose}
+\label{sec:s:noise}
+The main paper models shot noise only. On the 12 prespecified crops we fixed two harder conditions before running them. \emph{Background}: a uniform background equal to the random plate's mean signal per pixel and frame, the same for every encoder and specimen, plus Gaussian read noise of $2$ electrons; the known mean background is subtracted before decoding. \emph{Low dose}: one tenth of the photons, shot noise only. Noise draws use the main paper's seeds. Weights were selected again for every condition, encoder and decoder on the validation crops with the main paper's grids and edge rule (no selection at a grid edge). The pass criterion, an interval excluding zero for every condition and decoder, holds in all six cases (\cref{tab:s:noise}); every crop improves, and PSNR rises by 0.8--1.9\,dB. With background the gain under TV shrinks from 37 to 28\,\%; at one tenth of the dose both plates lose depth accuracy, and the relative gain is similar or larger (36, 52 and 31\,\%).
+
+\begin{table}[h]
+\centering\small
+\resizebox{\linewidth}{!}{\input{tables/supplement/noise_and_dose.tex}}
+\caption{Learned against random plate under harder noise ($C=8$, 12 prespecified crops $\times$ 5 draws; mean local depth error in $\mu$m, depth change with cell-bootstrap interval; crops: crops with a lower depth error). Weights re-selected per condition on validation crops.}
+\label{tab:s:noise}
 \end{table}
 
 \section{Learned prior and hybrid}
