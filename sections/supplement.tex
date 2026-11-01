@@ -1,6 +1,6 @@
 \maketitlesupplementary
 
-This supplement gives the details of the optical study (\cref{sec:s:optics,sec:s:mech,sec:s:hard,sec:s:robust}), the learned plate and the four decoders (\cref{sec:s:trained,sec:s:learned,sec:s:diffusion,sec:s:objectives,sec:s:conformal,sec:s:tolerance,sec:s:detector}), the measurement-only analysis on the reduced field (\cref{sec:s:cert,sec:s:obred,sec:s:formulation,sec:s:operator,sec:s:e1,sec:s:photons,sec:s:e2,sec:s:e3}), a preliminary single-stack study (\cref{sec:s:prelim}) and implementation details (\cref{sec:s:impl}). Section, figure and table numbers of the main paper are written without the prefix S. Every experiment whose outcome could change a claim had its pass criterion fixed before it was run; failed criteria are reported as such.
+This supplement gives the details of the optical study (\cref{sec:s:optics,sec:s:mech,sec:s:hard,sec:s:robust}), the learned plate and the four decoders (\cref{sec:s:trained,sec:s:extended,sec:s:learned,sec:s:diffusion,sec:s:objectives,sec:s:conformal,sec:s:tolerance,sec:s:detector}), the measurement-only analysis on the reduced field (\cref{sec:s:cert,sec:s:obred,sec:s:formulation,sec:s:operator,sec:s:e1,sec:s:photons,sec:s:e2,sec:s:e3}), a preliminary single-stack study (\cref{sec:s:prelim}) and implementation details (\cref{sec:s:impl}). Section, figure and table numbers of the main paper are written without the prefix S. Every experiment whose outcome could change a claim had its pass criterion fixed before it was run; failed criteria are reported as such.
 
 \section{Optical encoders and photon model}
 \label{sec:s:optics}
@@ -206,6 +206,17 @@ With the field-sized aperture (\cref{tab:s:obhard,fig:s:obhard}) the aperture ed
 \coltab{\input{tables/supplement/learned_plate.tex}}
 \caption{Random and learned plates at full size with three priors (mean over 12 test crops; $C>1$: five direction subsets per crop). Depth: local depth error in $\mu$m.}
 \label{tab:s:trainedfull}
+\end{table}
+
+\section{Extended test set}
+\label{sec:s:extended}
+The 12 prespecified test crops were chosen by a structure score (projected foreground area times depth spread). To check that the decoder comparison does not depend on this choice, we fixed the following before any run: per test cell, all crops eligible under the same occupancy rule except the two already used (34--60 per cell) were sorted by position, and eight were drawn uniformly at random with a fixed seed. These 48 crops were simulated exactly like the others and reconstructed with the weights already selected on the validation crops for each encoder and decoder; no weight was re-selected. Two gates were also fixed in advance and passed: the new code reproduced the stored clean measurements exactly and the recorded test reconstruction of one prespecified crop for every encoder and decoder to within $0.006$\,dB and $0.003\um$. The pass criterion was an interval excluding zero on the 48 new crops for each decoder; it holds for all three (\cref{tab:s:extended}). The new crops are less structured than the prespecified ones (depth-blind oracle $1.42$ against $1.32\um$, flat estimate $1.93$ against $2.15\um$); there the in-focus DMD with learned PnP scores $1.81\um$. Unless stated otherwise, ``test crops'' in this supplement are the 12 prespecified ones.
+
+\begin{table}[h]
+\centering\small
+\resizebox{\linewidth}{!}{\input{tables/supplement/additional_crops.tex}}
+\caption{Depth change of the learned plate against the random plate ($C=8$, 5 draws per crop, cell-bootstrap interval) on the prespecified crops, the randomly drawn crops and both together; crops: crops with a lower depth error.}
+\label{tab:s:extended}
 \end{table}
 
 \section{Learned prior and hybrid}

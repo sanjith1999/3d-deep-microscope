@@ -1,9 +1,9 @@
 \begin{tabular}{@{}l cc cc c c c@{}}\toprule
  & \multicolumn{2}{c}{random plate} & \multicolumn{2}{c}{learned plate} & \multicolumn{2}{c}{depth change vs random} & DMD\\
 \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(l){8-8}
-decoder & PSNR & depth & PSNR & depth & seed 0 [95\,\% CI] & seed 1 & depth\\\midrule
-TV & 37.00 & 0.243 & 38.61 & 0.153 & $-37$\,\% [$-41$, $-34$] & $-38$\,\% & 2.31\\
-pretrained PnP & 34.81 & 0.431 & 36.15 & 0.230 & $-47$\,\% [$-53$, $-41$] & $-46$\,\% & 2.17\\
-learned PnP & 37.11 & 0.221 & 38.83 & 0.164 & $-26$\,\% [$-35$, $-18$] & $-29$\,\% & 2.25\\
+decoder & PSNR & depth & PSNR & depth & seed 0 [95\,\% CI] & seed 1 & depth$^\dagger$\\\midrule
+TV & 36.70 & 0.259 & 38.29 & 0.150 & $-42$\,\% [$-46$, $-38$] & $-43$\,\% & 2.31\\
+pretrained PnP & 35.72 & 0.490 & 37.56 & 0.224 & $-54$\,\% [$-57$, $-51$] & $-55$\,\% & 2.17\\
+learned PnP & 38.01 & 0.197 & 39.60 & 0.139 & $-30$\,\% [$-32$, $-27$] & $-31$\,\% & 2.25\\
 diffusion$^*$ & 34.34 & 0.455 & 38.74 & 0.168 & $-63$\,\% [$-70$, $-54$] & $-64$\,\% & 2.37\\
 \bottomrule\end{tabular}
