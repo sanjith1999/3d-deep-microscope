@@ -1,6 +1,6 @@
 \maketitlesupplementary
 
-This supplement gives the details of the optical study (\cref{sec:s:optics,sec:s:mech,sec:s:hard,sec:s:robust}), the reduced-field structural analysis (\cref{sec:s:obred,sec:s:formulation,sec:s:operator,sec:s:e1,sec:s:photons,sec:s:e2,sec:s:e3}), a preliminary single-stack study (\cref{sec:s:prelim}) and implementation details (\cref{sec:s:impl}). Section, figure and table numbers of the main paper are written without the prefix S.
+This supplement gives the details of the optical study (\cref{sec:s:optics,sec:s:mech,sec:s:hard,sec:s:robust}), the learned plate and the four decoders (\cref{sec:s:trained,sec:s:learned,sec:s:diffusion,sec:s:objectives,sec:s:conformal,sec:s:tolerance,sec:s:detector}), the measurement-only analysis on the reduced field (\cref{sec:s:cert,sec:s:obred,sec:s:formulation,sec:s:operator,sec:s:e1,sec:s:photons,sec:s:e2,sec:s:e3}), a preliminary single-stack study (\cref{sec:s:prelim}) and implementation details (\cref{sec:s:impl}). Section, figure and table numbers of the main paper are written without the prefix S. Every experiment whose outcome could change a claim had its pass criterion fixed before it was run; failed criteria are reported as such.
 
 \section{Optical encoders and photon model}
 \label{sec:s:optics}
@@ -82,7 +82,7 @@ With the field-sized aperture (\cref{tab:s:obhard,fig:s:obhard}) the aperture ed
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{field_aperture.pdf}
-\caption{Main-paper Fig.~2 for the field-sized aperture (one realisation, PnP): (a) excitation $xz$ sections, (b) shear with tilt, (c) point emitters assigned a wrong depth at $k=32$, (d, e) depth error and foreground SSIM versus compression (mean $\pm$ s.e.m. over 12 crops).}
+\caption{Main-paper Fig.~3 for the field-sized aperture (one realisation, PnP): (a) excitation $xz$ sections, (b) shear with tilt, (c) point emitters assigned a wrong depth at $k=32$, (d, e) depth error and foreground SSIM versus compression (mean $\pm$ s.e.m. over 12 crops).}
 \label{fig:s:obhard}
 \end{figure*}
 
@@ -169,39 +169,33 @@ With the field-sized aperture (\cref{tab:s:obhard,fig:s:obhard}) the aperture ed
 \label{fig:s:beads}
 \end{figure}
 
-\section{Reduced-field structural outcomes per encoder}
-\label{sec:s:obred}
-
-\Cref{tab:s:obred} runs the certification pipeline of the main paper on each encoder's reduced operator ($k=32$, equal dose). With the overfilled aperture (top; 24 phantoms $\times$ 3 noise seeds, as in the main paper) the no-plate control certifies 3 and 18 of 72 queries against 24 and 60 for the random plate, the in-focus DMD 19 and 36, and the trained plates 33 / 29 and 63. With a field-sized aperture (bottom; seed 0 only) the edge covers most of the $7.68\um$ reduced field and gives the no-plate control depth structure.
-
-\begin{table}[t]
-\centering\small
-\coltab{\input{tables/supplement/bounds_overfilled.tex}}\\[4pt]
-\coltab{\input{tables/supplement/bounds_field_aperture.tex}}
-\caption{Certified / ambiguous queries and median uncertain query voxels (of 64) per encoder on the reduced field. Top: overfilled aperture, 72 queries (24 phantoms $\times$ 3 seeds); the random plate reproduces the counts of the main paper exactly. Bottom: field-sized aperture, 24 queries (seed 0).}
-\label{tab:s:obred}
-\end{table}
-
-\section{Trained plate}
+\section{Learned plate}
 \label{sec:s:trained}
 
-\paragraph{Training.} The plate loss (Eq.~5 of the main paper) is evaluated through the same simulation as the operator: angular-spectrum propagation over $D$, NA-0.8 vectorial relay, emission PSF at NA 0.1 and $8\times8$ pixel pooling, on the overfilled geometry (centre: the random plate of realisation 0, trained; surround: an independent draw, frozen, so the beam edges stay outside the field). Each Adam step (learning rate 0.05, 1000 steps) samples 24 lateral positions and 4 of the 256 directions (8 on the reduced field); the two seeds differ only in this sampling. Training changes the centre phase by $1.7$--$1.8$\,rad RMS and lowers the mean $|\rho|$ between depth columns of a training batch from $0.89$ to $0.64$ / $0.68$ (full field, seeds 0 / 1) and from $0.88$ to $0.78$ / $0.82$ (reduced field). It uses no specimen.
+\paragraph{Training.} The plate loss (Eq.~4 of the main paper) is evaluated through the same simulation as the operator: angular-spectrum propagation over $D$, NA-0.8 vectorial relay, emission PSF at NA 0.1 and $8\times8$ pixel pooling, on the overfilled geometry (centre: the random plate of realisation 0, trained; surround: an independent draw, frozen, so the beam edges stay outside the field). Each Adam step (learning rate 0.05, 1000 steps) samples 24 lateral positions and 4 of the 256 directions (8 on the reduced field); the two seeds differ only in this sampling. Training changes the centre phase by $1.7$--$1.8$\,rad RMS and lowers the mean $|\rho|$ between depth columns of a training batch from $0.89$ to $0.64$ / $0.68$ (full field, seeds 0 / 1) and from $0.88$ to $0.78$ / $0.82$ (reduced field). It uses no specimen.
 
-\paragraph{Certification and fabrication.} \Cref{tab:s:fab} pairs every query of the trained plates with the same query of the random plate. Gains appear at both noise levels and no query is lost. The exact mean depth correlation of the reduced operator, $\langle|\rho|\rangle$ over all depth pairs and lateral positions, predicts the measured narrowing of the per-voxel bounds through the two-column rule of the main paper (predicted $0.80$, measured $0.79$ at 15\,dB). Across encoders the same rule orders the measured widths correctly but overstates the differences where $\rho\to1$: predicted / measured width relative to the random plate is $1.29$ / $1.14$ for the mask ($\langle|\rho|\rangle=0.922$), $2.52$ / $1.26$ for the DMD ($0.967$) and $11.5$ / $2.47$ without the plate ($0.999$). Rounding the trained phase to 8 or 4 levels and adding uniform phase error to the 8-level plate raise the correlation slightly and keep 32--33 certificates.
+\paragraph{Measurement-only bounds and fabrication.} \Cref{tab:s:fab} pairs every certification query (\cref{sec:s:cert}) of the learned plates with the same query of the random plate. Gains appear at both noise levels and no query is lost. The exact mean depth correlation of the reduced operator, $\langle|\rho|\rangle$ over all depth pairs and lateral positions, predicts the measured narrowing of the per-voxel bounds through the two-column rule of Sec.~4 (predicted $0.80$, measured $0.79$ at 15\,dB). Across encoders the same rule orders the measured widths correctly but overstates the differences where $\rho\to1$: predicted / measured width relative to the random plate is $1.29$ / $1.14$ for the mask ($\langle|\rho|\rangle=0.922$), $2.52$ / $1.26$ for the DMD ($0.967$) and $11.5$ / $2.47$ without the plate ($0.999$). Rounding the trained phase to 8 or 4 levels and adding uniform phase error to the 8-level plate raise the correlation slightly and keep 32--33 certificates.
 
 \begin{table}[t]
 \centering\small
 \coltab{\input{tables/supplement/phase_quantisation.tex}}
-\caption{Trained plate on the reduced field (72 queries per noise level). cert.: certified queries; $+$ / $-$: queries certified only with this plate / only with the random plate; width: mean per-voxel bound width relative to the random plate; $\langle|\rho|\rangle$: exact mean depth correlation of the operator columns. No certificate contradicts the truth.}
+\caption{Learned plate on the reduced field (72 queries per noise level). cert.: certified queries; $+$ / $-$: queries certified only with this plate / only with the random plate; width: mean per-voxel bound width relative to the random plate; $\langle|\rho|\rangle$: exact mean depth correlation of the operator columns. No certificate contradicts the truth.}
 \label{tab:s:fab}
 \end{table}
 
-\paragraph{Full size.} \Cref{tab:s:trainedfull} lists the full-field results behind the main paper. All encoders use the extended tuning grid of \cref{sec:s:robust}; the random plates select interior parameters at every $C$. Paired over crops, each trained plate has the lower depth error than each random plate on 12 of 12 crops at every $C$, and the higher PSNR on 12 of 12 at $C=1$ and on 9--12 of 12 at $C=4$ and 8. With TV (the $\lambda$ grid and edge rule of \cref{tab:s:tv}; every selection interior) both trained plates beat the random plate on 10--12 of 12 crops in PSNR and 11--12 of 12 in depth at every $C$. Their TV results are not monotone in $C$: at $C=4$ validation selects $\lambda=1$, which ties $\lambda=0.3$ within $0.01$\,dB on the vascular validation crops but over-smooths the neurons.
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{measurement_tradeoff.pdf}
+\caption{\textbf{Optics and prior gains add, where the optics record depth} (full-size field, 12 test crops, equal deposited dose). PSNR (a) and local depth error (b) against compression $C$; colour: encoder, line: decoder. Dashed lines in (b): the depth-blind oracle and the flat estimate. No decoder moves the DMD off the flat estimate.}
+\label{fig:s:frontier}
+\end{figure}
+
+\paragraph{Full size.} \Cref{tab:s:trainedfull,fig:s:frontier} list the full-field results behind the main paper. At equal total dose the learned plate with $k=32$ matches the random plate with all $k=256$ frames: learned PnP $0.164$ against $0.161\um$ (cell-bootstrap difference $-2\,\%$ [$-17$, $+15$]), TV $0.153$ against $0.187\um$, pretrained PnP $-35\,\%$ [$-42$, $-28$] (12 of 12 crops). All encoders use the extended tuning grid of \cref{sec:s:robust}; the random plates select interior parameters at every $C$. Paired over crops, each learned plate has the lower depth error than each random plate on 12 of 12 crops at every $C$, and the higher PSNR on 12 of 12 at $C=1$ and on 9--12 of 12 at $C=4$ and 8. With TV (the $\lambda$ grid and edge rule of \cref{tab:s:tv}; every selection interior) both learned plates beat the random plate on 10--12 of 12 crops in PSNR and 11--12 of 12 in depth at every $C$. The learned plates' TV results are not monotone in $C$: at $C=4$ validation selects $\lambda=1$, which ties $\lambda=0.3$ within $0.01$\,dB on the vascular validation crops but over-smooths the neurons.
 
 \begin{table}[t]
 \centering\small
 \coltab{\input{tables/supplement/learned_plate.tex}}
-\caption{Random and trained plates at full size with three priors (mean over 12 test crops; $C>1$: five direction subsets per crop). Depth: local depth error in $\mu$m.}
+\caption{Random and learned plates at full size with three priors (mean over 12 test crops; $C>1$: five direction subsets per crop). Depth: local depth error in $\mu$m.}
 \label{tab:s:trainedfull}
 \end{table}
 
@@ -237,6 +231,62 @@ With the field-sized aperture (\cref{tab:s:obhard,fig:s:obhard}) the aperture ed
 \label{tab:s:split}
 \end{table}
 
+\section{Diffusion decoder}
+\label{sec:s:diffusion}
+
+\paragraph{Model.} A 3D U-Net (14.0\,M parameters; residual blocks at $16\times48\times48$, $8\times24\times24$ and $4\times12\times12$, self-attention at the coarsest level) is trained as an EDM denoiser \cite{karras2022edm} for 60k iterations on the training volumes of the learned PnP denoisers (SOM009), split by animal from the test set. On held-out SOM009 volumes it reaches 42.9, 40.7, 39.3, 37.5 and 34.4\,dB at $\sigma=0.02$, 0.05, 0.1, 0.2 and 0.5. Unconditional samples are not copies of training volumes: their median nearest-training distance over 16 flip and transpose symmetries is 0.567, against 0.560 for held-out volumes.
+
+\paragraph{Sampling.} DiffPIR \cite{zhu2023diffpir} with 100 steps of the EDM schedule ($\rho=7$, $\sigma$ from 1 to 0.002). At each step the denoised estimate $\hat\bx_0$ is replaced by $\arg\min_{\bx}\tfrac12\|\bA\bx-\by\|^2_{\mathsf W}+\tfrac{\lambda}{2\sigma_t^2}\|\bx-\hat\bx_0\|^2$, solved by conjugate gradients (at most 100 iterations, relative residual $10^{-6}$), with $\mathsf W$ the inverse Poisson variance; $\zeta$ sets the fresh noise. $\lambda$ and $\zeta$ are selected per encoder on the validation crops with the edge-extension rule of the other decoders (all encoders: $\lambda=0.01$, $\zeta=0.3$, interior). Eight samples per measurement; the reconstruction is their mean. The first tuning run used 20 conjugate-gradient iterations, which left the data step unconverged; the change to 100 iterations was recorded before any test reconstruction.
+
+\paragraph{Prespecified criteria and outcome.} Before training we fixed four criteria (\cref{tab:s:diffusion}). (i) Competitive prior: the random-plate posterior mean within 10\,\% of learned PnP's depth error and 0.5\,dB of its PSNR. This \emph{fails} (0.455 against 0.221\,$\mu$m), so by our protocol the remaining comparisons are descriptive. (ii) Gain of the learned plate of at least 15\,\% with an interval excluding zero: $-63$\,\% [$-70$, $-54$] (seed 1: $-64$\,\%), 12 of 12 crops. (iii) Fewer confident wrong connectivity calls (at least 7 of 8 samples agreeing on the wrong answer) on 48 neuron queries $\times$ 5 draws: \emph{fails} (117, 120 and 118 of 240; sign test $p=0.25$ and 1.0). (iv) The DMD stays depth-blind: holds ($2.37\um$). The posterior is over-confident: the per-voxel error lies within two posterior standard deviations for 71\,\% (random) and 75\,\% (learned) of voxels, although the per-crop spread tracks the error (Spearman 0.61--0.65).
+
+\begin{table}[t]
+\centering\small
+\coltab{\input{tables/supplement/diffusion.tex}}
+\caption{Diffusion decoder at $C=8$ (12 test crops $\times$ 5 draws; depth in $\mu$m) next to learned PnP on the same measurements, and confident wrong connectivity calls.}
+\label{tab:s:diffusion}
+\end{table}
+
+\section{Plate objectives}
+\label{sec:s:objectives}
+
+All plates start from random realisation 0 and use the same sampling, 1000 Adam steps and seeds; only the loss changes. \emph{Worst-case coherence}: a smooth maximum of $|\rho|$ over depth pairs, as in Miniscope3D \cite{yanny2020}. \emph{Depth Fisher information}: the Poisson Fisher information of a voxel's depth with its brightness marginalised, entered as $-$mean $\log$ of the Schur complement, a Cram\'er--Rao-type objective \cite{shechtman2014}. \emph{Uncentred}: our loss without centring the columns. The mirror weight is undefined on the four-plane reduced field, so its ablation was dropped. On the reduced field (\cref{tab:s:objreduced}) every objective gains certificates against the random plate, loses none and issues no wrong certificate; paired against ours, both seeds pooled, Fisher is $+8/{-2}$ ($p=0.11$), uncentred $+5/{-0}$ ($p=0.06$) and coherence $+2/{-5}$ ($p=0.45$), none significant. At full size (Tab.~3) ours and its uncentred variant are best and equal; Fisher information, nominally first on the reduced field, keeps 54--63\,\% of our depth gain. The reduced-field ranking therefore does not carry over to full-size reconstruction.
+
+\begin{table}[t]
+\centering\small
+\coltab{\input{tables/supplement/objectives_reduced.tex}}
+\caption{Plate objectives on the reduced field (72 queries per noise level; bound width at 15\,dB, seed 0).}
+\label{tab:s:objreduced}
+\end{table}
+
+\section{Conformal depth intervals}
+\label{sec:s:conformal}
+
+\paragraph{Protocol.} Fixed before any calibration reconstruction: $\alpha=0.1$, $k=32$, learned PnP with each plate's validation-selected weights. Calibration volumes are crops of a held-out stack of the training animal of the priors, simulated and reconstructed exactly like the test crops (the live forward model reproduces the stored test measurements exactly). The primary set holds the 35 non-overlapping crops; all 240 crops form a sensitivity set. Columns and weights are those of the local depth error; $\lambda$ runs over a grid of 0.01 planes. The test reconstructions (12 crops $\times$ 5 draws) reproduce the paper's learned-PnP rows (largest difference 0.16\,dB, $0.009\um$, from GPU nondeterminism). Criteria: test miscoverage within $\alpha\pm0.05$ for every plate, and $\hat\lambda$ of the learned plate at least 25\,\% below the random plate's with a calibration-bootstrap interval excluding zero.
+
+\paragraph{Outcome.} \Cref{tab:s:conformal}: validity holds for every plate on both calibration sets. Seed 0 passes the tightening criterion on both sets; seed 1 passes on all 240 crops and misses it by 0.2 points on the primary set ($-24.8$\,\%, interval excluding zero).
+
+\paragraph{Connectivity calls.} The same protocol was prespecified for error-controlled connectivity calls on 48 neuron queries, thresholding the widest-path bottleneck between two endpoints. It \emph{fails}: false-disconnected rates are 0.23--0.48 against the 0.15 limit, and no test query is called connected. The bottleneck does not separate truly connected from disconnected queries even on the calibration crops (medians 0.35 against 0.39 for the random plate), and it shifts between the calibration animal and the test animals. We therefore make no connectivity claim.
+
+\begin{table}[t]
+\centering\small
+\coltab{\input{tables/supplement/conformal_intervals.tex}}
+\caption{Conformal depth intervals ($\alpha=0.1$, $C=8$): half-width and signal-weighted test miscoverage for both calibration sets.}
+\label{tab:s:conformal}
+\end{table}
+
+\section{Calibration and tolerance}
+\label{sec:s:tolerance}
+
+Misaligned systems are simulated and reconstructed with learned PnP ($k=32$, five draws), paired with the nominal measurements. \emph{Calibrated}: the operator is rebuilt from the fabricated or displaced plate and the weights are re-selected on validation (all interior). \emph{Uncalibrated}: the nominal operator is used. Criteria fixed before any learned-plate row was read: calibrated variants keep an interval excluding zero and at least 75\,\% of the nominal reduction; uncalibrated, the learned plate beats the random plate under every error. The calibrated criteria pass; the uncalibrated one fails for plate distance and lateral shift (\cref{tab:s:tolerance}). A diagnostic shows why: a distance error of $\pm0.5\um$ shifts the excitation code axially by about $0.5\um$ (correlation with the nominal code after the shift: 0.97 random, 0.99 learned), and a one-feature lateral plate shift moves it by one $0.32\um$ pixel (correlation 1.00). These errors are unknown reference offsets, removed by registering one axial and one lateral constant, \eg with a bead; the learned plate's measurements change more under them (7.6 against 1.5\,\% for the distance error) because its code has more depth structure.
+
+\begin{table}[t]
+\centering\small
+\coltab{\input{tables/supplement/alignment_and_phase.tex}}
+\caption{Depth error ($\mu$m, $C=8$, learned PnP) under fabrication and alignment errors, learned against random plate under the same error (cell-bootstrap 95\,\% interval). Fabrication rows are calibrated variants of the learned plate against the nominal random plate.}
+\label{tab:s:tolerance}
+\end{table}
+
 \section{Detection: what can replace scan frames?}
 \label{sec:s:detector}
 
@@ -249,6 +299,26 @@ The main experiments detect at NA 0.1 on $12\times12$ pixels of $2.56\um$, so ne
 \coltab{\input{tables/supplement/detection.tex}}
 \caption{Detection NA and camera pooling against scan frames at fixed measurement count $M$ and equal detected photons (random plate, learned prior; mean over 12 test crops, three direction subsets for fewer than 256 frames). Pitch in $\mu$m; depth: local depth error in $\mu$m; crops $>$ ref.: crops with higher PSNR / lower depth error than the reference (first row). The reference is an independent run (noise draw and tuning) of the plate entry of \cref{tab:s:priors}.}
 \label{tab:s:detector}
+\end{table}
+
+\section{Measurement-only certification}
+\label{sec:s:cert}
+
+This part asks what the measurements determine without any prior, on a reduced field where exact optimisation is feasible. Given measurements $\by$ and per-row intervals $[\ell_i,h_i]$ that contain the noise-free measurement with stated probability, the consistency set is $\C(\by)=\{\bx\in[0,1]^N:\ \ell_i\le(\bA\bx)_i\le h_i\}$. For calibrated Gaussian noise we use the Bonferroni box $y_i\pm z\sigma$ with $z=\Phi^{-1}(1-\alpha/2M)$, $\alpha=0.05$, so the truth lies in $\C(\by)$ with probability at least 0.95. A connectivity query asks whether two endpoints $p,q$ in a query region are joined by a path of voxels with $x_v\ge\tau$ (6-adjacency), \ie whether the bottleneck $b(\bx)=\max_{P:p\to q}\min_{v\in P}x_v\ge\tau$. It is \emph{certified connected} if $\min_{\C}b\ge\tau$, \emph{certified disconnected} if $\max_{\C}b<\tau$, and \emph{ambiguous} otherwise; ambiguity is proven by two validated volumes in $\C(\by)$ with opposite connectivity. Per-voxel bounds decide many queries directly; the rest use the exact programs of \cref{sec:s:formulation}. The queries use the central $4\times4\times4$ region, $\tau=0.4$ and prespecified endpoints on 24 synthetic phantoms (\cref{sec:s:operator}) with three noise seeds, plus 48 windows cut from the test neurons.
+
+\paragraph{Outcomes.} At 15\,dB the random plate certifies 24 of 72 synthetic queries and the learned plate 33 (seed 1: 29), gaining 9 and losing none (exact sign test $p=0.004$; seed 1 $+5/{-0}$, $p=0.06$). All gains are connected queries (3 to 12 of 48); disconnected queries are saturated at 21 of 24 for every plate. Over 12.5--25\,dB in 2.5\,dB steps the gain is $0$, $+9$, $+9$, $+9$, $0$ and $+3$; at 17.5\,dB the learned plate loses one disconnected phantom in two of three draws, so ``none lost'' holds at 15\,dB only. Per-voxel bounds narrow by the equivalent of 1.9\,dB of SNR throughout (about 2.4 times the photons). A $\chi^2$ ellipsoid in place of the Bonferroni box narrows the bounds by 33--39\,\% and lifts the random plate from 8 to 16 decided of 24 (seed 0), more than the plate does; the learned plate still leads (18 of 24). Choosing directions adaptively from the bounds did not meet its prespecified criterion. \emph{On the 48 neuron windows, no query is decided by any plate at 15, 25, 35 or 45\,dB}, and every bound spans $[0,1]$; twelve of these windows remain undetermined at 15\,dB even with 128 or 256 directions, where the operator has full rank, so noise amplification takes over from the null space. Dense neuronal tissue is therefore not determined by the measurements alone at these settings, which is why the main paper's guarantees go through a calibrated prior.
+
+\section{Reduced-field structural outcomes per encoder}
+\label{sec:s:obred}
+
+\Cref{tab:s:obred} runs the certification pipeline of \cref{sec:s:cert} on each encoder's reduced operator ($k=32$, equal dose). With the overfilled aperture (top; 24 phantoms $\times$ 3 noise seeds) the no-plate control certifies 3 and 18 of 72 queries against 24 and 60 for the random plate, the in-focus DMD 19 and 36, and the learned plates 33 / 29 and 63. With a field-sized aperture (bottom; seed 0 only) the edge covers most of the $7.68\um$ reduced field and gives the no-plate control depth structure.
+
+\begin{table}[t]
+\centering\small
+\coltab{\input{tables/supplement/bounds_overfilled.tex}}\\[4pt]
+\coltab{\input{tables/supplement/bounds_field_aperture.tex}}
+\caption{Certified / ambiguous queries and median uncertain query voxels (of 64) per encoder on the reduced field. Top: overfilled aperture, 72 queries (24 phantoms $\times$ 3 seeds); . Bottom: field-sized aperture, 24 queries (seed 0).}
+\label{tab:s:obred}
 \end{table}
 
 \section{Formulation details}
@@ -296,7 +366,7 @@ All 26 reconstructions (two estimators, 13 cases) lie inside $\C(\by)$ (\cref{ta
 \begin{figure*}[p]
 \centering
 \includegraphics[width=\textwidth]{connectivity_examples.pdf}
-\caption{All 13 cases in the layout of main-paper Fig.~4. Certified cases show no opposite-topology volume because none exists in $\C(\by)$.}
+\caption{All 13 reduced-field cases (15\,dB, $k=32$): ground truth, box-constrained least squares + TV reconstruction, and the validated connected and disconnected volumes in $\C(\by)$ where they exist. Certified cases show no opposite-topology volume because none exists in $\C(\by)$.}
 \label{fig:s:e1}
 \end{figure*}
 

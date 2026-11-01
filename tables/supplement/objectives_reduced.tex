@@ -1,0 +1,10 @@
+\begin{tabular}{@{}l cc c cc@{}}\toprule
+ & \multicolumn{2}{c}{certified at 15\,dB} & at 25\,dB & & bound width\\
+\cmidrule(lr){2-3}\cmidrule(lr){4-4}\cmidrule(l){6-6}
+objective & seed 0 & seed 1 & seeds 0 / 1 & $\langle|\rho|\rangle$ & vs random\\\midrule
+none (random) & \multicolumn{2}{c}{24} & 60 & 0.868 & 1\\
+ours & 33 & 29 & 63 / 63 & 0.761 & 0.79\\
+ours, uncentred & 33 & 34 & 63 / 62 & 0.751 & 0.76\\
+worst-case coherence & 30 & 29 & 63 / 63 & 0.816 & 0.90\\
+depth Fisher information & 36 & 32 & 63 / 63 & 0.767 & 0.73\\
+\bottomrule\end{tabular}

@@ -7,7 +7,7 @@
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\linewidth]{depth_encoding.pdf}
-\caption{\textbf{Defocus under the angle scan encodes depth; in-focus patterns and a plain scan do not} (full-size field, equal deposited excitation dose, overfilled illumination aperture). (a) One excitation pattern per encoder, $xz$ section through the specimen depth ($\pm5\um$, focus dotted), each tile scaled to its own 99.5th percentile. (b) Lateral shift of the plate's excitation between two scan angles at every depth for plate defocus $D=3.3$, $6.6$ and $13.2\um$; lines: thin-screen prediction, sheared about the plate's conjugate plane at distance $D$. (c) Point emitters assigned a wrong depth by maximum likelihood with unknown brightness at $k=32$ (dots: three plate and three mask realisations; hatched: mirror depth). (d, e) Reconstructions of 12 neuron crops from 6 cells: local depth error and foreground SSIM versus compression, multi-slice PnP (solid, no plate dashed; plate and mask at $C=4,8$: mean and range over three realisations) and box-constrained TV (dashed); the DMD's depth error of $2.17\um$ is off scale. No plate: simulated aperture four times the field in (a, d, e), twice in (c).}
+\caption{\textbf{Defocus under the angle scan encodes depth; in-focus patterns and a plain scan do not} (full-size field, equal deposited excitation dose, overfilled illumination aperture; phase plate: the random plate). (a) One excitation pattern per encoder, $xz$ section through the specimen depth ($\pm5\um$, focus dotted), each tile scaled to its own 99.5th percentile. (b) Lateral shift of the plate's excitation between two scan angles at every depth for plate defocus $D=3.3$, $6.6$ and $13.2\um$; lines: thin-screen prediction, sheared about the plate's conjugate plane at distance $D$. (c) Point emitters assigned a wrong depth by maximum likelihood with unknown brightness at $k=32$ (dots: three plate and three mask realisations; hatched: mirror depth). (d, e) Reconstructions of 12 neuron crops from 6 cells: local depth error and foreground SSIM versus compression, multi-slice PnP (solid, no plate dashed; plate and mask at $C=4,8$: mean and range over three realisations) and box-constrained TV (dashed); the DMD's depth error of $2.17\um$ is off scale. No plate: simulated aperture four times the field in (a, d, e), twice in (c).}
 \label{fig:encoders}
 \end{figure*}
 
@@ -31,18 +31,11 @@ We first ask whether the untrained mechanism works. \Cref{fig:encoders,tab:encod
 \label{tab:anyprior}
 \end{table}
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=\linewidth]{measurement_tradeoff.pdf}
-\caption{\textbf{Optics and prior gains add, where the optics record depth} (full-size field, 12 test crops, equal deposited dose). PSNR (a) and local depth error (b) against compression $C$; colour: encoder, line: decoder. Dashed lines in (b): the depth-blind oracle and the flat estimate. No decoder moves the DMD off the flat estimate.}
-\label{fig:frontier}
-\end{figure}
+We now fix the learned plate and decode its measurements with each prior of \cref{sec:decoders} (\cref{fig:anyprior,tab:anyprior}). At $C=8$ it lowers the depth error by 37\,\% with total variation, 47\,\% with pretrained PnP, 26\,\% with learned PnP and 63\,\% with the diffusion posterior. Every interval excludes zero, depth improves on 11--12 of 12 crops, and PSNR rises by 1.3--4.4\,dB. A second training seed gives $-29$ to $-64$\,\%. The gain holds at every compression we tested (supplement): $-45$ to $-48$\,\% with pretrained PnP, $-25$ to $-37$\,\% with total variation and $-26$ to $-32$\,\% with learned PnP at $C=1$, 4 and 8.
 
-We now fix the learned plate and decode its measurements with each prior of \cref{sec:decoders} (\cref{fig:anyprior,tab:anyprior}). At $C=8$ it lowers the depth error by 37\,\% with total variation, 47\,\% with the pretrained denoiser, 26\,\% with the neuron-trained denoiser and 63\,\% with the diffusion posterior. Every interval excludes zero, depth improves on 11--12 of 12 crops, and PSNR rises by 1.3--4.4\,dB. A second training seed gives $-29$ to $-64$\,\%. The gain holds at every compression we tested (\cref{fig:frontier}): $-45$ to $-48$\,\% with the pretrained denoiser, $-25$ to $-37$\,\% with total variation and $-26$ to $-32$\,\% with the learned denoiser at $C=1$, 4 and 8.
+\paragraph{Eight times fewer frames.} At the same total dose the learned plate with 32 frames matches the random plate with all 256: with learned PnP $0.164$ against $0.161\um$ (difference $-2$\,\% [$-17$, $+15$]), with total variation $0.153$ against $0.187\um$, and with pretrained PnP it is better ($-35$\,\% [$-42$, $-28$]).
 
-\paragraph{Eight times fewer frames.} At the same total dose the learned plate with 32 frames matches the random plate with all 256: with the learned denoiser $0.164$ against $0.161\um$ (difference $-2$\,\% [$-17$, $+15$]), with total variation $0.153$ against $0.187\um$, and with the pretrained denoiser it is better ($-35$\,\% [$-42$, $-28$]).
-
-\paragraph{The decoders converge.} With the random plate the four decoders disagree: their depth errors span $0.22$--$0.46\um$, and the diffusion posterior trails the learned denoiser by 2.8\,dB. With the learned plate they span $0.15$--$0.23\um$, and the two neuron-trained priors land within $0.1$\,dB and $0.004\um$ of each other. When the measurements record depth, the choice of prior matters less. We do not claim the diffusion prior as a better decoder: on the random plate it is clearly weaker than the learned denoiser, which inflates its relative gain, and its posterior spread is over-confident (supplement).
+\paragraph{The decoders converge.} With the random plate the four decoders disagree: their depth errors span $0.22$--$0.46\um$, and the diffusion posterior trails learned PnP by 2.8\,dB. With the learned plate they span $0.15$--$0.23\um$, and the two neuron-trained priors land within $0.1$\,dB and $0.004\um$ of each other. When the measurements record depth, the choice of prior matters less. We do not claim the diffusion prior as a better decoder: on the random plate it is clearly weaker than learned PnP, which inflates its relative gain, and its posterior spread is over-confident (supplement).
 
 \subsection{Why depth decorrelation}
 \label{sec:res:objective}
@@ -50,7 +43,7 @@ We now fix the learned plate and decode its measurements with each prior of \cre
 \begin{table}[t]
 \centering\small
 \resizebox{0.86\linewidth}{!}{\input{tables/objectives.tex}}
-\caption{\textbf{Plate objectives} under the same start, budget and seed, decoded with the learned denoiser (12 test crops; depth in $\mu$m). Each plate has its own validation tuning.}
+\caption{\textbf{Plate objectives} under the same start, budget and seed, decoded with learned PnP (12 test crops; depth in $\mu$m). Each plate has its own validation tuning.}
 \label{tab:objectives}
 \end{table}
 
@@ -63,7 +56,7 @@ We now fix the learned plate and decode its measurements with each prior of \cre
 \centering\small
 \setlength{\tabcolsep}{4pt}
 \resizebox{\linewidth}{!}{\input{tables/uncertainty.tex}}
-\caption{\textbf{Depth guarantees.} Conformal intervals of the learned-denoiser reconstructions, calibrated on 35 held-out crops (calibration-bootstrap 95\,\% interval) and checked on the 12 test crops $\times$ 5 draws (test miss: signal-weighted miscoverage, target $\le0.1$). Bound width: mean per-voxel width over all measurement-consistent volumes on the reduced field (15\,dB, 72 queries), relative to the random plate.}
+\caption{\textbf{Depth guarantees.} Conformal intervals of the learned-denoiser reconstructions, calibrated on 35 held-out crops (calibration-bootstrap 95\,\% interval) and checked on the 12 test crops $\times$ 5 draws (test miscov.: signal-weighted miscoverage, target $\le0.1$). Bound width: mean per-voxel width over all measurement-consistent volumes on the reduced field (15\,dB, 72 queries), relative to the random plate.}
 \label{tab:guarantee}
 \end{table}
 
@@ -77,11 +70,11 @@ We now fix the learned plate and decode its measurements with each prior of \cre
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{encoder_reconstructions.pdf}
-\caption{\textbf{A better prior, not a better answer} ($C=8$, prespecified display crop, draw 0, identical display). Top: lateral maximum-intensity projection, colour coding the depth of the brightest voxel; bottom: $xz$ projection; below: PSNR and local depth error. The learned prior sharpens the DMD's lateral structure but cannot give it depth; with the plate it recovers the depth layering. Bar: $5\um$.}
+\caption{\textbf{A better prior, not a better answer} ($C=8$, prespecified display crop, draw 0, identical display). Top: lateral maximum-intensity projection, colour coding the depth of the brightest voxel; bottom: $xz$ projection; below: PSNR and local depth error. Learned PnP sharpens the DMD's lateral structure but cannot give it depth; with the plate it recovers the depth layering. Bar: $5\um$.}
 \label{fig:wrong}
 \end{figure}
 
-The DMD shows the other side of decoder agnosticism. Under all four decoders its depth error stays at $2.17$--$2.37\um$, the error of a flat estimate (\cref{fig:anyprior,tab:anyprior}), and a second, independent DMD pattern set reproduces every decoder to within $0.06$\,dB and $0.07\um$. Splitting each column's error into its mean over depth (lateral error) and the zero-mean remainder (depth error) shows why. At $C=8$ the learned denoiser shrinks the plate's lateral error to $0.48\times$ and its depth error to $0.71\times$ (median over crops; lower on 12 of 12), but for the DMD it shrinks the lateral error to $0.77\times$ and leaves the depth error at $1.04\times$, which is 99\,\% of the DMD's total. \Cref{fig:wrong} shows the consequence: with the learned prior the DMD's dendrites look sharper in $xy$, and its $xz$ section remains a depth-less smear. A prior refines what the optics recorded; it does not supply what they did not.
+The DMD shows the other side of decoder agnosticism. Under all four decoders its depth error stays at $2.17$--$2.37\um$, the error of a flat estimate (\cref{fig:anyprior,tab:anyprior}), and a second, independent DMD pattern set reproduces every decoder to within $0.06$\,dB and $0.07\um$. Splitting each column's error into its mean over depth (lateral error) and the zero-mean remainder (depth error) shows why. At $C=8$ learned PnP shrinks the plate's lateral error to $0.48\times$ and its depth error to $0.71\times$ (median over crops; lower on 12 of 12), but for the DMD it shrinks the lateral error to $0.77\times$ and leaves the depth error at $1.04\times$, which is 99\,\% of the DMD's total. \Cref{fig:wrong} shows the consequence: with learned PnP the DMD's dendrites look sharper in $xy$, and its $xz$ section remains a depth-less smear. A prior refines what the optics recorded; it does not supply what they did not.
 
 \subsection{Calibration and tolerance}
 \label{sec:res:tolerance}

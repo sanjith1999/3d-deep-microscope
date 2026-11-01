@@ -1,7 +1,7 @@
 \section{Decoders and depth guarantees}
 \label{sec:decoders}
 
-The plate is fixed before any decoder is built. We decode its measurements with four priors from different families. All of them are trained or chosen without measurements, so the same prior serves every encoder; only scalar weights are selected per encoder and compression, on validation volumes.
+The plate is fixed before any decoder is built. We decode its measurements with four priors from different families. All of them are trained or chosen without measurements, so the same prior serves every encoder; only scalar weights are selected per encoder and compression, on validation volumes. We call them TV, pretrained PnP, learned PnP and diffusion.
 
 \paragraph{Total variation.} Box-constrained least squares with isotropic 3D total variation \cite{rudin1992}, solved by ADMM \cite{boyd2011}: a non-learned regularity prior.
 
