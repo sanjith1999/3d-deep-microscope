@@ -1,6 +1,6 @@
 \maketitlesupplementary
 
-This supplement gives the details of the optical study (\cref{sec:s:optics,sec:s:mech,sec:s:hard,sec:s:robust}), the learned plate and the four decoders (\cref{sec:s:trained,sec:s:extended,sec:s:noise,sec:s:learned,sec:s:diffusion,sec:s:objectives,sec:s:conformal,sec:s:tolerance,sec:s:detector}), the measurement-only analysis on the reduced field (\cref{sec:s:cert,sec:s:obred,sec:s:formulation,sec:s:operator,sec:s:e1,sec:s:photons,sec:s:e2,sec:s:e3}), a preliminary single-stack study (\cref{sec:s:prelim}) and implementation details (\cref{sec:s:impl}). Section, figure and table numbers of the main paper are written without the prefix S. Every experiment whose outcome could change a claim had its pass criterion fixed before it was run; failed criteria are reported as such.
+This supplement gives the details of the optical study (\cref{sec:s:optics,sec:s:mech,sec:s:hard,sec:s:robust}), the learned plate and the three decoders (\cref{sec:s:trained,sec:s:extended,sec:s:noise,sec:s:learned,sec:s:objectives,sec:s:conformal,sec:s:tolerance,sec:s:detector}), the measurement-only analysis on the reduced field (\cref{sec:s:cert,sec:s:obred,sec:s:formulation,sec:s:operator,sec:s:e1,sec:s:photons,sec:s:e2,sec:s:e3}), a preliminary single-stack study (\cref{sec:s:prelim}), a diffusion decoder we did not use (\cref{sec:s:diffusion}) and implementation details (\cref{sec:s:impl}). Section, figure and table numbers of the main paper are written without the prefix S. Every experiment whose outcome could change a claim had its pass criterion fixed before it was run; failed criteria are reported as such.
 
 \section{Optical encoders and photon model}
 \label{sec:s:optics}
@@ -264,19 +264,21 @@ The main paper models shot noise only. On the 12 prespecified crops we fixed two
 \label{tab:s:split}
 \end{table}
 
-\section{Diffusion decoder}
+\section{A diffusion decoder we did not use}
 \label{sec:s:diffusion}
+
+We also trained a diffusion decoder. On the random plate it did not reach the accuracy of learned PnP, the criterion we had fixed for a competitive decoder, so the main paper does not use it. We report it for completeness; none of its results supports a claim of the main paper.
 
 \paragraph{Model.} A 3D U-Net (14.0\,M parameters; residual blocks at $16\times48\times48$, $8\times24\times24$ and $4\times12\times12$, self-attention at the coarsest level) is trained as an EDM denoiser \cite{karras2022edm} for 60k iterations on the training volumes of the learned PnP denoisers (SOM009), split by animal from the test set. On held-out SOM009 volumes it reaches 42.9, 40.7, 39.3, 37.5 and 34.4\,dB at $\sigma=0.02$, 0.05, 0.1, 0.2 and 0.5. Unconditional samples are not copies of training volumes: their median nearest-training distance over 16 flip and transpose symmetries is 0.567, against 0.560 for held-out volumes.
 
 \paragraph{Sampling.} DiffPIR \cite{zhu2023diffpir} with 100 steps of the EDM schedule ($\rho=7$, $\sigma$ from 1 to 0.002). At each step the denoised estimate $\hat\bx_0$ is replaced by $\arg\min_{\bx}\tfrac12\|\bA\bx-\by\|^2_{\mathsf W}+\tfrac{\lambda}{2\sigma_t^2}\|\bx-\hat\bx_0\|^2$, solved by conjugate gradients (at most 100 iterations, relative residual $10^{-6}$), with $\mathsf W$ the inverse Poisson variance; $\zeta$ sets the fresh noise. $\lambda$ and $\zeta$ are selected per encoder on the validation crops with the edge-extension rule of the other decoders (all encoders: $\lambda=0.01$, $\zeta=0.3$, interior). Eight samples per measurement; the reconstruction is their mean. The first tuning run used 20 conjugate-gradient iterations, which left the data step unconverged; the change to 100 iterations was recorded before any test reconstruction.
 
-\paragraph{Prespecified criteria and outcome.} Before training we fixed four criteria (\cref{tab:s:diffusion}). (i) Competitive prior: the random-plate sample mean within 10\,\% of learned PnP's depth error and 0.5\,dB of its PSNR. This \emph{fails} (0.455 against 0.221\,$\mu$m), so by our protocol the remaining comparisons are descriptive. (ii) Gain of the learned plate of at least 15\,\% with an interval excluding zero: $-63$\,\% [$-70$, $-54$] (seed 1: $-64$\,\%), 12 of 12 crops. (iii) Fewer confident wrong connectivity calls (at least 7 of 8 samples agreeing on the wrong answer) on 48 neuron queries $\times$ 5 draws: \emph{fails} (117, 120 and 118 of 240; sign test $p=0.25$ and 1.0). (iv) The DMD stays depth-blind: holds ($2.37\um$). The samples are over-confident: the per-voxel error lies within two sample standard deviations for 71\,\% (random) and 75\,\% (learned) of voxels, although the per-crop spread tracks the error (Spearman 0.61--0.65).
+\paragraph{Prespecified criteria and outcome.} Before training we fixed four criteria (\cref{tab:s:diffusion}). (i) Competitive prior: the random-plate sample mean within 10\,\% of learned PnP's depth error and 0.5\,dB of its PSNR. This \emph{fails} (0.455 against 0.221\,$\mu$m), so by our protocol the remaining comparisons are descriptive. (ii) Gain of the learned plate of at least 15\,\% with an interval excluding zero: $-63$\,\% [$-70$, $-54$] (seed 1: $-64$\,\%), 12 of 12 crops; descriptive only, and inflated by the weak random-plate baseline. (iii) Fewer confident wrong connectivity calls (at least 7 of 8 samples agreeing on the wrong answer) on 48 neuron queries $\times$ 5 draws: \emph{fails} (117, 120 and 118 of 240; sign test $p=0.25$ and 1.0). (iv) The DMD stays depth-blind: holds ($2.37\um$). The samples are over-confident: the per-voxel error lies within two sample standard deviations for 71\,\% (random) and 75\,\% (learned) of voxels, although the per-crop spread tracks the error (Spearman 0.61--0.65).
 
 \begin{table}[t]
 \centering\small
 \coltab{\input{tables/supplement/diffusion.tex}}
-\caption{Diffusion decoder at $C=8$ (12 test crops $\times$ 5 draws; depth in $\mu$m) next to learned PnP on the same measurements, and confident wrong connectivity calls.}
+\caption{Diffusion decoder at $C=8$ (12 prespecified test crops $\times$ 5 draws; depth in $\mu$m) next to learned PnP on the same measurements, and confident wrong connectivity calls.}
 \label{tab:s:diffusion}
 \end{table}
 

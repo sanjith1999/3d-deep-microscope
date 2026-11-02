@@ -1,7 +1,7 @@
 \section{Decoders and depth intervals}
 \label{sec:decoders}
 
-The plate is trained without any decoder. We then decode its measurements with four reconstruction methods of different kinds. None of them is trained on measurements, so the same prior serves every encoder; only scalar weights are selected per encoder and compression, on validation volumes. We call them TV, pretrained PnP, learned PnP and diffusion.
+The plate is trained without any decoder. We then decode its measurements with three reconstruction methods of different kinds. None of them is trained on measurements, so the same prior serves every encoder; only scalar weights are selected per encoder and compression, on validation volumes. We call them TV, pretrained PnP and learned PnP.
 
 \paragraph{TV.} Box-constrained least squares with isotropic 3D total variation \cite{rudin1992}, solved by ADMM \cite{boyd2011}: a non-learned regularity prior.
 
@@ -11,8 +11,6 @@ The plate is trained without any decoder. We then decode its measurements with f
 \label{eq:admm}
 \end{equation}
 by conjugate gradients, followed by $\mathbf v_j^{k+1}=\mathcal D_j(\bx^{k+1}+\mathbf d_j^k)$ for each denoising branch, soft thresholding for the sparsity branch, and dual updates $\mathbf d_j^{k+1}=\mathbf d_j^k+\bx^{k+1}-\mathbf v_j^{k+1}$. \emph{Pretrained PnP} uses three slice branches with a DnCNN \cite{zhang2017} trained on natural images, plus the sparsity branch. \emph{Learned PnP} replaces that DnCNN by a 2D network trained on neuron volumes in the three slice branches and adds a fourth branch with a 3D network trained on the same volumes \cite{zhang2021drunet,kamilov2023pnp}; both are blind Gaussian denoisers. Iteration counts and the selection grid are fixed (supplement).
-
-\paragraph{Diffusion.} A 3D U-Net denoiser in the EDM parametrisation \cite{karras2022edm} is trained on the same neuron volumes. We sample with DiffPIR \cite{zhu2023diffpir}: at each of 100 noise levels, the denoised estimate is pulled towards the data by a proximal step on the weighted least-squares term $\tfrac12\|\bA\bx-\by\|^2_{\mathsf W}$, a Gaussian approximation of the Poisson likelihood with $\mathsf W$ the inverse photon-noise variance, solved by conjugate gradients. We report the mean of eight samples. We use the samples as a reconstruction method, not as calibrated posterior draws.
 
 \paragraph{Conformal depth intervals.} For each lateral column $c$ of a reconstruction with signal, let $\hat z_c$ be its axial intensity centroid and $z_c$ the reference one. Around each column we place the interval $\hat z_c\pm\lambda$, and define the loss $L(\lambda)$ of a volume as the signal-weighted fraction of its columns whose reference centroid falls outside. $L$ is non-increasing in $\lambda$ and bounded by one, so conformal risk control \cite{angelopoulos2024crc} applies: with mean loss $\hat R_n(\lambda)$ over $n$ calibration volumes reconstructed exactly like the test volumes,
 \begin{equation}
