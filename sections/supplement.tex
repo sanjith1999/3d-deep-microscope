@@ -285,6 +285,15 @@ The main paper models shot noise only. On the 12 prespecified crops we fixed two
 
 All plates start from random realisation 0 and use the same sampling, 1000 Adam steps and seeds; only the loss changes. \emph{Worst-case coherence}: a smooth maximum of $|\rho|$ over depth pairs, as in Miniscope3D \cite{yanny2020}. \emph{Depth Fisher information}: the Poisson Fisher information of a voxel's depth with its brightness marginalised, entered as $-$mean $\log$ of the Schur complement, a Cram\'er--Rao-type objective \cite{shechtman2014}. \emph{Uncentred}: our loss without centring the columns. The mirror weight is undefined on the four-plane reduced field, so its ablation was dropped. On the reduced field (\cref{tab:s:objreduced}) every objective gains certificates against the random plate, loses none and issues no wrong certificate; paired against ours over query instances, both seeds pooled, Fisher is $+8/{-2}$, uncentred $+5/{-0}$ and coherence $+2/{-5}$; none is significant even before accounting for repeated noise draws. At full size (Tab.~3) ours and its uncentred variant are best and equal; Fisher information, nominally first on the reduced field, keeps 54--63\,\% of our depth gain. The reduced-field ranking therefore does not carry over to full-size reconstruction.
 
+\paragraph{Second seed and other decoders.} Fixed before the runs: coherence and Fisher plates were retrained with seed 1 (same start, sampling and 1000 steps), each plate was tuned on the validation crops for each decoder (no selection at a grid edge), and the criterion was an interval excluding zero for our plate against both objectives for both seeds under learned PnP at $C=8$. It holds, and it holds under TV and pretrained PnP as well (\cref{tab:s:objseeds}). Gaps are larger under the two decoders with weaker priors.
+
+\begin{table}[h]
+\centering\small
+\resizebox{\linewidth}{!}{\input{tables/supplement/objectives_seeds.tex}}
+\caption{Depth change of our plate against the coherence and Fisher plates of the same seed ($C=8$, 12 prespecified crops $\times$ 5 draws, cell-bootstrap interval; crops with a lower depth error).}
+\label{tab:s:objseeds}
+\end{table}
+
 \begin{table}[t]
 \centering\small
 \coltab{\input{tables/supplement/objectives_reduced.tex}}
