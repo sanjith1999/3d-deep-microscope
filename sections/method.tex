@@ -16,7 +16,7 @@ We vary the illumination direction across two angular coordinates while keeping 
 Propagation converts the plate's phase structure into spatially varying excitation. Scanning the incident angle shifts this pattern differently at different depths, giving each location a depth-dependent illumination sequence. An ideal thin-screen model illustrates the mechanism: without pupil clipping, a change $\Delta s$ of the transverse direction cosine displaces the pattern at propagation distance $d$ from the plate by $d\,\Delta s/\sqrt{1-\bar s^2}$ (paraxially $d\,\Delta s$), where $\bar s$ is the mean direction cosine and $d=D$ at the conjugate plane of focus. Different depths therefore translate at different rates, and plate defocus places the shear pivot outside the specimen. This relation provides intuition; the high-NA vectorial model includes the finite pupil and departures from pure translation, and \cref{sec:res:encoders} measures the actual shear.
 
 \paragraph{Image formation.}
-Let $X_0(\mathbf r,z)$ denote the specimen's fluorescence response per unit excitation. Under linear, unsaturated fluorescence, the emission source is proportional to $X_0I_t$. For laterally shift-invariant detection, the noiseless camera-plane irradiance is
+Let $X_0(\mathbf r,z)$ denote the specimen's fluorescence response per unit excitation. Under linear, unsaturated fluorescence, the emission source is proportional to $X_0I_t$ \cite{yeh2019}. For laterally shift-invariant detection, the noiseless camera-plane irradiance is
 \begin{equation}
 g_t(\mathbf r)=\int_{\Omega}
 h_{\mathrm{em}}(\mathbf r-\mathbf r',z_{\mathrm{focal}}-z')
