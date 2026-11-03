@@ -6,7 +6,7 @@ Computational imaging enables three-dimensional reconstruction from two-dimensio
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{overview.pdf}
-\caption{\textbf{A phase plate learned without a decoder.} (a) Training sees only the optics. For the random plate the training starts from and for the learned plate: the plate phase, and the correlation between the measurement signatures of voxels at different depths above the same point, averaged over the field (16 depths, 32 frames of eight-fold compression). The objective lowers these correlations; their mean over depth pairs falls from 0.84 to 0.48. No specimen and no decoder enter training. (b) The fixed plate is then decoded by three methods: mean local depth error of 60 mouse pyramidal neuron volumes from six cells at eight-fold compression and equal excitation dose. Bold: change against the random plate (cell-bootstrap 95\,\% intervals in \cref{tab:anyprior}), with the number of crops it improves. The in-focus DMD stays at the error of a flat depth estimate with every decoder (12 prespecified volumes).}
+\caption{\textbf{Decoder-free optical learning improves depth recovery across reconstruction methods.} (a) Phase maps and depth-signature correlation matrices before and after training. (b) The learned plate reduces mean local depth error relative to its random initialisation across TV and two PnP decoders, at eight-fold measurement compression and equal excitation dose. Percentages and counts indicate error reductions and crops improved. The in-focus DMD remains near the flat-depth baseline.}
 \label{fig:anyprior}
 \end{figure}
 
