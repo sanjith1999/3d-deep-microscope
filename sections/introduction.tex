@@ -3,12 +3,7 @@
 
 Fixed-focus three-dimensional fluorescence microscopy encodes depth into planar camera images and recovers the volume computationally. The decoders that perform this recovery are changing quickly, from hand-crafted regularisers to plug-and-play denoisers and diffusion models \cite{venkatakrishnan2013,zhang2021drunet,chung2023dps,zhu2023diffpir}. Where the measurements carry little depth information, a stronger prior still returns a plausible depth, but the data do not support it \cite{bhadra2021,gottschling2025}. In neuronal imaging depth is the quantity that matters: whether a dendrite lies above or below its neighbour decides which structures it can touch.
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=\linewidth]{decoder_performance.pdf}
-\caption{\textbf{One learned plate, three decoders.} Mean local depth error of 60 mouse pyramidal neuron volumes from six cells at eight-fold compression and equal excitation dose; each decoder reconstructs the same measurements of each encoder. The plate is trained without a decoder and lowers the depth error of every tested decoder (right: change against the random plate it started from, cell-bootstrap 95\,\% interval, crops improved). The in-focus DMD stays near the error of a flat estimate with every decoder (DMD and reference lines: the 12 prespecified volumes).}
-\label{fig:anyprior}
-\end{figure}
+
 
 The depth information therefore has to be recorded by the optics. We study a fixed-focus microscope that encodes depth in the excitation (\cref{fig:system}). A plane wave is scanned in angle through one fixed phase plate placed a short distance before an intermediate image plane; a high-NA relay maps the field into the specimen, and a low-NA camera at fixed focus records one image per angle. The camera keeps a wide field, but its depth of field at NA 0.1, about $50\um$, gives it weak axial discrimination across the $10\um$ volume. A tilt translates the diffracted pattern of the plate by an amount that grows with propagation distance, so each depth sees its own sequence of excitation values without axial scanning or refocusing.
 

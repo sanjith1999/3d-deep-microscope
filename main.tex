@@ -4,7 +4,15 @@
 \input{settings/links}
 \input{settings/paper}
 \begin{document}
+\makeatletter
+\twocolumn[{%
+\renewcommand\twocolumn[1][]{#1}%
 \maketitle
+\def\@captype{figure}%
+\input{sections/teaser}
+\vspace{2mm}
+}]
+\makeatother
 \input{sections/abstract}
 \input{sections/introduction}
 \input{sections/related_work}
