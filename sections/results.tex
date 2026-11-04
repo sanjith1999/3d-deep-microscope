@@ -15,7 +15,7 @@ We first test the untrained depth-encoding mechanism (\cref{fig:encoders}), comp
 
 Using 32 illumination directions, maximum-likelihood localisation of point emitters with unknown brightness gives depth misassignment rates of 1.5--1.8\,\% for the phase plates, compared with 4.4--5.3\,\% for amplitude masks, 25\,\% for the DMD, and 89\,\% without a plate. In neuronal reconstruction with pretrained PnP, the phase plate achieves $0.36\um$ local depth error at $C=1$, while the DMD remains near the flat-depth baseline ($2.17$ versus $2.15\um$). The amplitude mask is competitive in depth error, although the phase plate achieves 0.4--1.2\,dB higher PSNR at $C=8$. These results establish defocused angular illumination as an effective depth encoder, with the random phase plate providing a strong baseline for learning.
 
-\subsection{The learned plate under three decoders}
+\subsection{Decoder-free learning improves depth recovery}
 \label{sec:res:anyprior}
 
 \begin{table}[t]
@@ -26,7 +26,7 @@ Using 32 illumination directions, maximum-likelihood localisation of point emitt
 \label{tab:anyprior}
 \end{table}
 
-\Cref{fig:anyprior,tab:anyprior} decode the learned plate's measurements with each method of \cref{sec:decoders}. On the 12 prespecified crops, the learned plate lowers the depth error at $C=8$ by 37\,\% with TV, 47\,\% with pretrained PnP and 26\,\% with learned PnP (supplement). Because these crops were chosen by a structure score, we then drew 48 more crops at random from the same six cells and reconstructed them with the weights already selected. On these new crops the reductions are 43, 56 and 31\,\%, and depth improves on every crop under every decoder. Over all 60 crops the reductions are 42, 54 and 30\,\% with intervals that exclude zero, PSNR rises by 1.6--1.8\,dB, and a second training seed gives 31--55\,\%. On the prespecified crops the gain holds at every compression we tested: $-25$ to $-37$\,\% with TV, $-45$ to $-48$\,\% with pretrained PnP and $-26$ to $-32$\,\% with learned PnP at $C=1$, 4 and 8 (supplement).
+\Cref{fig:anyprior,tab:anyprior} compare the learned plate with its random initialisation across TV, pretrained PnP, and neuron-trained PnP. At $C=8$ and equal excitation dose, mean local depth error decreases by 42\,\%, 54\,\%, and 30\,\%, respectively, over 60 neuronal crops, with cell-bootstrap intervals excluding zero. The evaluation includes 48 randomly selected crops added after decoder parameters were fixed, alongside the 12 prespecified crops. Depth error improves in all crop--decoder comparisons except one. PSNR increases by 1.6--1.8\,dB, and a second training seed yields comparable gains.
 
 \paragraph{Fewer frames.} On the prespecified crops and at the same total dose, the learned plate with 32 frames is better than the random plate with all 256 frames under pretrained PnP ($-35$\,\% [$-42$, $-28$]) and has a lower mean under TV ($0.153$ against $0.187\um$). Under learned PnP the means are similar ($0.164$ against $0.161\um$), but the interval [$-17$, $+15$]\,\% is too wide to establish equivalence.
 
