@@ -1,7 +1,7 @@
 \section{Results}
 \label{sec:results}
 
-\subsection{Defocus under the angle scan encodes depth}
+\subsection{Depth encoding under angular illumination}
 \label{sec:res:encoders}
 
 \begin{figure*}[t]
@@ -11,7 +11,9 @@
 \label{fig:encoders}
 \end{figure*}
 
-We first test the untrained mechanism. \Cref{fig:encoders} compares the random plate with three encoders that share its relay, detector, dose, volumes, decoders and tuning protocol. On the 12 prespecified crops, the depth-blind oracle and uniform-depth estimate have mean local depth errors of $1.32$ and $2.15\um$, respectively. A robust line fit of the cross-correlation shift per depth gives shear slopes of 0.74--0.94 of the thin-screen prediction, with the pivot near the plate's conjugate plane. Per-pixel excitation sequences decorrelate within about $1\um$ of depth, and point emitters are assigned a wrong depth in 1.5--1.8\,\% of cases (three plates) against 4.4--5.3\,\% (three defocused masks), 25\,\% (DMD, half at the mirror depth) and 89\,\% without the plate. The in-focus DMD stays at the depth error of a flat estimate ($2.17$ against $2.15\um$) while the plate reaches $0.36\um$ (pretrained PnP, $C=1$). The defocused amplitude mask comes close to the plate: over three realisations of each, the plate leads in PSNR in all nine pairings ($+0.4$ to $+1.2$\,dB at $C=8$) but not in depth error. Depth is therefore encoded by defocus under the angle scan, and the random plate is already a strong baseline; the question is how much learning adds.
+We first examine whether angular scanning through a defocused phase plate produces distinguishable excitation patterns at different depths, before optical optimisation. \Cref{fig:encoders} compares the random phase plate with a defocused binary amplitude mask, a plate-free angular scan, and an in-focus DMD under matched excitation dose, detection model, specimens, and reconstruction protocols. For the phase plate, lateral pattern shifts estimated by cross-correlation vary approximately linearly with depth. Robust fits yield shear slopes of 0.74--0.94 times the thin-screen prediction, with the shear pivot near the plate's conjugate plane. Excitation sequences at fixed lateral positions decorrelate over axial separations of approximately $1\um$.
+
+Point emitters are assigned a wrong depth in 1.5--1.8\,\% of cases (three plates) against 4.4--5.3\,\% (three defocused masks), 25\,\% (DMD, half at the mirror depth) and 89\,\% without the plate. On the 12 prespecified crops, the depth-blind oracle and uniform-depth estimate have mean local depth errors of $1.32$ and $2.15\um$, respectively. The in-focus DMD stays at the depth error of a flat estimate ($2.17$ against $2.15\um$) while the plate reaches $0.36\um$ (pretrained PnP, $C=1$). The defocused amplitude mask comes close to the plate: over three realisations of each, the plate leads in PSNR in all nine pairings ($+0.4$ to $+1.2$\,dB at $C=8$) but not in depth error. Depth is therefore encoded by defocus under the angle scan, and the random plate is already a strong baseline; the question is how much learning adds.
 
 \subsection{The learned plate under three decoders}
 \label{sec:res:anyprior}
