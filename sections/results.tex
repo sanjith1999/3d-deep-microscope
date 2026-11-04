@@ -30,7 +30,21 @@ Using 32 illumination directions, maximum-likelihood localisation of point emitt
 
 \paragraph{Fewer measurements.} On the 12 prespecified crops, the learned plate reduces depth error at all tested compression factors ($C=1,4,8$). At equal total excitation dose, the learned plate with 32 illumination directions outperforms the random plate with 256 directions under pretrained PnP, reducing depth error by 35\,\% (95\,\% CI: 28--42\,\%). TV also achieves a lower mean error ($0.153$ versus $0.187\um$), while neuron-trained PnP gives comparable means ($0.164$ versus $0.161\um$), without sufficient evidence to establish equivalence.
 
-\subsection{Choice of plate objective}
+\subsection{Limits of reconstruction without depth encoding}
+\label{sec:res:prior}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.78\linewidth]{encoder_reconstructions.pdf}
+\caption{\textbf{Same decoder, different encoders} ($C=8$, prespecified display crop with the largest reference depth spread, draw 0, identical display). Top: lateral maximum-intensity projection, colour coding the depth of the brightest voxel; bottom: $xz$ projection; below: PSNR and local depth error of this crop. Learned PnP sharpens the DMD's lateral structure but not its depth. On this crop the learned plate improves on the random plate only slightly ($0.46$ against $0.49\um$); the cohort mean is in \cref{tab:anyprior}. Learned-plate column: reconstruction from the conformal study's rerun, which reproduces the recorded row to $0.02$\,dB. Bar: $5\um$.}
+\label{fig:wrong}
+\end{figure*}
+
+The in-focus DMD provides a control for examining whether stronger reconstruction priors can compensate for poor axial discrimination. At $C=8$, all three decoders yield local depth errors of $2.17$--$2.37\um$, close to the flat-depth reference of $2.15\um$. On the additional 48 randomly selected crops, neuron-trained PnP remains near the flat-depth reference ($1.81$ versus $1.93\um$). A second, independent DMD pattern set reproduces the results within $0.07\um$ in depth error, suggesting that the limited depth recovery is not specific to the initial pattern realisation.
+
+Splitting each column's error into its mean over depth (lateral error) and the zero-mean remainder (depth error) shows where the prior's gain goes. At $C=8$ learned PnP shrinks the random plate's lateral error to $0.48\times$ of pretrained PnP's and its depth error to $0.71\times$ (median over the prespecified crops; lower on 12 of 12), but for the DMD it shrinks the lateral error to $0.77\times$ and leaves the depth error at $1.04\times$, which is 99\,\% of the DMD's total. \Cref{fig:wrong} shows the consequence: the DMD's dendrites look sharper in $xy$, and its $xz$ section remains without depth. A prior could in principle guess depth from population statistics, but these measurements give it nothing to confirm the guess, and none of the tested priors recovered it.
+
+\subsection{Comparison of optical learning objectives}
 \label{sec:res:objective}
 
 \begin{table}[t]
@@ -42,7 +56,7 @@ Using 32 illumination directions, maximum-likelihood localisation of point emitt
 
 \Cref{tab:objectives} trains the plate with three alternative decoder-free objectives under the same start, sampling and 1000 steps: a smooth worst-case coherence of the depth columns, following Miniscope3D \cite{yanny2020}; a Poisson Fisher-information objective on depth with unknown brightness, following \cite{shechtman2014}; and our loss without centring. All improve on the random plate. Coherence and Fisher information keep 50--63\,\% of our depth gain over it: paired on the same measurements, our objective lowers their depth error by 12 and 14\,\% at $C=8$ (intervals exclude zero; 11 and 10 of 12 crops) and by 19 and 14\,\% at $C=1$. With a second training seed and under all three decoders, ours wins all 12 prespecified comparisons at $C=8$ (12--22\,\%, intervals exclude zero; supplement). Centring made no difference. This is a controlled comparison of our implementations of these objectives, not a ranking of the objectives in general or of the imaging systems they come from; none was tuned beyond the shared budget.
 
-\subsection{Calibrated depth intervals}
+\subsection{Depth uncertainty and measurement ambiguity}
 \label{sec:res:guarantee}
 
 \begin{table}[t]
@@ -57,19 +71,7 @@ Using 32 illumination directions, maximum-likelihood localisation of point emitt
 
 \paragraph{Bounds without the learned prior.} On the reduced field, using only the measurements, the intensity box and the noise model, the per-voxel bounds over $\C(\by)$ are 21\,\% narrower with the learned plate, close to the $0.80\times$ suggested by the two-column intuition of \cref{sec:decoders} for the operator's drop in mean depth correlation from $0.868$ to $0.761$. Over 12.5--25\,dB the narrowing equals 1.9\,dB of SNR. On 24 sparse synthetic phantoms with three noise draws each, connections certified by the measurements alone rise from 3 to 12 of 48 connected instances at 15\,dB; the gain comes from four phantoms and none is lost, but the noise draws of one phantom are not independent, so we do not attach a per-instance significance. On 48 windows cut from the test neurons, no voxel is determined by any plate at 15--45\,dB: at eight-fold compression dense neuronal tissue is not determined by the measurements alone. Statements about neuronal structure therefore need a calibrated prior, and we limit ours to depth placement.
 
-\subsection{An in-focus encoder leaves decoders without depth}
-\label{sec:res:prior}
-
-\begin{figure*}[t]
-\centering
-\includegraphics[width=0.78\linewidth]{encoder_reconstructions.pdf}
-\caption{\textbf{Same decoder, different encoders} ($C=8$, prespecified display crop with the largest reference depth spread, draw 0, identical display). Top: lateral maximum-intensity projection, colour coding the depth of the brightest voxel; bottom: $xz$ projection; below: PSNR and local depth error of this crop. Learned PnP sharpens the DMD's lateral structure but not its depth. On this crop the learned plate improves on the random plate only slightly ($0.46$ against $0.49\um$); the cohort mean is in \cref{tab:anyprior}. Learned-plate column: reconstruction from the conformal study's rerun, which reproduces the recorded row to $0.02$\,dB. Bar: $5\um$.}
-\label{fig:wrong}
-\end{figure*}
-
-With the in-focus DMD every decoder stays at $2.17$--$2.37\um$, the error of a flat estimate (\cref{fig:anyprior,tab:anyprior}); on the 48 random crops learned PnP gives $1.81\um$, above the depth-blind oracle ($1.42$) and near flat ($1.93\um$). A second, independent DMD pattern set, run with TV and both PnP decoders, reproduces them to within $0.06$\,dB and $0.07\um$. Splitting each column's error into its mean over depth (lateral error) and the zero-mean remainder (depth error) shows where the prior's gain goes. At $C=8$ learned PnP shrinks the random plate's lateral error to $0.48\times$ of pretrained PnP's and its depth error to $0.71\times$ (median over the prespecified crops; lower on 12 of 12), but for the DMD it shrinks the lateral error to $0.77\times$ and leaves the depth error at $1.04\times$, which is 99\,\% of the DMD's total. \Cref{fig:wrong} shows the consequence: the DMD's dendrites look sharper in $xy$, and its $xz$ section remains without depth. A prior could in principle guess depth from population statistics, but these measurements give it nothing to confirm the guess, and none of the tested priors recovered it.
-
-\subsection{Calibration and tolerance}
+\subsection{Fabrication and alignment tolerance}
 \label{sec:res:tolerance}
 
 A learned plate is useful only if its gain survives fabrication and alignment. With the operator rebuilt from the fabricated plate, rounding the phase to four levels or adding 0.5\,rad RMS height error to an 8-level plate keeps a depth reduction of 25.5 and 25.2\,\%, against 25.9\,\% for the nominal plate (learned PnP, $C=8$). A plate $0.5\um$ closer or farther than designed keeps 27.8 and 26.4\,\% after recalibration, and scan-pointing errors up to 0.01 in direction cosine keep 18--22\,\% without recalibration. Uncalibrated plate-distance and lateral plate errors shift the excitation code almost rigidly (correlation $\ge0.97$ after the offset); they cost both plates 0.15--0.41\,$\mu$m and remove the learned plate's advantage, so they must be registered, \eg with one bead. Simulating the optics at the reconstruction spacing instead of integrating over voxels raises the forward discrepancy from $1.07$ to $25.7\,\%$ (supplement).
