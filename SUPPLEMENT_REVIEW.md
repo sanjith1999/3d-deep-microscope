@@ -6,7 +6,7 @@ Review date: 2026-11-05
 
 This records the source-level review of the supplementary manuscript, its tables, and consistency with the main paper. The review did not reproduce the experiments, compile the documents, or inspect the rendered figures.
 
-R05, and R06 were corrected on 2026-11-06; the remaining findings are open. Source line numbers refer to the reviewed version and may shift during editing.
+R05, R06, and R08 were corrected on 2026-11-06; the remaining findings are open. Source line numbers refer to the reviewed version and may shift during editing.
 
 PDF locations were checked on 2026-11-06 against the existing `supplement.pdf` (modified 2026-11-06 00:51) and `main.pdf` (modified 2026-11-05 23:38). PDF line numbers below are the printed review-line numbers in the page margins, not LaTeX source lines. Tables and captions have no printed review-line numbers; those locations use the page, table number, and relevant cell or caption instead. Locations may change after recompilation. PDF text was extracted to verify these locations; this was not a visual layout review.
 
@@ -23,7 +23,7 @@ The supplement's strengths include substantial supporting experiments, explicit 
 - [x] R05 — Label aperture configurations consistently.
 - [x] R06 — Qualify the fewer-measurements comparison.
 - [ ] R07 — Complete the certification formulations.
-- [ ] R08 — Correct the main-paper table reference.
+- [x] R08 — Correct the main-paper table reference.
 - [ ] R09 — Reconcile the seed-1 TV improvement.
 - [ ] R10 — Distinguish the exposure label from conventional SNR.
 - [ ] R11 — Document experiment-specific phantom splits.
@@ -216,7 +216,7 @@ The displayed definition of the enlarged consistency set also omits the intensit
 
 ## R08 — Main-paper table reference is stale
 
-**Status:** Open
+**Status:** Resolved (2026-11-06)
 
 **Type:** Cross-reference error
 
@@ -233,7 +233,9 @@ The plate-objectives paragraph says “At full size (Tab. 3).” In the current 
 
 **Resolution needed:** Correct the reference and check other manually numbered main-paper references against the current document.
 
-**Resolution record:** Pending.
+**Resolution record:** Changed “At full size (Tab. 3)” to “At full size (Tab. 2 of the main paper).” Verified the other manually numbered main-paper figure, equation, and section references against the compiled main-paper labels.
+
+**Verification:** The supplement rebuilt successfully with no undefined reference/citation warnings. The corrected reference appears on **page 14, right column, lines 397–398**. No experiment code changes or experiment reruns were needed.
 
 ## R09 — Seed-1 TV improvement differs between tables
 
