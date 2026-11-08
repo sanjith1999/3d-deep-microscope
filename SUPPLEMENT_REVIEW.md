@@ -6,11 +6,11 @@ Review date: 2026-11-05
 
 This records the source-level review of the supplementary manuscript, its tables, and consistency with the main paper. The review did not reproduce the experiments, compile the documents, or inspect the rendered figures.
 
-R05, R06, and R08 were corrected on 2026-11-06; the remaining findings are open. Source line numbers refer to the reviewed version and may shift during editing.
+R05, R06, R08, and R10 were corrected on 2026-11-06; the remaining findings are open. Source line numbers refer to the reviewed version and may shift during editing.
 
 PDF locations were checked on 2026-11-06 against the existing `supplement.pdf` (modified 2026-11-06 00:51) and `main.pdf` (modified 2026-11-05 23:38). PDF line numbers below are the printed review-line numbers in the page margins, not LaTeX source lines. Tables and captions have no printed review-line numbers; those locations use the page, table number, and relevant cell or caption instead. Locations may change after recompilation. PDF text was extracted to verify these locations; this was not a visual layout review.
 
-Those locations identify the original reviewed passages. Resolution records include PDF locations at the time of each fix.
+Those locations identify the original reviewed passages. The supplement was subsequently rebuilt for R05, R06, R08, and R10; their resolution records include PDF locations at the time of each fix.
 
 The supplement's strengths include substantial supporting experiments, explicit reporting of failed criteria, and limitations on connectivity claims. The main concerns are numerical consistency, reproducibility, and distinguishing results from different experimental configurations.
 
@@ -25,7 +25,7 @@ The supplement's strengths include substantial supporting experiments, explicit 
 - [ ] R07 — Complete the certification formulations.
 - [x] R08 — Correct the main-paper table reference.
 - [ ] R09 — Reconcile the seed-1 TV improvement.
-- [ ] R10 — Distinguish the exposure label from conventional SNR.
+- [x] R10 — Distinguish the exposure label from conventional SNR.
 - [ ] R11 — Document experiment-specific phantom splits.
 - [ ] R12 — Improve the supplement's organization and paragraph structure.
 
@@ -260,7 +260,7 @@ For seed 1 with TV over all 60 crops, the supplementary table reports **−42%**
 
 ## R10 — Exposure-label and SNR terminology are mixed
 
-**Status:** Open
+**Status:** Resolved (2026-11-06)
 
 **Type:** Units and terminology inconsistency
 
@@ -279,7 +279,9 @@ At fixed signal, a 1.9-unit increase in `q` corresponds to approximately **3.8 d
 
 **Resolution needed:** Distinguish the exposure parameter from conventional SNR wherever it is discussed, including table headings and quantitative equivalences.
 
-**Resolution record:** Pending.
+**Resolution record:** Replaced “1.9 dB of SNR” with an increase of 1.9 in the reference exposure parameter `q`, retaining the reported approximately 2.4-fold photon equivalence. Added a cross-reference to the Gaussian noise convention in Section S17. This is a terminology correction based on the stated noise formula; the empirical estimate of 1.9 was not independently revalidated.
+
+**Verification:** Rebuilt the supplement successfully with no undefined reference/citation or overfull/underfull box warnings. The corrected sentence appears on **page 17, left column, lines 538–542**. No simulation or experiment rerun was needed.
 
 ## R11 — Experiment-specific phantom splits need a manifest
 
