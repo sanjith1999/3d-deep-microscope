@@ -6,11 +6,11 @@ Review date: 2026-11-05
 
 This records the source-level review of the supplementary manuscript, its tables, and consistency with the main paper. The review did not reproduce the experiments, compile the documents, or inspect the rendered figures.
 
-No manuscript corrections have been made as part of documenting this review. All findings below are open. Source line numbers refer to the reviewed version and may shift during editing.
+R05 was corrected on 2026-11-06; the remaining findings are open. Source line numbers refer to the reviewed version and may shift during editing.
 
 PDF locations were checked on 2026-11-06 against the existing `supplement.pdf` (modified 2026-11-06 00:51) and `main.pdf` (modified 2026-11-05 23:38). PDF line numbers below are the printed review-line numbers in the page margins, not LaTeX source lines. Tables and captions have no printed review-line numbers; those locations use the page, table number, and relevant cell or caption instead. Locations may change after recompilation. PDF text was extracted to verify these locations; this was not a visual layout review.
 
-Those locations identify the original reviewed passages.
+Those locations identify the original reviewed passages. Resolution records include PDF locations at the time of each fix.
 
 The supplement's strengths include substantial supporting experiments, explicit reporting of failed criteria, and limitations on connectivity claims. The main concerns are numerical consistency, reproducibility, and distinguishing results from different experimental configurations.
 
@@ -20,7 +20,7 @@ The supplement's strengths include substantial supporting experiments, explicit 
 - [ ] R02 — Reconcile certificate-gain and solver-rerun counts.
 - [ ] R03 — Reconcile the learned-plate and DMD width predictions.
 - [ ] R04 — Verify that the cited references sufficiently specify the optical objectives.
-- [ ] R05 — Label aperture configurations consistently.
+- [x] R05 — Label aperture configurations consistently.
 - [ ] R06 — Qualify the fewer-measurements comparison.
 - [ ] R07 — Complete the certification formulations.
 - [ ] R08 — Correct the main-paper table reference.
@@ -138,7 +138,7 @@ These citations may supply the required equations and settings; repeating their 
 
 ## R05 — Aperture configurations are not consistently attached to results
 
-**Status:** Open
+**Status:** Resolved (2026-11-06)
 
 **Type:** Experimental-configuration ambiguity
 
@@ -163,7 +163,9 @@ The reduced-operator description also needs to clarify whether its stated **96 �
 
 **Resolution needed:** Label aperture multipliers in every affected comparison, tuning table, and operator diagnostic. Distinguish the simulation grid, illuminated aperture, and specimen crop in the geometry description.
 
-**Resolution record:** Pending.
+**Resolution record:** Specified the two-times-field aperture in the operator, excitation, point-emitter, initial-tuning, expanded-tuning, and TV captions, and in the robustness section and figure. The expanded-tuning and TV captions now point to Table S2 for the final four-times-field no-plate comparison. Clarified that the reduced field's 96 × 96 samples describe the specimen region, with the overfilled illumination simulated beyond that region before cropping. Numerical table entries were unchanged.
+
+**Verification:** `latexmk -pdf -interaction=nonstopmode -halt-on-error supplement.tex` completed successfully, with no undefined references/citations or overfull/underfull box warnings. Checked the rebuilt PDF text: aperture protocol on **page 6, lines 125–128**; captions of **Tables S12 and S13 on page 9**; reduced-field geometry on **page 18, lines 614–622**. This verifies the manuscript clarification, not an independent rerun of the optical experiments.
 
 ## R06 — “Matches” overstates the fewer-measurements result
 
