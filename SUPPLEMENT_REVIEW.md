@@ -6,7 +6,7 @@ Review date: 2026-11-05
 
 This records the source-level review of the supplementary manuscript, its tables, and consistency with the main paper. The review did not reproduce the experiments, compile the documents, or inspect the rendered figures.
 
-R05 was corrected on 2026-11-06; the remaining findings are open. Source line numbers refer to the reviewed version and may shift during editing.
+R05, and R06 were corrected on 2026-11-06; the remaining findings are open. Source line numbers refer to the reviewed version and may shift during editing.
 
 PDF locations were checked on 2026-11-06 against the existing `supplement.pdf` (modified 2026-11-06 00:51) and `main.pdf` (modified 2026-11-05 23:38). PDF line numbers below are the printed review-line numbers in the page margins, not LaTeX source lines. Tables and captions have no printed review-line numbers; those locations use the page, table number, and relevant cell or caption instead. Locations may change after recompilation. PDF text was extracted to verify these locations; this was not a visual layout review.
 
@@ -21,7 +21,7 @@ The supplement's strengths include substantial supporting experiments, explicit 
 - [ ] R03 — Reconcile the learned-plate and DMD width predictions.
 - [ ] R04 — Verify that the cited references sufficiently specify the optical objectives.
 - [x] R05 — Label aperture configurations consistently.
-- [ ] R06 — Qualify the fewer-measurements comparison.
+- [x] R06 — Qualify the fewer-measurements comparison.
 - [ ] R07 — Complete the certification formulations.
 - [ ] R08 — Correct the main-paper table reference.
 - [ ] R09 — Reconcile the seed-1 TV improvement.
@@ -169,7 +169,7 @@ The reduced-operator description also needs to clarify whether its stated **96 �
 
 ## R06 — “Matches” overstates the fewer-measurements result
 
-**Status:** Open
+**Status:** Resolved (2026-11-06)
 
 **Type:** Statistical wording inconsistent with the main paper
 
@@ -188,7 +188,9 @@ The main paper already distinguishes comparable mean errors from evidence of equ
 
 **Resolution needed:** Align the supplement with the main paper's qualified wording. Separate the learned-PnP comparison from the demonstrated improvement under pretrained PnP and the lower mean error under TV.
 
-**Resolution record:** Pending.
+**Resolution record:** Replaced “matches” with comparable mean depth errors under learned PnP and explicitly stated that the evidence does not establish equivalence. Reported TV's lower mean error and pretrained PnP's 35% reduction separately, retaining the existing results and interval.
+
+**Verification:** The supplement compiled successfully. The corrected “Full size” paragraph appears on **page 11, lines 225–233** of the rebuilt PDF; the equivalence qualification is at **line 230**. The wording now agrees with the main paper's interpretation.
 
 ## R07 — Certification formulations omit necessary definitions
 
