@@ -15,3 +15,6 @@ Paper versions are on `paper/cvpr/init-draft`, `paper/cvpr/struct-amb` and
 `paper/cvpr/dec-agn-depth`. The original manuscript and extended experimental
 record are on `paper/manuscript`. Experimental code is on the `base-mdl` and
 `experiment/*` branches. Each paper version is a self-contained LaTeX project.
+
+In this initial version, the document titles are declared in `main.tex` and
+`supplement.tex`; shared title macros are in `settings/paper.tex`.
