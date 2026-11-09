@@ -1,7 +1,7 @@
 \section{Reconstruction methods}
 \label{sec:decoders}
 
-We evaluate the learned optical encoder using three reconstruction methods: total variation (TV), plug-and-play (PnP) with a pretrained denoiser, and PnP with neuron-trained denoisers. None is trained jointly with the optical encoder. Each method uses the corresponding forward operator, while its prior remains fixed across encoders. Scalar reconstruction parameters are selected separately for each encoder and compression setting using held-out validation volumes.
+We evaluate the learned optical encoder using three reconstruction methods: total variation (TV), plug-and-play (PnP) with a pretrained denoiser, and PnP with neuron-trained denoisers (learned PnP). None is trained jointly with the optical encoder. Each method uses the corresponding forward operator, while its prior remains fixed across encoders. Scalar reconstruction parameters are selected separately for each encoder and compression setting using held-out validation volumes.
 
 \paragraph{Total variation.} As a non-learned baseline, we reconstruct the volume using box-constrained least squares with isotropic three-dimensional total variation regularisation \cite{rudin1992}. The resulting optimisation problem is solved using the alternating direction method of multipliers (ADMM) \cite{boyd2011}.
 

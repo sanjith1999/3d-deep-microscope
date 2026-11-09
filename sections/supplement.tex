@@ -415,7 +415,7 @@ All 26 reconstructions (two estimators, 13 cases) lie inside $\C(\by)$ (\cref{ta
 
 \begin{figure*}[p]
 \centering
-\includegraphics[width=\textwidth]{connectivity_examples.pdf}
+\includegraphics[width=\textwidth,height=0.86\textheight,keepaspectratio]{connectivity_examples.pdf}
 \caption{All 13 reduced-field cases (15\,dB, $k=32$): ground truth, box-constrained least squares + TV reconstruction, and the validated connected and disconnected volumes in $\C(\by)$ where they exist. Certified cases show no opposite-topology volume because none exists in $\C(\by)$.}
 \label{fig:s:e1}
 \end{figure*}
@@ -513,7 +513,6 @@ $C$ & depth err.\ ($\mu$m) & FG-SSIM & $\Delta$depth ($\mu$m) & $\Delta$PSNR (dB
 
 Optical simulation, operator assembly and reconstruction run in PyTorch and JAX on NVIDIA RTX 6000 Ada and RTX 4500 Ada GPUs; PnP and TV reconstruction use SCICO \cite{balke2022scico} with a pretrained 17-layer DnCNN \cite{zhang2017}. A full-size operator is assembled in 0.6--7 minutes; a PnP reconstruction takes 2--9\,s and a TV reconstruction 9--150\,s on one GPU. Certification uses HiGHS \cite{huangfu2018} on CPUs with BLAS threads fixed to one. All tuned quantities of the structural study (TV weight, TV budget, mismatch allowance) were selected on ten calibration phantoms (P02, P03, P04, P05, P08, P10, P12, P16, P17, P21) and fixed before any test case was run.
 
-\clearpage
 {\small
 \bibliographystyle{settings/ieeenat_fullname}
 \bibliography{references}
