@@ -1,4 +1,4 @@
-\section{Decoders and depth intervals}
+\section{Reconstruction methods}
 \label{sec:decoders}
 
 We evaluate the learned optical encoder using three reconstruction methods: total variation (TV), plug-and-play (PnP) with a pretrained denoiser, and PnP with neuron-trained denoisers. None is trained jointly with the optical encoder. Each method uses the corresponding forward operator, while its prior remains fixed across encoders. Scalar reconstruction parameters are selected separately for each encoder and compression setting using held-out validation volumes.
@@ -18,18 +18,3 @@ using conjugate gradients. The branches then apply denoising or soft thresholdin
 \end{equation*}
 
 \emph{Pretrained PnP} uses a natural-image DnCNN \cite{zhang2017} across the three slice orientations and a sparsity branch. \emph{Learned PnP} replaces this denoiser with a neuron-trained 2D network shared across orientations and adds a volumetric branch with a neuron-trained 3D network \cite{zhang2021drunet,kamilov2023pnp}. Both variants retain the same measurement-consistency formulation. We initialise from normalised back-projection and clip the final estimate to $[0,1]$. Iteration counts, penalties and parameter-selection procedures are specified in the supplement.
-
-\paragraph{Conformal depth intervals.} To quantify uncertainty in recovered depth, we construct calibrated intervals around the axial intensity centroids of reconstructed volumes. For each lateral column $c$ containing signal, let $\hat z_c$ and $z_c$ denote the reconstructed and reference centroids. We report intervals $\hat z_c\pm\lambda$, where $\lambda$ is a common half-width calibrated on held-out volumes separately for each encoder. For each volume, the loss $L(\lambda)$ measures the signal-weighted fraction of columns whose reference depths fall outside their intervals. Since $L(\lambda)$ is bounded by one and non-increasing in $\lambda$, conformal risk control \cite{angelopoulos2024crc} selects
-\begin{equation}
-\hat\lambda=\inf\Big\{\lambda:\ \tfrac{n}{n+1}\hat R_n(\lambda)+\tfrac{1}{n+1}\le\alpha\Big\}
-\label{eq:crc}
-\end{equation}
-where $\hat R_n(\lambda)$ is the mean loss over $n$ calibration volumes. Provided the calibration volumes and the new volume are exchangeable, this gives $\mathbb E[L(\hat\lambda)]\le\alpha$, with expectation over both calibration and the new volume. This controls expected signal-weighted miscoverage; it does not guarantee coverage for each column or specimen, or establish neuronal connectivity.
-
-\paragraph{Bounds without the learned prior.} A reconstruction selects one volume, even when several volumes are consistent with the measurements. To assess this ambiguity without relying on the learned reconstruction prior, we use set-membership estimation \cite{milanese1991,haldar2023}. Given the intensity bounds $\bx\in[0,1]^N$, we define the measurement-consistency set
-\begin{equation*}
-\C(\by)=\{\bx\in[0,1]^N:\ \ell_i\le(\bA\bx)_i\le h_i\},
-\end{equation*}
-where the intervals $[\ell_i,h_i]$ jointly contain the noise-free measurements with a stated probability under the assumed noise model. For a non-empty consistency set, minimising and maximising $x_j$ over $\C(\by)$ gives the smallest and largest intensities consistent with these constraints. Both bounds are computed by linear programming. Their difference measures the remaining ambiguity in that voxel's intensity.
-
-The connection to optical learning can be understood through a two-voxel example. Let $\mathbf a_1,\mathbf a_2$ be unit-norm measurement columns with correlation $\rho$, where $|\rho|<1$. For coefficient perturbations satisfying $\|\mathbf a_1\delta x_1+\mathbf a_2\delta x_2\|_2\le\varepsilon$, allowing $\delta x_2$ to vary freely gives $|\delta x_1|\le\varepsilon/\sqrt{1-\rho^2}$. Highly correlated responses therefore permit greater ambiguity. This provides intuition for reducing depth correlations, rather than a guarantee for the full system, which couples many voxels, includes intensity constraints, and uses raw measurement columns rather than the centred training signatures. We compute the actual bounds on reduced fields where the linear programs are tractable.

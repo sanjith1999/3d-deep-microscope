@@ -1,11 +1,11 @@
-\section{Angle-scanned phase-encoded 3D imaging}
+\section{Learning depth-encoding illumination}
 \label{sec:imaging}
 
 \begin{figure*}[t]
 \centering
 \includegraphics[width=0.585\linewidth]{acquisition.pdf}\hfill
 \includegraphics[width=0.40\linewidth]{reconstruction.pdf}
-\caption{\textbf{Fixed-focus acquisition and reconstruction.} Left: a tilted plane wave illuminates a fixed phase plate placed $6.6\um$ (specimen-space units) before an intermediate illumination image plane; an NA-0.8 vectorial relay maps the field into the specimen; a camera at a fixed detection focus records one image per illumination angle. Only the input angle changes: plate, specimen and focus are stationary, and nothing is scanned axially. Blue: excitation; orange: fluorescence. Right: one of the three decoders of \cref{sec:decoders}, multi-slice plug-and-play recovery, alternates a conjugate-gradient data-consistency step with a 2D denoiser applied to the $xy$, $yz$ and $zx$ slices of a shared volume and an $\ell_1$ shrinkage, fused by ADMM.}
+\caption{\textbf{Fixed-focus acquisition and reconstruction.} Left: an angle-scanned plane wave illuminates a fixed, defocused phase plate; a high-NA relay maps the field into the specimen, and a fixed-focus camera records one fluorescence image per angle. Plate distances are in specimen-equivalent units. Blue: excitation; orange: fluorescence. Right: multi-slice PnP combines a data-consistency update, slice-wise denoising and sparsity on a shared volume.}
 \label{fig:system}
 \end{figure*}
 
@@ -46,12 +46,12 @@ Linear, incoherent fluorescence enables efficient assembly:
 where $\mathcal P_j$ contains voxel $j$'s fine-grid cells, $(\mathbf r_i,z_i)$ is the location of cell $i$, and $g_{p,i}$ is its emission footprint at pixel $p$, including its integration weight. These footprints are computed once and reused across angles. After precomputation, direct assembly costs $O(TPF)$, compared with $O(TNF\log F)$ for constructing columns through separate FFT-based forward simulations, with $T$ patterns, $P$ detector samples, $F$ fine-grid cells and $N$ reconstruction voxels.
 
 \paragraph{Learning the plate.}
-We optimise the plate phase $\phi$ to reduce correlations between measurement signatures at different depths, with the aim of improving depth discrimination. For a voxel at lateral position $\mathbf r$ and depth $z$, let $\mathbf a_{\mathbf r,z}$ denote its centred, unit-norm operator column (\cref{eq:factor}), collecting detector responses across illumination angles. We minimise
+We optimise the plate phase $\phi$ to reduce correlations between measurement signatures at different depths, with the aim of improving depth discrimination. For a voxel at lateral position $\mathbf r$ and depth $z$, let $\mathbf a_{\mathbf r,z}$ denote its centred, unit-norm operator column (\cref{eq:factor}), collecting all camera samples across illumination angles. The signature therefore includes excitation modulation, emission blur and pixel averaging. We minimise
 \begin{equation}
 \mathcal L(\phi)=\mathbb E_{\mathbf r}\textstyle\sum_{z\neq z'}w_{zz'}
 \left(\mathbf a_{\mathbf r,z}^{\top}\mathbf a_{\mathbf r,z'}\right)^2,
 \label{eq:plate}
 \end{equation}
-where pairs of planes mirrored about the detection focus, $(z,14-z)$ on the 16-plane grid, receive weight two because they are hardest to separate, and other pairs receive weight one. Squaring penalises correlations of either sign; normalisation prevents uniform amplification of the signatures from reducing the loss.
+where valid pairs mirrored about the detection focus receive weight two and other pairs receive weight one. Squaring penalises correlations of either sign; normalisation prevents uniform amplification of the signatures from reducing the loss.
 
-Training differentiates through the excitation, vectorial relay and detection model, without specimen examples or a reconstruction solver. The objective is a surrogate for depth discrimination, not a guarantee of stable recovery; whether it helps is tested with the decoders of \cref{sec:decoders}, none of which is used in training. Training details are given in the supplement.
+Training differentiates through the excitation, vectorial relay and detection model, without specimen examples or a reconstruction solver. The objective is a surrogate for axial discrimination. It does not directly optimise filament separation or guarantee stable recovery of a volume; these are evaluated after training, with the plate fixed. Training details are given in the supplement.

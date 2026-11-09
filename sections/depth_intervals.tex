@@ -1,0 +1,7 @@
+\paragraph{Conformal depth intervals.} To quantify uncertainty in recovered depth, we construct calibrated intervals around the axial intensity centroids of reconstructed volumes. For each lateral column $c$ containing signal, let $\hat z_c$ and $z_c$ denote the reconstructed and reference centroids. We report intervals $\hat z_c\pm\lambda$, where $\lambda$ is a common half-width calibrated on held-out volumes separately for each encoder. For each volume, the loss $L(\lambda)$ measures the signal-weighted fraction of columns whose reference depths fall outside their intervals. Since $L(\lambda)$ is bounded by one and non-increasing in $\lambda$, conformal risk control \cite{angelopoulos2024crc} selects
+\begin{equation}
+\hat\lambda=\inf\Big\{\lambda:\ \tfrac{n}{n+1}\hat R_n(\lambda)+\tfrac{1}{n+1}\le\alpha\Big\}
+\label{eq:crc}
+\end{equation}
+where $\hat R_n(\lambda)$ is the mean loss over $n$ calibration volumes. Provided the calibration volumes and the new volume are exchangeable, this gives $\mathbb E[L(\hat\lambda)]\le\alpha$, with expectation over both calibration and the new volume. This controls expected signal-weighted miscoverage; it does not guarantee coverage for each column or specimen, or establish neuronal connectivity.
+
