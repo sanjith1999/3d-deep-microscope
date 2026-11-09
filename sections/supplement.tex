@@ -10,11 +10,18 @@ This supplement documents optical training, reconstruction, evaluation protocols
 
 \paragraph{Illuminated field.} The simulation extends the plate and illumination aperture to twice the specimen width and crops the resulting excitation to the specimen. The central phase realisation is learned while its independently drawn surround remains frozen. This keeps the beam boundary outside the reconstructed field. The plate-free control uses a four-times aperture to reduce boundary-induced modulation. All encoders share the vectorial relay, objective pupil, emission model, pixel averaging and operator assembly.
 
-\paragraph{Dose and counts.} Excitation is normalised to a common mean over the full scan and specimen volume. For $k$ directions, the exposure scale is $\kappa_{\mathrm{frame}}=\kappa_0\,256/k$. The same specimen-specific $\kappa_0$ is used across encoders, chosen so the random plate gives 1000 expected photons at the mean pixel signal for $k=256$. This is a nominal deposited-excitation control; incident power and detected counts are not assumed identical. Fewer acquired images receive longer exposure. The mean detected signal differs by less than 4\,\% across the original overfilled-aperture controls on each test crop.
+\paragraph{Dose and counts.} Excitation is normalised to a common mean over the full scan and specimen volume. For $k$ directions, the exposure scale is $\kappa_{\mathrm{frame}}=\kappa_0\,256/k$. The same specimen-specific $\kappa_0$ is used across encoders, chosen so the random plate gives 1000 expected photons at the mean pixel signal for $k=256$. This is a nominal deposited-excitation control; incident power and detected counts are not assumed identical. Fewer acquired images receive longer exposure. The full-scan mean detected signal differs by less than 4\,\% across the original overfilled-aperture controls on each test crop.
 
-\paragraph{Training.} Each Adam step (learning rate 0.05, 1000 steps) samples 24 lateral positions and four of the 256 directions. The two optimisation seeds change this sampling and share the same initial phase. Centred voxel responses are normalised across the sampled angles and detector pixels. The loss gives weight two to valid depth-index pairs $(i,j)$ with $i+j=14$ on the 16-plane grid, and weight one to other distinct pairs. These are the selected symmetric pairs used by the implementation. The corresponding reduced-field study has no such pair and uses unit weights. Training uses no specimen or decoder.
+\paragraph{Training.} Each Adam step (learning rate 0.05, 1000 steps) samples 24 lateral positions and four of the 256 directions. The two optimisation seeds change this sampling and share the same initial phase. Centred voxel responses are normalised across the sampled angles and detector pixels. The loss gives weight two to valid depth-index pairs $(i,j)$ with $i+j=14$ on the 16-plane grid, and weight one to other distinct pairs. These are the selected symmetric pairs used by the implementation. Training uses no specimen or decoder.
 
 \paragraph{Signature visualisation.} The displayed phase is wrapped to $[0,2\pi)$. The depth-correlation matrices use the 32 directions of measurement draw 0 and average the absolute Gram entries over all interior lateral positions (indices 2--45). The off-diagonal means are 0.845 for the random plate and 0.480 for the learned plate. This is a complete-measurement signature comparison, not a comparison between differently normalised illumination-only and camera-space vectors.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{phase_responses.pdf}
+\caption{\textbf{Learning changes the plate and its depth responses.} Wrapped phase maps and mean absolute depth-signature correlations at 32 directions, before and after training. Correlations average interior lateral positions. The independent Poisson comparison is in \cref{fig:s:measurementkl}.}
+\label{fig:s:phases}
+\end{figure}
 
 \input{sections/operator_details}
 \input{sections/decoder_details}
@@ -31,7 +38,17 @@ This supplement documents optical training, reconstruction, evaluation protocols
 \section{Alternative optical objectives}
 \label{sec:s:objectives}
 
-All designs share the phase initialisation, sampled positions/directions and 1000-step Adam budget. The coherence alternative uses a smooth maximum of absolute correlations over depth pairs. It belongs to the coherence-design family, but is not a reimplementation of Miniscope3D's shifted PSF cross-correlation and lateral-transfer objectives \cite{yanny2020}. The Fisher alternative uses Poisson depth information with brightness treated as a nuisance parameter, optimising the negative mean log Schur complement \cite{shechtman2014}. The uncentred alternative removes column centring from the proposed squared-correlation loss.
+All designs share the phase initialisation, sampled positions/directions and 1000-step Adam budget. The coherence alternative uses a smooth maximum of absolute correlations over depth pairs. It belongs to the coherence-design family, but is not a reimplementation of Miniscope3D's shifted PSF cross-correlation and lateral-transfer objectives \cite{yanny2020}. The Fisher-inspired alternative uses a discrete, stabilised depth-information surrogate with brightness treated as a nuisance parameter \cite{shechtman2014}. The uncentred alternative removes column centring from the proposed squared-correlation loss.
+
+\paragraph{Implemented criteria.} For normalised depth correlations $\rho_{zz'}$, the coherence loss uses $\frac1{50}\log\sum_{z\ne z'}\exp(50|\rho_{zz'}|)$, averaged over sampled positions. The proposed loss divides its weighted sum by $\sum_{z\ne z'}w_{zz'}$ and averages over positions and sampled angle sets.
+
+For the Fisher-inspired criterion, let $R$ be the raw sampled response tensor, $m=\max(\operatorname{mean}R,10^{-30})$ and $s=R/\operatorname{stopgrad}(m)+10^{-3}$. The mean is recomputed per update and held constant for differentiation. Finite differences $d$ use unit plane spacing, central differences in the interior and one-sided differences at the boundaries. The criterion uses
+\begin{equation}
+F_z=\sum_i\frac{d_i^2}{s_i}
+-\frac{(\sum_i d_i)^2}{\sum_i s_i},\qquad
+\mathcal L_F=-\mathbb E\log\max(F_z,10^{-12}).
+\end{equation}
+Thus, this is the tested computational surrogate, with its stated scaling, stabilisation and gradient convention; it is not a comparison against all Fisher-information optical-design methods.
 
 \begin{table}[t]
 \centering\small

@@ -62,6 +62,13 @@ At zero background the optimum is $\beta=\sum_i s_i/\sum_i s'_i$. If $p=s/\sum_i
 
 The primary ratio is 10.0 [8.7, 11.8], and every eligible crop improves. Added background gives 10.4 [9.0, 12.4]. Random-plate divergences are already substantial for some alternatives; this result measures increased separation rather than proving that an alternative is measurement-consistent. Swapped-depth, mirrored-depth and equal-W1 rigid-shift alternatives on phantoms provide additional comparisons. The improvement is not uniformly larger for merging than for a rigid shift of matched transport distance, so we make no preferential structural-versus-centroid claim.
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{measurement_kl.pdf}
+\caption{Brightness-profiled Poisson separation between each neuronal reference and its merged-depth alternative. Each point averages five subsets; the factor and interval summarise paired crop ratios. All 59 eligible crops increase.}
+\label{fig:s:measurementkl}
+\end{figure}
+
 \paragraph{Crossing phantoms.} Two Gaussian filaments of width $\sigma=0.32\um$ cross at the lateral field centre. The three orientation/crossing-angle pairs are $(0^\circ,90^\circ)$, $(30^\circ,60^\circ)$ and $(60^\circ,45^\circ)$. Axial centres are reconstruction-plane indices 7 and 5; only the former coincides with the mirror pairing used by the plate objective. Gaps are 0, 2, 3, 4, 6 and 8 planes, with $0.64\um$ per plane. The zero-gap case is a merged control. We use five measurement draws, the same photon protocol as the neuronal volumes and the existing validation-selected reconstruction parameters.
 
 \paragraph{Success rule.} Crossing columns contain both reference filaments and resolve their peaks. Estimated peaks must match the two reference depths within one plane, with height and prominence at least 20\,\% of the column maximum. At least half of the reference crossing-column brightness must satisfy this condition. Correct ordering additionally requires the estimated intensity centroids along the two separate filament arms to follow the reference depth order, with a margin greater than half a plane. Arm columns contain at least 20\,\% of their own filament's maximum projected intensity and less than 2\,\% of the other's. A volume succeeds only when both tests pass.

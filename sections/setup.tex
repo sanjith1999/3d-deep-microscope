@@ -7,6 +7,9 @@ All experiments use the simulated fixed-focus fluorescence microscope described 
 
 \paragraph{Dataset splits and validation.} The test set contains six neuronal cells from three animals, with two prespecified crops per cell selected by a structure score. With reconstruction parameters fixed, we randomly selected eight additional crops per cell, giving 60 test crops for the cross-decoder evaluation (\cref{sec:res:anyprior}). Unless otherwise stated, other full-field experiments use the 12 prespecified crops. Neuron-trained denoisers are trained on 459 crops from a fourth animal. Reconstruction parameters are selected separately for each encoder and compression setting using two vascular crops from a separate stack acquired from a different animal. No test volumes are used for training, tuning, or calibration.
 
+\input{sections/recovery_figure}
+\input{sections/recovery_table}
+
 \input{sections/decoders}
 
 \paragraph{Optical controls and dose.} The main comparison pairs the learned plate with its random initialisation. Two optimisation seeds change the sampled positions and directions while retaining this initial phase. Additional random plates, a defocused amplitude mask, a plate-free scan and an in-focus DMD are evaluated as supporting controls. Excitation is simulated beyond the specimen field and normalised to a common mean over the full scan and specimen volume. For $k$ acquired directions, counts follow $\operatorname{Poisson}(\kappa_0\,256\,\bar y_i/k)$, where $\bar y_i$ is the noiseless measurement. The factor $256/k$ maintains nominal deposited dose by increasing exposure per image. For each specimen, $\kappa_0$ gives the random plate 1000 expected photons per pixel per image at the mean signal for $k=256$ and is shared across encoders.
@@ -21,17 +24,8 @@ E_{\mathrm{W1}}=
 \end{equation}
 where $\Delta z=0.64\um$, $w_c$ is the reference column brightness, and $\mathcal S$ contains columns exceeding 10\,\% of the maximum reference column brightness. This measures axial-profile displacement in micrometres and detects merging that can preserve the centroid. We also report the signal-weighted absolute centroid error over the same columns, PSNR and foreground SSIM. W1 normalises column brightness; the image-quality metrics retain sensitivity to intensity and lateral errors. Depth-blind references and additional metrics are detailed in the supplement.
 
-\paragraph{Measurement distinguishability.} We compare each reference volume $x$ with a merged alternative $x'$ that preserves its lateral projection and column centroids but collapses the layered columns in depth. Measurements are generated using the fine-grid model at equal deposited dose. For the shot-noise model, we compute
-\begin{equation}
-\mathcal K_\phi(x,x')=\min_{\beta>0}
-D_{\mathrm{KL}}\!\left(
-\operatorname{Pois}(\boldsymbol\mu_\phi(x))\,\Vert\,
-\operatorname{Pois}(\beta\boldsymbol\mu_\phi(x'))
-\right),
-\label{eq:kl}
-\end{equation}
-where $\boldsymbol\mu_\phi$ denotes expected photon counts across all images. Fitting $\beta$ removes the alternative's unknown global brightness. This comparison uses no reconstruction prior. We evaluate the 59 neuronal crops containing layered columns, with additional phantom and background-noise comparisons in the supplement.
+\paragraph{Measurement distinguishability.} For each reference we construct a merged-depth alternative with the same lateral projection and column centroids. We compare their expected fine-grid photon measurements using Poisson KL, fitting the alternative's unknown global brightness. This decoder-free test uses the 59 crops containing layered columns. Exact alternatives, nuisance fitting and background variants are specified in the supplement.
 
-\paragraph{Crossing structures.} Two Gaussian filaments cross in projection at different depths. We test three crossing geometries, two axial centres, and five measurement draws at $C=8$, using reconstruction parameters selected on the validation data. Success requires resolving both depths at the crossing and correctly ordering the filament arms. The separation threshold is the smallest tested gap with at least 80\,\% success at each axial centre and every larger tested gap. A merged-filament control checks false splitting. Unequal-brightness and three-filament cases test more difficult configurations; detailed peak and ordering rules are given in the supplement.
+\paragraph{Crossing structures.} Success requires separating both depths at a filament crossing and correctly ordering the arms. The threshold is the smallest tested gap with at least 80\,\% success at each of two axial centres and all larger tested gaps, using three geometries and five draws. A merged control tests false splitting. Peak, ordering and phantom definitions are given in the supplement.
 
-\paragraph{Paired comparisons and statistics.} Encoders are paired on specimens, illumination-direction subsets, excitation dose and noise protocol. We average measurement draws within each crop before comparing encoders. Confidence intervals use 10,000 bootstrap resamples of the six cells, retaining their crops together. Relative error reductions compare the paired means; KL ratios are summarised geometrically. All profile-table metrics are computed from the same reconstructions. Re-evaluation checks and the additional reduced-field and uncertainty protocols are detailed in the supplement.
+\paragraph{Statistics.} Comparisons pair specimens, angular subsets, dose and noise protocol, averaging draws within each crop. Intervals use 10,000 bootstrap resamples of the six cells with their crops retained together. Error reductions compare paired means; KL ratios are summarised geometrically.

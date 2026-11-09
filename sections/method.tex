@@ -30,13 +30,15 @@ where $h_{\mathrm{em}}$ is the emission intensity PSF and $\Omega$ the specimen 
 We evaluate the optics on a finer grid and integrate responses within each reconstruction voxel. If $\bB$ is the fine-grid operator and $\bU$ replicates reconstruction coefficients over their fine-grid cells, the reconstruction operator is $\bA=\bB\bU$. This is the exact restriction of the discretised model to a piecewise-constant basis. Sub-voxel specimen variation remains an approximation error. The assembly formula, residual model and computational details are given in the supplement.
 
 \paragraph{Learning the plate.}
-A voxel's operator column collects its camera response across all illumination angles. At lateral position $\mathbf r$ and depth $z$, let $\mathbf a_{\mathbf r,z}$ be this column after centring and unit-norm normalisation. We optimise the phase by minimising
+For a sampled angle set $\mathcal T$, a voxel's restricted operator column collects its camera response across those angles. At lateral position $\mathbf r$ and depth $z$, let $\mathbf a_{\mathbf r,z}$ be this column after centring and unit-norm normalisation. We optimise the phase by minimising
 \begin{equation}
-\mathcal L(\phi)=\mathbb E_{\mathbf r}\textstyle\sum_{z\ne z'}w_{zz'}
-\left(\mathbf a_{\mathbf r,z}^{\top}\mathbf a_{\mathbf r,z'}\right)^2.
+\mathcal L(\phi)=\mathbb E_{\mathbf r,\mathcal T}
+\frac{\sum_{z\ne z'}w_{zz'}
+\left(\mathbf a_{\mathbf r,z}^{\top}\mathbf a_{\mathbf r,z'}\right)^2}
+{\sum_{z\ne z'}w_{zz'}}.
 \label{eq:plate}
 \end{equation}
 Selected symmetric depth pairs receive weight two; other pairs receive weight one. Squaring penalises correlations of either sign, while normalisation prevents uniform amplification from reducing the loss. Gradients pass through excitation, vectorial propagation, emission blur and pixel averaging. No specimen examples, density model or reconstruction solver enters training.
 
 \paragraph{Interpretation.}
-For $L$ depth planes, write $\mathsf S_{\mathbf r}=[\mathbf a_{\mathbf r,1},\ldots,\mathbf a_{\mathbf r,L}]$ and $\mathsf G_{\mathbf r}=\mathsf S_{\mathbf r}^{\top}\mathsf S_{\mathbf r}$. A unit emitter at depth $z$ has normalised signature $\mathbf a_{\mathbf r,z}$. Comparing it with the depth-signature bank gives $\mathsf S_{\mathbf r}^{\top}\mathbf a_{\mathbf r,z}=\mathsf G_{\mathbf r}\mathbf e_z$. Each off-diagonal entry is therefore an off-depth response. Without the pair weights, the loss sums their squared values, $\|\mathsf G_{\mathbf r}-\mathsf I\|_F^2$; the weights emphasise selected axial alternatives. This explains the training criterion in signature space. Reconstruction uses the original operator $\bA$, and the surrogate's benefit is tested on volumes after the plate is fixed.
+Stack the normalised signatures as columns of $\mathsf S_{\mathbf r}$ and write $\mathsf G_{\mathbf r}=\mathsf S_{\mathbf r}^{\top}\mathsf S_{\mathbf r}$. Comparing one signature with this bank gives its column of $\mathsf G_{\mathbf r}$: the diagonal response is one, and off-diagonal entries are responses at other depths. Apart from constant normalisation, the unweighted loss is $\|\mathsf G_{\mathbf r}-\mathsf I\|_F^2$. The weights emphasise selected axial alternatives. This explains what the criterion reduces in signature space; reconstruction uses the original operator $\bA$.

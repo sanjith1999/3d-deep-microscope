@@ -7,7 +7,7 @@ We evaluate the learned optical encoder using three reconstruction methods: tota
 
 \paragraph{Multi-slice plug-and-play.} PnP reconstruction combines the physical measurement model with denoisers acting as implicit priors \cite{venkatakrishnan2013,kamilov2023pnp}. Following multi-slice fusion \cite{majee2021}, we denoise a shared three-dimensional volume along complementary orientations. For $o\in\{xy,yz,zx\}$, $\mathsf P_o$ rearranges the volume into two-dimensional slices, which $\mathcal D$ processes independently, giving $\mathcal D_o=\mathsf P_o^{-1}\mathcal D\mathsf P_o$.
 
-We combine measurement consistency, denoising and sparsity through PnP-ADMM. Let $\mathcal J$ index the active branches, with penalties $\rho_j$, auxiliary volumes $\mathbf v_j$ and scaled dual variables $\mathbf d_j$. Each iteration solves
+We combine measurement consistency, denoising and sparsity through PnP-ADMM. The branch set is $\mathcal J=\{xy,yz,zx,\mathrm{sp}\}$ for pretrained PnP and includes an additional $\mathrm{3D}$ branch for neuron-trained PnP. With penalties $\rho_j$, auxiliary volumes $\mathbf v_j$ and scaled dual variables $\mathbf d_j$, each iteration solves
 \begin{equation}
 \bx^{k+1}=\arg\min_{\bx}\tfrac12\|\bA\bx-\by\|_2^2+\textstyle\sum_{j\in\mathcal J}\tfrac{\rho_j}{2}\|\bx-\mathbf v_j^k+\mathbf d_j^k\|_2^2
 \label{eq:admm}
@@ -17,4 +17,4 @@ using conjugate gradients. The branches then apply denoising or soft thresholdin
 \mathbf d_j^{k+1}=\mathbf d_j^k+\bx^{k+1}-\mathbf v_j^{k+1}.
 \end{equation*}
 
-\emph{Pretrained PnP} uses a natural-image DnCNN \cite{zhang2017} across the three slice orientations and a sparsity branch. \emph{Neuron-trained PnP} replaces this denoiser with a neuron-trained 2D network shared across orientations and adds a volumetric branch with a neuron-trained 3D network \cite{zhang2021drunet,kamilov2023pnp}. Both variants retain the same measurement-consistency formulation. We initialise from normalised back-projection and clip the final estimate to $[0,1]$. Iteration counts, penalties and parameter-selection procedures are specified in the supplement.
+\emph{Pretrained PnP} uses a natural-image DnCNN \cite{zhang2017} across the three slice orientations and a sparsity branch. \emph{Neuron-trained PnP} replaces this denoiser with a neuron-trained 2D network shared across orientations and adds a volumetric branch with a neuron-trained 3D network \cite{zhang2021drunet,kamilov2023pnp}. Both variants retain the same measurement-consistency formulation. We initialise from normalised back-projection and clip the final estimate to $[0,1]$. Iteration counts, penalties and parameter-selection procedures are given below.
