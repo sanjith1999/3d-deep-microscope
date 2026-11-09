@@ -1,0 +1,8 @@
+\begin{tabular}{@{}l cc cc c@{}}\toprule
+& \multicolumn{2}{c}{axial W1 ($\mu$m) $\downarrow$} & \multicolumn{2}{c}{PSNR (dB) $\uparrow$} & W1 reduction\\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+prior & random & learned & random & learned & [95\,\% CI]\\\midrule
+TV & 0.371 & 0.218 & 36.70 & 38.29 & 41\,\% [38, 45]\\
+pretrained PnP & 0.579 & 0.290 & 35.72 & 37.56 & 50\,\% [47, 53]\\
+neuron-trained PnP & 0.271 & 0.195 & 38.01 & 39.60 & 28\,\% [26, 29]\\
+\bottomrule\end{tabular}

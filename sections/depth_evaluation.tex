@@ -10,50 +10,41 @@
 \label{fig:s:profilemetric}
 \end{figure}
 
-\paragraph{Re-evaluation.} W1 was added to the existing reconstructions without retraining the plate or denoisers. Re-evaluations use the recorded angular subsets, noise realisations and validation-selected parameters. The new W1 tables report centroid error, PSNR and foreground SSIM from those same reconstructed volumes. Earlier encoder-control tables retain their recorded centroid metrics and are labelled accordingly.
-
-The initial layered-column study required agreement within 0.05\,dB PSNR and $0.005\um$ centroid error for every row. TV met this criterion; the PnP configurations did not, and their profile re-evaluations were retained as descriptive analyses. A later W1 sweep checked the first row of each configuration against tolerances of 0.3\,dB and $0.02\um$; all checked configurations passed. Subsequent rows were recorded without this gate. \Cref{tab:s:profilereproduction} gives the largest deviations from the earlier metrics. The new evaluations follow the same reconstruction protocols but are not bit-identical replays.
+\paragraph{Re-evaluation.} W1 was added without retraining the plate or denoisers. Re-evaluations retain the recorded angular subsets, noise draws and validation-selected parameters. W1, centroid error and image quality in the new tables are taken from the same reconstructed volumes; earlier control tables retain recorded centroid metrics. These runs are not bit-identical replays. TV met the initial per-row tolerance of 0.05\,dB and $0.005\um$; the PnP re-evaluations did not. The later sweep checked the first row of each configuration within 0.3\,dB and $0.02\um$, without gating later rows. \Cref{tab:s:profilereproduction} gives the largest deviations, including subsequent rows. The strict TV layered-column result and the PnP re-evaluations are distinguished below.
 
 \begin{table}[t]
 \centering\small
 \coltab{\input{tables/supplement/profile_reproduction.tex}}
-\caption{Re-evaluation differences from the earlier recorded reconstructions. PSNR differences are in dB and centroid differences in $\mu$m. The EX2 group includes the strictly checked TV and descriptive PnP evaluations. The reported maxima include rows after the first-row checks.}
+\caption{Re-evaluation differences from the earlier recorded reconstructions. PSNR differences are in dB and centroid differences in $\mu$m. The initial-profile group includes the strictly checked TV and descriptive PnP evaluations. The reported maxima include rows after the first-row checks.}
 \label{tab:s:profilereproduction}
 \end{table}
 
-\paragraph{Full test set.} \Cref{tab:s:profilequality,fig:s:profilecrops} report the 60-crop comparison. Draws are averaged per crop before averaging crops. Cell-bootstrap samples retain all crops from each selected cell; confidence intervals concern the paired relative change of the means. The second optical seed changes the sampling during plate optimisation, with the initial phase fixed. The W1 compression sweep uses this initial random plate; independent random-re-alisation W1 sweeps were not completed.
+\paragraph{Full test set.} \Cref{tab:s:profilequality} reports the 60-crop comparison. Draws are averaged per crop before averaging crops. Cell-bootstrap samples retain all crops from each selected cell; confidence intervals concern the paired relative change of the means. The second optical seed changes the sampling during plate optimisation, with the initial phase fixed. The W1 compression sweep uses the same random initial plate.
 
 \begin{table*}[t]
 \centering\small
 \input{tables/supplement/profile_quality.tex}
-\caption{Reconstruction metrics from the same re-evaluations ($C=8$, 60 crops, five draws). W1 and centroid error are in $\mu$m; PSNR is in dB. Learned PnP uses the combined neuron-trained 2D and 3D denoising configuration.}
+\caption{Reconstruction metrics from the same re-evaluations ($C=8$, 60 crops, five draws). W1 and centroid error are in $\mu$m; PSNR is in dB. Neuron-trained PnP uses the combined neuron-trained 2D and 3D denoising configuration.}
 \label{tab:s:profilequality}
 \end{table*}
 
-\begin{figure*}[t]
-\centering
-\includegraphics[width=0.95\linewidth]{profile_per_crop.pdf}
-\caption{\textbf{Per-crop axial-profile error.} Random versus learned plate with three decoders at $C=8$, after averaging five direction subsets. Filled markers: 12 prespecified crops; open markers: 48 additional random crops. Every crop has lower W1 with the learned plate.}
-\label{fig:s:profilecrops}
-\end{figure*}
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=\linewidth]{profile_recovery.pdf}
-\caption{Summary of axial W1 under three reconstruction methods. The learned and random plates use all 60 crops; the DMD and depth-blind references use the 12 prespecified crops. Learned PnP denotes the neuron-trained configuration.}
-\label{fig:s:profilesummary}
-\end{figure}
-
-\paragraph{Representative volume.} Before viewing the candidate images, we selected the crop closest to the median of the mean fractional W1 reduction across the three reconstruction methods. Each crop's error is first averaged over its five draws; ties are resolved by crop identifier. This selects SOM006\_cell2\_x7. The main paper shows pretrained PnP at draw 0; \cref{fig:s:neuronpriors} shows all three methods on the same draw. Lateral colour indicates the depth of the brightest voxel, modulated by maximum intensity with a shared power transform of 0.7. Axial views use a common linear grey scale. This example illustrates depth placement and profile recovery; it is not a neuronal-connectivity demonstration.
+\paragraph{Representative volume.} Before viewing the candidate images, we selected the crop closest to the median of the mean fractional W1 reduction across the three reconstruction methods. Each crop's error is first averaged over its five draws; ties are resolved by crop identifier. This selects SOM006\_cell2\_x7. The representative views use pretrained PnP at draw 0 (\cref{fig:s:neuronpriors,fig:s:profileexample}). Lateral colour indicates the depth of the brightest voxel, modulated by maximum intensity with a shared power transform of 0.7. Axial views use a common linear grey scale. This example illustrates depth placement and profile recovery; it is not a neuronal-connectivity demonstration.
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=\linewidth]{neuron_priors.pdf}
-\caption{Axial maximum-intensity projections of the fixed representative crop across all three decoders. All tiles use the same reference-based intensity scale. Numbers are the full-volume W1 for this draw, not projection errors.}
+\includegraphics[width=0.86\linewidth]{neuron_profiles.pdf}
+\caption{Lateral and axial views of the fixed representative crop with pretrained PnP. Lateral colour denotes the brightest voxel's depth. Common intensity scales are used across the reference and reconstructions. W1 values describe the volume, not the projection.}
 \label{fig:s:neuronpriors}
 \end{figure*}
 
-\paragraph{Layered columns.} A signal column is layered when its reference profile has at least two peaks, each with height and prominence at least 20\,\% of the column maximum. Of the 60 crops, 59 contain such columns. Under the strict TV reproduction check, their W1 falls from $0.467$ to $0.309\um$, a 33.8\,\% reduction (95\,\% CI: 31.7--36.3\,\%). The relative reduction is not larger than the corresponding centroid improvement. Peak recovery remains incomplete: overall, the learned and random plates recover both outer layers in 12 versus 4\,\% of layered columns with TV, 21 versus 12\,\% with pretrained PnP, and 20 versus 13\,\% with learned PnP. These peak-based summaries are descriptive.
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\linewidth]{profile_example.pdf}
+\caption{\textbf{Axial profiles of the representative neuronal crop.} Columns are all GT signal positions, sorted by reference centroid for display; the same order is used in each panel. Profiles are normalised column-wise and share the intensity range 0--0.45. This displays the distributions evaluated by W1, using the already selected crop and pretrained PnP. Sorting is only a visualisation and does not enter reconstruction or evaluation.}
+\label{fig:s:profileexample}
+\end{figure*}
+
+\paragraph{Layered columns.} A signal column is layered when its reference profile has at least two peaks, each with height and prominence at least 20\,\% of the column maximum. Of the 60 crops, 59 contain such columns. Under the strict TV reproduction check, their W1 falls from $0.467$ to $0.309\um$, a 33.8\,\% reduction (95\,\% CI: 31.7--36.3\,\%). The relative reduction is not larger than the corresponding centroid improvement. Peak recovery remains incomplete: overall, the learned and random plates recover both outer layers in 12 versus 4\,\% of layered columns with TV, 21 versus 12\,\% with pretrained PnP, and 20 versus 13\,\% with neuron-trained PnP. These peak-based summaries are descriptive.
 
 \section{Measurement distinguishability and crossing structures}
 \label{sec:s:separation}
@@ -75,7 +66,7 @@ The primary ratio is 10.0 [8.7, 11.8], and every eligible crop improves. Added b
 
 \paragraph{Success rule.} Crossing columns contain both reference filaments and resolve their peaks. Estimated peaks must match the two reference depths within one plane, with height and prominence at least 20\,\% of the column maximum. At least half of the reference crossing-column brightness must satisfy this condition. Correct ordering additionally requires the estimated intensity centroids along the two separate filament arms to follow the reference depth order, with a margin greater than half a plane. Arm columns contain at least 20\,\% of their own filament's maximum projected intensity and less than 2\,\% of the other's. A volume succeeds only when both tests pass.
 
-The reported threshold requires at least 80\,\% success among the 15 geometry/draw combinations at each axial centre, at that gap and every larger tested gap. TV and pretrained PnP improve from 6 to 4 planes; learned PnP remains at 6. Neither plate produces false splitting in the merged control. The main figure pools the two centres for its curves; the threshold is checked at each centre separately. Unequal-brightness filaments use a weaker branch of amplitude 0.3. Closely spaced three-filament crossings remain difficult, and the selected-alternative KL does not by itself guarantee their recovery. Pooled KL/success associations are confounded by gap and phantom type and are not used as a predictive guarantee.
+The reported threshold requires at least 80\,\% success among the 15 geometry/draw combinations at each axial centre, at that gap and every larger tested gap. TV and pretrained PnP improve from 6 to 4 planes; neuron-trained PnP remains at 6. Neither plate produces false splitting in the merged control. The main figure pools the two centres for its curves; the threshold is checked at each centre separately. Unequal-brightness filaments use a weaker branch of amplitude 0.3. Closely spaced three-filament crossings remain difficult, and the selected-alternative KL does not by itself guarantee their recovery. Pooled KL/success associations are confounded by gap and phantom type and are not used as a predictive guarantee.
 
 \section{Profile error under acquisition and model changes}
 \label{sec:s:profileconditions}
@@ -110,7 +101,7 @@ The reported threshold requires at least 80\,\% success among the 15 geometry/dr
 \label{tab:s:profilenoise}
 \end{table}
 
-\paragraph{Optical objectives.} The W1 comparison across both seeds and all three decoders is in \cref{tab:s:profileobjectives}. It uses the same optical initialisation and optimisation budget. The penalty families and their implementation are described in \cref{sec:s:objectives}.
+\paragraph{Optical objectives.} The W1 comparison across both seeds and all three decoders is in \cref{tab:s:profileobjectives}. It uses the same optical initialisation and optimisation budget. The penalty families are described in \cref{sec:s:objectives}.
 
 \begin{table}[t]
 \centering\small
@@ -119,12 +110,12 @@ The reported threshold requires at least 80\,\% success among the 15 geometry/dr
 \label{tab:s:profileobjectives}
 \end{table}
 
-\paragraph{Alignment.} \Cref{tab:s:profilealignment} complements the earlier centroid-error table with W1. Rebuilding the operator for the displaced plate retains the gain. Using the nominal operator under axial or lateral displacement eliminates it; the one-feature lateral shift makes the learned plate worse on W1. Pointing errors retain a smaller advantage. This comparison supports the need for calibration, not unconditional alignment robustness.
+\paragraph{Alignment.} \Cref{tab:s:profilealignment} reports W1 under alignment errors. Rebuilding the operator for the displaced plate retains the gain. Using the nominal operator under axial or lateral displacement eliminates it; the one-feature lateral shift makes the learned plate worse on W1. Pointing errors retain a smaller advantage. This comparison supports the need for calibration, not unconditional alignment robustness.
 
 \begin{table}[t]
 \centering\small
 \coltab{\input{tables/supplement/profile_alignment.tex}}
-\caption{Alignment sensitivity in W1 ($\mu$m, learned PnP, $C=8$). Changes compare learned against random under the same perturbation. Updated-model rows rebuild the operator and reselect parameters on validation.}
+\caption{Alignment sensitivity in W1 ($\mu$m, neuron-trained PnP, $C=8$). Changes compare learned against random under the same perturbation. Updated-model rows rebuild the operator and reselect parameters on validation.}
 \label{tab:s:profilealignment}
 \end{table}
 

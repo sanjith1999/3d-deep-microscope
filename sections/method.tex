@@ -3,20 +3,20 @@
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=0.585\linewidth]{acquisition.pdf}\hfill
-\includegraphics[width=0.40\linewidth]{reconstruction.pdf}
-\caption{\textbf{Fixed-focus acquisition and reconstruction.} Left: an angle-scanned plane wave illuminates a fixed, defocused phase plate; a high-NA relay maps the field into the specimen, and a fixed-focus camera records one fluorescence image per angle. Plate distances are in specimen-equivalent units. Blue: excitation; orange: fluorescence. Right: multi-slice PnP combines a data-consistency update, slice-wise denoising and sparsity on a shared volume.}
+\includegraphics[width=0.54\linewidth]{acquisition.pdf}\hfill
+\includegraphics[width=0.43\linewidth]{learning.pdf}
+\caption{\textbf{Fixed-focus acquisition and depth-signature learning.} Left: only the incident angle changes; the phase plate, specimen and detection focus remain stationary. Blue: excitation; orange: fluorescence. Right: schematic assembly of voxel responses across camera samples and illumination angles. Training compares depths at the same lateral position and updates the phase through the optical model. The specimen and a reconstruction decoder are not used in optical training.}
 \label{fig:system}
 \end{figure*}
 
 \paragraph{Acquisition.}
-We vary the illumination direction across two angular coordinates while keeping the phase plate fixed (\cref{fig:system}). For transverse position $\mathbf r=(x,y)$, the incident plane wave is $u_t^{\mathrm{in}}(\mathbf r)=a_t e^{\mathrm i k_{\mathrm{ex}}\mathbf s_t^\top\mathbf r}$, with $\mathbf s_t=\cos\theta_t(\cos\alpha_t,\sin\alpha_t)$, where $\alpha_t$ is the azimuth and $\theta_t$ parametrises the direction in the vertical plane containing that azimuth. The corresponding forward direction is $(\mathbf s_t,\sin\theta_t)$, and $k_{\mathrm{ex}}=2\pi/\lambda_{\mathrm{ex}}$ for the simulated refractive index of one. Thus, the two coordinates control the orientation and signed magnitude of the transverse phase gradient. The scan contains 256 distinct directions with $0.5\leq\|\mathbf s_t\|\leq\sqrt3/2$. Each incident field passes through the phase plate, $\tau(\mathbf r)=e^{\mathrm i\phi(\mathbf r)}$, and propagates a distance $D$ to the intermediate illumination image plane by angular-spectrum propagation. The NA-0.8 objective pupil filters the modulated field before a vectorial Richards--Wolf relay \cite{richards1959,marian2007} produces the specimen excitation $I_t=\sum_{c\in\{x,y,z\}}|E_{t,c}|^2$, assuming x-polarised illumination. Coordinates and distances are expressed in specimen-equivalent units. The camera records one fluorescence image per direction at a fixed detection focus. Acquisition is sequential, not single-shot.
+For transverse position $\mathbf r=(x,y)$, illumination direction $t$ produces the incident plane wave $u_t^{\mathrm{in}}(\mathbf r)=a_t e^{\mathrm i k_{\mathrm{ex}}\mathbf s_t^\top\mathbf r}$, where $\mathbf s_t$ is the transverse direction-cosine vector and $k_{\mathrm{ex}}=2\pi/\lambda_{\mathrm{ex}}$ for refractive index one. The angular grid is specified in the supplement. The field passes through the fixed phase plate, $\tau(\mathbf r)=e^{\mathrm i\phi(\mathbf r)}$, and propagates a distance $D$ to the intermediate illumination image plane by angular-spectrum propagation. The objective pupil filters the modulated field before a Richards--Wolf relay \cite{richards1959,marian2007} produces the specimen excitation. We use a vectorial model for the high-NA relay, with x-polarised input and intensity $I_t=\sum_{c\in\{x,y,z\}}|E_{t,c}|^2$. Coordinates are in specimen-equivalent units. One fluorescence image is recorded per direction at a fixed detection focus; acquisition is sequential.
 
-\paragraph{Why the angle encodes depth.}
-Propagation after the phase plate produces a spatially structured excitation pattern. Changing the illumination angle shifts this pattern laterally, with displacement increasing with propagation distance. In the paraxial thin-screen approximation, a change $\Delta\mathbf s$ in transverse direction cosine produces a displacement $\Delta\mathbf r\approx d\,\Delta\mathbf s$ after propagation over distance $d$. Different depths therefore experience different sequences of excitation intensities during the angular scan. Plate defocus places the shear pivot outside the specimen. This model explains the encoding principle, while our high-NA vectorial model accounts for finite-pupil effects and departures from ideal translation. \Cref{sec:res:encoders} evaluates the resulting shear.
+\paragraph{Depth encoding.}
+Propagation after the plate creates spatial intensity structure. Changing the incident angle shifts this structure laterally, with displacement increasing with propagation distance. In the paraxial thin-screen approximation, a change $\Delta\mathbf s$ produces $\Delta\mathbf r\approx d\,\Delta\mathbf s$ after distance $d$. Different depths therefore experience different excitation sequences during the scan. Plate defocus places the shear pivot outside the specimen. This relation supplies intuition; the vectorial simulation includes finite-pupil effects and departures from translation.
 
 \paragraph{Image formation.}
-Let $X_0(\mathbf r,z)$ denote the specimen's fluorescence response per unit excitation. Under linear, unsaturated fluorescence, the emission source is proportional to $X_0I_t$ \cite{yeh2019}. For laterally shift-invariant detection, the noiseless camera-plane irradiance is
+Let $X_0(\mathbf r,z)$ denote fluorescence response per unit excitation. Under linear, unsaturated fluorescence, the emission source is proportional to $X_0I_t$ \cite{yeh2019}. For laterally shift-invariant detection, the noiseless camera-plane irradiance is
 \begin{equation}
 g_t(\mathbf r)=\int_{\Omega}
 h_{\mathrm{em}}(\mathbf r-\mathbf r',z_{\mathrm{focal}}-z')
@@ -24,34 +24,19 @@ X_0(\mathbf r',z')I_t(\mathbf r',z')
 \,\mathrm d^2\mathbf r'\,\mathrm dz',
 \label{eq:forward}
 \end{equation}
-where $h_{\mathrm{em}}$ is the emission intensity point-spread function and $\Omega$ is the specimen volume. Pixel $p$, occupying region $D_p$, records the normalised sample $\hat Y^0_{t,p}=|D_p|^{-1}\int_{D_p}g_t(\mathbf r)\,\mathrm d^2\mathbf r$. Fluorescence contributions therefore add incoherently before pixel averaging. Multiplication by the excitation pattern mixes specimen spatial frequencies before detection blur, so the camera need not resolve the illumination pattern itself. Depth discrimination depends on how these measurements vary across illumination angles.
+where $h_{\mathrm{em}}$ is the emission intensity PSF and $\Omega$ the specimen volume. Camera pixel $p$, occupying $D_p$, records $\hat Y^0_{t,p}=|D_p|^{-1}\int_{D_p}g_t(\mathbf r)\,\mathrm d^2\mathbf r$. Fluorescence contributions add incoherently before pixel averaging. Excitation mixes specimen spatial frequencies before detection blur, allowing the angle sequence to carry information that a single image does not resolve.
 
-\paragraph{Voxel-integrated operator.}
-To capture excitation variations within reconstruction voxels, we evaluate the optics on a finer grid and integrate the measurement responses over each voxel. Let $\bB$ be the fine-grid measurement operator, including emission propagation and pixel averaging, and let $\bU$ replicate each reconstruction coefficient over its fine-grid cells. Then $\bA=\bB\bU$ preserves the fine-grid response for every specimen represented in this piecewise-constant basis.
-
-Sub-voxel specimen structure remains unrepresented. For a fine-grid specimen $\bx_f$, its coarse representation $\bx_{\mathrm{gt}}=\bR\bx_f$, obtained by voxel averaging, satisfies
-\begin{equation}
-\by=\bA\bx_{\mathrm{gt}}
-+\underbrace{\bB(\bx_f-\bU\bR\bx_f)}_{\boldsymbol\delta_{\mathrm{disc}}}
-+\boldsymbol\varepsilon.
-\label{eq:patch}
-\end{equation}
-Thus, integration retains within-voxel optical variation, while $\boldsymbol\delta_{\mathrm{disc}}$ captures specimen approximation error.
-
-Linear, incoherent fluorescence enables efficient assembly:
-\begin{equation}
-\bA_{(t,p),j}=\textstyle\sum_{i\in\mathcal P_j} I_t(\mathbf r_i,z_i)\,g_{p,i},
-\label{eq:factor}
-\end{equation}
-where $\mathcal P_j$ contains voxel $j$'s fine-grid cells, $(\mathbf r_i,z_i)$ is the location of cell $i$, and $g_{p,i}$ is its emission footprint at pixel $p$, including its integration weight. These footprints are computed once and reused across angles. After precomputation, direct assembly costs $O(TPF)$, compared with $O(TNF\log F)$ for constructing columns through separate FFT-based forward simulations, with $T$ patterns, $P$ detector samples, $F$ fine-grid cells and $N$ reconstruction voxels.
+\paragraph{Voxel-integrated responses.}
+We evaluate the optics on a finer grid and integrate responses within each reconstruction voxel. If $\bB$ is the fine-grid operator and $\bU$ replicates reconstruction coefficients over their fine-grid cells, the reconstruction operator is $\bA=\bB\bU$. This is the exact restriction of the discretised model to a piecewise-constant basis. Sub-voxel specimen variation remains an approximation error. The assembly formula, residual model and computational details are given in the supplement.
 
 \paragraph{Learning the plate.}
-We optimise the plate phase $\phi$ to reduce correlations between measurement signatures at different depths, with the aim of improving depth discrimination. For a voxel at lateral position $\mathbf r$ and depth $z$, let $\mathbf a_{\mathbf r,z}$ denote its centred, unit-norm operator column (\cref{eq:factor}), collecting all camera samples across illumination angles. The signature therefore includes excitation modulation, emission blur and pixel averaging. We minimise
+A voxel's operator column collects its camera response across all illumination angles. At lateral position $\mathbf r$ and depth $z$, let $\mathbf a_{\mathbf r,z}$ be this column after centring and unit-norm normalisation. We optimise the phase by minimising
 \begin{equation}
-\mathcal L(\phi)=\mathbb E_{\mathbf r}\textstyle\sum_{z\neq z'}w_{zz'}
-\left(\mathbf a_{\mathbf r,z}^{\top}\mathbf a_{\mathbf r,z'}\right)^2,
+\mathcal L(\phi)=\mathbb E_{\mathbf r}\textstyle\sum_{z\ne z'}w_{zz'}
+\left(\mathbf a_{\mathbf r,z}^{\top}\mathbf a_{\mathbf r,z'}\right)^2.
 \label{eq:plate}
 \end{equation}
-where valid pairs mirrored about the detection focus receive weight two and other pairs receive weight one. Squaring penalises correlations of either sign; normalisation prevents uniform amplification of the signatures from reducing the loss.
+Selected symmetric depth pairs receive weight two; other pairs receive weight one. Squaring penalises correlations of either sign, while normalisation prevents uniform amplification from reducing the loss. Gradients pass through excitation, vectorial propagation, emission blur and pixel averaging. No specimen examples, density model or reconstruction solver enters training.
 
-Training differentiates through the excitation, vectorial relay and detection model, without specimen examples or a reconstruction solver. The objective is a surrogate for axial discrimination. It does not directly optimise filament separation or guarantee stable recovery of a volume; these are evaluated after training, with the plate fixed. Training details are given in the supplement.
+\paragraph{Interpretation.}
+For $L$ depth planes, write $\mathsf S_{\mathbf r}=[\mathbf a_{\mathbf r,1},\ldots,\mathbf a_{\mathbf r,L}]$ and $\mathsf G_{\mathbf r}=\mathsf S_{\mathbf r}^{\top}\mathsf S_{\mathbf r}$. A unit emitter at depth $z$ has normalised signature $\mathbf a_{\mathbf r,z}$. Comparing it with the depth-signature bank gives $\mathsf S_{\mathbf r}^{\top}\mathbf a_{\mathbf r,z}=\mathsf G_{\mathbf r}\mathbf e_z$. Each off-diagonal entry is therefore an off-depth response. Without the pair weights, the loss sums their squared values, $\|\mathsf G_{\mathbf r}-\mathsf I\|_F^2$; the weights emphasise selected axial alternatives. This explains the training criterion in signature space. Reconstruction uses the original operator $\bA$, and the surrogate's benefit is tested on volumes after the plate is fixed.

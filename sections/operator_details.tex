@@ -1,0 +1,22 @@
+\section{Voxel integration and operator assembly}
+\label{sec:s:assembly}
+
+\paragraph{Voxel-integrated operator.}
+To capture excitation variations within reconstruction voxels, we evaluate the optics on a finer grid and integrate the measurement responses over each voxel. Let $\bB$ be the fine-grid measurement operator, including emission propagation and pixel averaging, and let $\bU$ replicate each reconstruction coefficient over its fine-grid cells. Then $\bA=\bB\bU$ preserves the fine-grid response for every specimen represented in this piecewise-constant basis.
+
+Sub-voxel specimen structure remains unrepresented. For a fine-grid specimen $\bx_f$, its coarse representation $\bx_{\mathrm{gt}}=\bR\bx_f$, obtained by voxel averaging, satisfies
+\begin{equation}
+\by=\bA\bx_{\mathrm{gt}}
++\underbrace{\bB(\bx_f-\bU\bR\bx_f)}_{\boldsymbol\delta_{\mathrm{disc}}}
++\boldsymbol\varepsilon.
+\label{eq:patch}
+\end{equation}
+Thus, integration retains within-voxel optical variation, while $\boldsymbol\delta_{\mathrm{disc}}$ captures specimen approximation error.
+
+Linear, incoherent fluorescence enables efficient assembly:
+\begin{equation}
+\bA_{(t,p),j}=\textstyle\sum_{i\in\mathcal P_j} I_t(\mathbf r_i,z_i)\,g_{p,i},
+\label{eq:factor}
+\end{equation}
+where $\mathcal P_j$ contains voxel $j$'s fine-grid cells, $(\mathbf r_i,z_i)$ is the location of cell $i$, and $g_{p,i}$ is its emission footprint at pixel $p$, including its integration weight. These footprints are computed once and reused across angles. After precomputation, direct assembly costs $O(TPF)$, compared with $O(TNF\log F)$ for constructing columns through separate FFT-based forward simulations, with $T$ patterns, $P$ detector samples, $F$ fine-grid cells and $N$ reconstruction voxels.
+
