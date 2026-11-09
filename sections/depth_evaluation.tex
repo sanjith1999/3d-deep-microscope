@@ -1,7 +1,7 @@
 \section{Axial-profile evaluation}
 \label{sec:s:profiles}
 
-\paragraph{Metric.} Axial Wasserstein-1 compares normalised non-negative column profiles \cite{peyre2019}. For column $c$, write $p_{c,\ell}=x_{c,\ell}/\sum_m x_{c,m}$ and $\hat p_{c,\ell}=\hat x_{c,\ell}/\sum_m\hat x_{c,m}$, with cumulative sums $F_{c,\ell}$ and $\hat F_{c,\ell}$. Its discrete value is $\Delta z\sum_\ell|F_{c,\ell}-\hat F_{c,\ell}|$. We average using reference column brightness over columns above 10\,\% of its maximum, with $\Delta z=0.64\um$. Numerical normalisation uses a $10^{-12}$ denominator stabiliser. For unit-mass profiles, W1 is at least the absolute centroid difference and is zero only when the profiles coincide. It evaluates depth distributions, not connectivity or total brightness.
+\paragraph{Metric.} Axial Wasserstein-1 compares normalized non-negative column profiles \cite{peyre2019}. For column $c$, write $p_{c,\ell}=x_{c,\ell}/\sum_m x_{c,m}$ and $\hat p_{c,\ell}=\hat x_{c,\ell}/\sum_m\hat x_{c,m}$, with cumulative sums $F_{c,\ell}$ and $\hat F_{c,\ell}$. Its discrete value is $\Delta z\sum_\ell|F_{c,\ell}-\hat F_{c,\ell}|$. We average using reference column brightness over columns above 10\,\% of its maximum, with $\Delta z=0.64\um$. Numerical normalization uses a $10^{-12}$ denominator stabilizer. For unit-mass profiles, W1 is at least the absolute centroid difference and is zero only when the profiles coincide. It evaluates depth distributions, not connectivity or total brightness.
 
 \begin{figure}[t]
 \centering
@@ -19,7 +19,7 @@
 \label{tab:s:profilereproduction}
 \end{table}
 
-\paragraph{Full test set.} \Cref{tab:s:profilequality} reports the 60-crop comparison. Draws are averaged per crop before averaging crops. Cell-bootstrap samples retain all crops from each selected cell; confidence intervals concern the paired relative change of the means. The second optical seed changes the sampling during plate optimisation, with the initial phase fixed. The W1 compression sweep uses the same random initial plate.
+\paragraph{Full test set.} \Cref{tab:s:profilequality} reports the 60-crop comparison. Draws are averaged per crop before averaging crops. Cell-bootstrap samples retain all crops from each selected cell; confidence intervals concern the paired relative change of the means. The second optical seed changes the sampling during plate optimization, with the initial phase fixed. The W1 compression sweep uses the same random initial plate.
 
 \begin{table*}[t]
 \centering\small
@@ -28,19 +28,19 @@
 \label{tab:s:profilequality}
 \end{table*}
 
-\paragraph{Representative volume.} Before viewing the candidate images, we selected the crop closest to the median of the mean fractional W1 reduction across the three reconstruction methods. Each crop's error is first averaged over its five draws; ties are resolved by crop identifier. This selects SOM006\_cell2\_x7. The representative views use pretrained PnP at draw 0 (\cref{fig:s:neuronpriors,fig:s:profileexample}). Lateral colour indicates the depth of the brightest voxel, modulated by maximum intensity with a shared power transform of 0.7. Axial views use a common linear grey scale. This example illustrates depth placement and profile recovery; it is not a neuronal-connectivity demonstration.
+\paragraph{Representative volume.} Before viewing the candidate images, we selected the crop closest to the median of the mean fractional W1 reduction across the three reconstruction methods. Each crop's error is first averaged over its five draws; ties are resolved by crop identifier. This selects SOM006\_cell2\_x7. The representative views use pretrained PnP at draw 0 (\cref{fig:s:neuronpriors,fig:s:profileexample}). Lateral color indicates the depth of the brightest voxel, modulated by maximum intensity with a shared power transform of 0.7. Axial views use a common linear gray scale. This example illustrates depth placement and profile recovery; it is not a neuronal-connectivity demonstration.
 
 \begin{figure*}[t]
 \centering
 \includegraphics[width=0.86\linewidth]{neuron_profiles.pdf}
-\caption{Lateral and axial views of the fixed representative crop with pretrained PnP. Lateral colour denotes the brightest voxel's depth. Common intensity scales are used across the reference and reconstructions. W1 values describe the volume, not the projection.}
+\caption{Lateral and axial views of the fixed representative crop with pretrained PnP. Lateral color denotes the brightest voxel's depth. Common intensity scales are used across the reference and reconstructions. W1 values describe the volume, not the projection.}
 \label{fig:s:neuronpriors}
 \end{figure*}
 
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\linewidth]{profile_example.pdf}
-\caption{\textbf{Axial profiles of the representative neuronal crop.} Columns are all GT signal positions, sorted by reference centroid for display; the same order is used in each panel. Profiles are normalised column-wise and share the intensity range 0--0.45. This displays the distributions evaluated by W1, using the already selected crop and pretrained PnP. Sorting is only a visualisation and does not enter reconstruction or evaluation.}
+\caption{\textbf{Axial profiles of the representative neuronal crop.} Columns are all GT signal positions, sorted by reference centroid for display; the same order is used in each panel. Profiles are normalized column-wise and share the intensity range 0--0.45. This displays the distributions evaluated by W1, using the already selected crop and pretrained PnP. Sorting is only a visualization and does not enter reconstruction or evaluation.}
 \label{fig:s:profileexample}
 \end{figure*}
 
@@ -49,7 +49,7 @@
 \section{Measurement distinguishability and crossing structures}
 \label{sec:s:separation}
 
-\paragraph{Merged-depth alternatives.} In each layered reference column, we move the fine-grid intensity to its axial centroid, distributing mass between the two neighbouring planes when needed. This preserves the lateral projection and centroid while changing the depth arrangement. Other columns remain unchanged. The comparison uses the fine-grid forward model, not its piecewise-constant reconstruction approximation. One crop has no layered columns and is excluded, leaving 59.
+\paragraph{Merged-depth alternatives.} In each layered reference column, we move the fine-grid intensity to its axial centroid, distributing mass between the two neighboring planes when needed. This preserves the lateral projection and centroid while changing the depth arrangement. Other columns remain unchanged. The comparison uses the fine-grid forward model, not its piecewise-constant reconstruction approximation. One crop has no layered columns and is excluded, leaving 59.
 
 \paragraph{Poisson comparison.} Let $s$ and $s'$ be the expected signal-count vectors of the reference and alternative, and let $b$ be the known background. With $\mu=s+b$ and $\nu(\beta)=\beta s'+b$, we compute
 \begin{equation}
@@ -65,15 +65,15 @@ The primary ratio is 10.0 [8.7, 11.8], and every eligible crop improves. Added b
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{measurement_kl.pdf}
-\caption{Brightness-profiled Poisson separation between each neuronal reference and its merged-depth alternative. Each point averages five subsets; the factor and interval summarise paired crop ratios. All 59 eligible crops increase.}
+\caption{Brightness-profiled Poisson separation between each neuronal reference and its merged-depth alternative. Each point averages five subsets; the factor and interval summarize paired crop ratios. All 59 eligible crops increase.}
 \label{fig:s:measurementkl}
 \end{figure}
 
-\paragraph{Crossing phantoms.} Two Gaussian filaments of width $\sigma=0.32\um$ cross at the lateral field centre. The three orientation/crossing-angle pairs are $(0^\circ,90^\circ)$, $(30^\circ,60^\circ)$ and $(60^\circ,45^\circ)$. Axial centres are reconstruction-plane indices 7 and 5; only the former coincides with the mirror pairing used by the plate objective. Gaps are 0, 2, 3, 4, 6 and 8 planes, with $0.64\um$ per plane. The zero-gap case is a merged control. We use five measurement draws, the same photon protocol as the neuronal volumes and the existing validation-selected reconstruction parameters.
+\paragraph{Crossing phantoms.} Two Gaussian filaments of width $\sigma=0.32\um$ cross at the lateral field center. The three orientation/crossing-angle pairs are $(0^\circ,90^\circ)$, $(30^\circ,60^\circ)$ and $(60^\circ,45^\circ)$. Axial centers are reconstruction-plane indices 7 and 5; only the former coincides with the mirror pairing used by the plate objective. Gaps are 0, 2, 3, 4, 6 and 8 planes, with $0.64\um$ per plane. The zero-gap case is a merged control. We use five measurement draws, the same photon protocol as the neuronal volumes and the existing validation-selected reconstruction parameters.
 
 \paragraph{Success rule.} Crossing columns contain both reference filaments and resolve their peaks. Estimated peaks must match the two reference depths within one plane, with height and prominence at least 20\,\% of the column maximum. At least half of the reference crossing-column brightness must satisfy this condition. Correct ordering additionally requires the estimated intensity centroids along the two separate filament arms to follow the reference depth order, with a margin greater than half a plane. Arm columns contain at least 20\,\% of their own filament's maximum projected intensity and less than 2\,\% of the other's. A volume succeeds only when both tests pass.
 
-The reported threshold requires at least 80\,\% success among the 15 geometry/draw combinations at each axial centre, at that gap and every larger tested gap. TV and pretrained PnP improve from 6 to 4 planes; neuron-trained PnP remains at 6. Neither plate produces false splitting in the merged control. The main figure pools the two centres for its curves; the threshold is checked at each centre separately. Unequal-brightness filaments use a weaker branch of amplitude 0.3. Closely spaced three-filament crossings remain difficult, and the selected-alternative KL does not by itself guarantee their recovery. Pooled KL/success associations are confounded by gap and phantom type and are not used as a predictive guarantee.
+The reported threshold requires at least 80\,\% success among the 15 geometry/draw combinations at each axial center, at that gap and every larger tested gap. TV and pretrained PnP improve from 6 to 4 planes; neuron-trained PnP remains at 6. Neither plate produces false splitting in the merged control. The main figure pools the two centers for its curves; the threshold is checked at each center separately. Unequal-brightness filaments use a weaker branch of amplitude 0.3. Closely spaced three-filament crossings remain difficult, and the selected-alternative KL does not by itself guarantee their recovery. Pooled KL/success associations are confounded by gap and phantom type and are not used as a predictive guarantee.
 
 \section{Profile error under acquisition and model changes}
 \label{sec:s:profileconditions}
@@ -108,12 +108,12 @@ The reported threshold requires at least 80\,\% success among the 15 geometry/dr
 \label{tab:s:profilenoise}
 \end{table}
 
-\paragraph{Optical objectives.} The W1 comparison across both seeds and all three decoders is in \cref{tab:s:profileobjectives}. It uses the same optical initialisation and optimisation budget. The penalty families are described in \cref{sec:s:objectives}.
+\paragraph{Optical objectives.} The W1 comparison across both seeds and all three decoders is in \cref{tab:s:profileobjectives}. It uses the same optical initialization and optimization budget. The penalty families are described in \cref{sec:s:objectives}.
 
 \begin{table}[t]
 \centering\small
 \coltab{\input{tables/supplement/profile_objectives_seeds.tex}}
-\caption{W1 reduction of our plate against each alternative objective ($C=8$, 12 prespecified crops). Seeds differ in optimisation sampling. Counts refer to crops with lower W1.}
+\caption{W1 reduction of our plate against each alternative objective ($C=8$, 12 prespecified crops). Seeds differ in optimization sampling. Counts refer to crops with lower W1.}
 \label{tab:s:profileobjectives}
 \end{table}
 

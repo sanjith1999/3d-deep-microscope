@@ -4,35 +4,51 @@
 \subsection{Learning depth-discriminative responses}
 \label{sec:res:measurements}
 
-Learning reorganises the phase plate and reduces mean absolute depth-signature correlation from 0.84 to 0.48. Before/after maps and the measurement-comparison plot are given in the supplement. The measurement-level comparison tests a consequence beyond this training statistic. Its alternative preserves the lateral projection and column centroids, so the test concerns a change in axial arrangement that those summaries do not capture. Relative to the random plate, profiled Poisson KL to the merged-depth alternative rises by a geometric mean factor of 10.0 (95\,\% CI: 8.7--11.8), increasing in all 59 eligible neuronal crops. With added background, the factor is 10.4. Thus, the learned measurements distinguish these axial alternatives more strongly before any reconstruction prior is applied. This diagnostic compares selected alternatives; it does not measure global inverse stability.
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\linewidth]{measurement_responses.pdf}
+\caption{\textbf{Optical learning changes the recorded depth responses.} (a) Wrapped phase maps and absolute depth-signature correlations on common scales. (b) Brightness-profiled Poisson KL between each neuronal reference and an alternative with merged depths but the same lateral projection and column centroids. Points average five direction subsets for each eligible crop. The dashed line denotes equal KL; the factor and cell-bootstrap interval summarize paired ratios.}
+\label{fig:responses}
+\end{figure*}
+
+We first test the measurements before applying a reconstruction prior. Training changes the plate and reduces mean absolute depth-signature correlation from 0.84 to 0.48 (\cref{fig:responses}a). This is the response statistic targeted by optical optimization; the next comparison tests whether the change also separates different axial arrangements.
+
+For each eligible neuronal crop, the merged-depth alternative preserves its lateral projection and every column's centroid. Relative to the random plate, the learned plate increases brightness-profiled Poisson KL to this alternative by a geometric mean factor of 10.0 (95\,\% CI: 8.7--11.8), with an increase in all 59 crops (\cref{fig:responses}b). Added background gives a factor of 10.4. The measurements therefore separate these selected alternatives more strongly, even though their mean depths agree. This diagnostic is distinct from reconstruction accuracy and does not establish global inverse stability.
 
 \subsection{Recovering neuronal volumes across priors}
 \label{sec:res:anyprior}
 
-At $C=8$, the learned plate reduces mean axial W1 by 41\,\% with TV, 50\,\% with pretrained PnP and 28\,\% with neuron-trained PnP (\cref{fig:volume,tab:anyprior}). All cell-bootstrap intervals exclude zero, and every crop improves under each prior. The 48 randomly selected crops were added after reconstruction parameters were fixed, supporting the result beyond the 12 prespecified crops. A second optimisation seed gives similar reductions of 41\,\%, 50\,\% and 29\,\% from the same initial phase.
+At $C=8$, the learned plate reduces mean axial W1 by 41\,\% with TV, 50\,\% with pretrained PnP and 28\,\% with neuron-trained PnP (\cref{fig:volume,tab:anyprior}). All cell-bootstrap intervals exclude zero, and every crop improves under each prior. The 48 randomly selected crops were added after reconstruction parameters were fixed, supporting the result beyond the 12 prespecified crops. A second optimization seed gives similar reductions of 41\,\%, 50\,\% and 29\,\% from the same initial phase.
 
 Centroid error falls by 30--54\,\%, showing improved axial placement alongside the profile gains, and PSNR increases by 1.6--1.8\,dB (\cref{tab:anyprior}). On reference columns containing multiple axial peaks, TV reduces W1 by 34\,\%. Representative volume views, column profiles and the complete image-quality results are provided in the supplement.
 
 The optical and prior gains are complementary in these comparisons. Neuron-trained PnP has the lowest random-plate W1, yet still benefits from learning the illumination. Conversely, the learned plate with TV has lower mean W1 than the random plate with neuron-trained PnP ($0.218$ versus $0.271\um$). Thus, improved measurements can benefit recovery even when the reconstruction uses a conventional prior; a stronger learned prior does not remove the optical design opportunity.
+
+\subsection{Separating crossing structures}
+\label{sec:res:crossing}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\linewidth]{crossing_recovery.pdf}
+\caption{\textbf{Testing separation and axial ordering.} Left: TV sections through a two-filament crossing at a $2.56\um$ axial gap, on a common intensity scale (bar: $5\um$). Right: success rates pooled across geometries, axial centers and draws. The 80\,\% criterion is checked separately at each center and all larger tested gaps. The smallest qualifying gap falls from $3.84$ to $2.56\um$ with TV and pretrained PnP; neuron-trained PnP retains $3.84\um$.}
+\label{fig:separation}
+\end{figure*}
+
+The crossing test asks whether improved depth responses yield two separated structures in the correct axial order (\cref{fig:separation}). With TV and pretrained PnP, the smallest tested gap meeting this criterion falls from $3.84$ to $2.56\um$. This holds at both axial centers, including the one outside the weighted mirror pairing used during training. Neuron-trained PnP retains a $3.84\um$ threshold, although success rates increase at smaller gaps. Thus, lower profile error does not necessarily change the smallest gap resolved by a decoder.
+
+Neither plate falsely splits the merged control. Both remain unreliable for closely stacked three-filament structures; unequal-intensity and three-filament results are in the supplement. The crossing experiment supports improved separation in the tested configurations, rather than a general resolution or connectivity guarantee.
 
 \subsection{Comparing optical training objectives}
 \label{sec:res:objective}
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=0.97\linewidth]{objective_comparison.pdf}\\[4pt]
-\includegraphics[width=\linewidth]{crossing_recovery.pdf}
-\caption{\textbf{Objective choice and axial separation.} Top: paired W1 reductions against the implemented coherence and depth-Fisher surrogate ($C=8$, 12 crops), with matched training budgets and cell-bootstrap intervals; seeds change sampling. Bottom: TV crossing sections on a common intensity scale (bar: $5\um$) and success rates pooled across geometries, centres and draws. The 80\,\% threshold is checked at each centre and larger tested gaps. TV and pretrained PnP improve from $3.84$ to $2.56\um$; neuron-trained PnP retains $3.84\um$.}
+\includegraphics[width=\linewidth]{objective_comparison.pdf}
+\caption{\textbf{Comparing decoder-free training criteria.} Paired W1 reductions with our plate relative to the implemented coherence and depth-Fisher alternatives ($C=8$, 12 prespecified crops). Training shares the initial phase, sampling and optimization budget. Filled and open markers denote two seeds that change the sampled positions and angles. Bars show cell-bootstrap 95\,\% intervals.}
 \label{fig:objectives}
-\label{fig:separation}
 \end{figure*}
 
-The proposed criterion compares finite depth alternatives through their complete recorded responses. We compare it with worst-case coherence and a depth-Fisher surrogate under matched initialisation, sampling and optimisation budgets (\cref{fig:objectives}). All three objectives improve upon the random plate. Depth decorrelation gives 13--20\,\% lower W1 than the two alternatives across both optimisation seeds and all three priors. An uncentred ablation performs similarly to the centred objective under neuron-trained PnP. Full losses, absolute errors and the $C=1$ comparison are given in the supplement.
-
-\subsection{Separating crossing structures}
-\label{sec:res:crossing}
-
-The crossing test checks whether better depth responses yield distinct recovered structures (\cref{fig:separation}). With TV and pretrained PnP, the smallest tested gap meeting the separation and ordering criterion falls from $3.84$ to $2.56\um$. This holds at both axial centres, including the centre outside the mirror pairing emphasised during training. Neuron-trained PnP retains a $3.84\um$ threshold, although success rates increase at smaller gaps. Profile accuracy and threshold separation need not coincide: neuron-trained PnP improves W1 by 28\,\% without changing this threshold. Neither plate falsely splits the merged control. Unequal-intensity and three-filament cases are reported in the supplement.
+Our loss aggregates correlations between finite depth pairs. The coherence alternative emphasizes the most similar pairs, while the depth-Fisher surrogate rewards local axial sensitivity. We compare these implemented criteria under matched initialization, sampling and optimization budgets (\cref{fig:objectives}). All three improve upon the random plate; the proposed objective gives 13--20\,\% lower W1 than the alternatives across both optimization seeds and all three priors. An uncentered ablation performs similarly under neuron-trained PnP, so the gain cannot be attributed to centering. Exact losses, absolute errors and the $C=1$ comparison are in the supplement.
 
 \subsection{Measurement and dose trade-offs}
 \label{sec:res:efficiency}
@@ -44,11 +60,15 @@ The crossing test checks whether better depth responses yield distinct recovered
 \label{tab:dose}
 \end{table}
 
-At 0.3 times the reference excitation dose, the learned plate achieves lower W1 than the random plate at full dose under all three priors: reductions are 26\,\% [20, 33], 39\,\% [34, 45] and 22\,\% [16, 28] for TV, pretrained PnP and neuron-trained PnP (\cref{tab:dose}). At equal total dose, 32 learned-plate images also outperform 256 random-plate images under TV and pretrained PnP, while neuron-trained PnP gives similar means. Fewer images receive longer exposures in this comparison. Complete dose and compression curves are given in the supplement.
+Learning also changes the acquisition trade-off. At 0.3 times the reference excitation dose, the learned plate has lower W1 than the random plate at full dose under all three priors: reductions are 26\,\% [20, 33], 39\,\% [34, 45] and 22\,\% [16, 28] for TV, pretrained PnP and neuron-trained PnP (\cref{tab:dose}). This comparison reduces excitation while retaining 32 images.
+
+At equal total dose, 32 learned-plate images yield lower W1 than 256 random-plate images under TV and pretrained PnP. Neuron-trained PnP gives means of $0.206$ and $0.203\um$, respectively. Fewer images receive longer exposures, so this result concerns measurement count rather than an eightfold reduction in acquisition time. Complete dose and compression curves are in the supplement.
 
 \subsection{Noise and optical calibration}
 \label{sec:res:tolerance}
 
-With background and read noise, W1 reductions remain 30\,\%, 53\,\% and 27\,\% under the three priors. Gains also persist when both encoders receive one tenth of the reference dose. For neuron-trained PnP, plate-distance offsets of $\pm0.5\um$ retain reductions of 27--28\,\% after updating the forward model. Uncalibrated pointing errors of 0.005--0.01 in direction cosine retain 13--20\,\% reductions. Uncalibrated axial or lateral plate offsets remove the advantage; a one-feature lateral shift makes W1 11\,\% worse than random (95\,\% CI: 2--23\,\%). The results therefore depend on optical registration as well as encoder design.
+With background and read noise, the learned plate reduces W1 by 30\,\%, 53\,\% and 27\,\% relative to the random plate under the same conditions. Gains also persist when both encoders receive one tenth of the reference dose.
+
+Registration errors distinguish encoder quality from model accuracy. Under neuron-trained PnP, plate-distance offsets of $\pm0.5\um$ retain reductions of 27--28\,\% when the operator is rebuilt using the known simulated offset and parameters are reselected on validation data. The phase plate is not retrained. Keeping the nominal operator instead removes the advantage under axial or lateral displacement: a one-feature lateral shift makes W1 11\,\% worse than random (95\,\% CI: 2--23\,\%). Uncalibrated pointing errors of 0.005--0.01 in direction cosine retain smaller reductions of 13--20\,\%. These tests show the benefit of an accurate forward model; they do not demonstrate estimation of an unknown experimental misalignment.
 
 \FloatBarrier

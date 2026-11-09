@@ -1,4 +1,4 @@
-\section{Learning depth-encoding illumination}
+\section{Decoder-free optical learning}
 \label{sec:imaging}
 
 \begin{figure*}[t]
@@ -9,11 +9,13 @@
 \label{fig:system}
 \end{figure*}
 
+\subsection{Fixed-focus excitation encoding}
+
 \paragraph{Acquisition.}
 For transverse position $\mathbf r=(x,y)$, illumination direction $t$ produces the incident plane wave $u_t^{\mathrm{in}}(\mathbf r)=a_t e^{\mathrm i k_{\mathrm{ex}}\mathbf s_t^\top\mathbf r}$, where $\mathbf s_t$ is the transverse direction-cosine vector and $k_{\mathrm{ex}}=2\pi/\lambda_{\mathrm{ex}}$ for refractive index one. The angular grid is specified in the supplement. The field passes through the fixed phase plate, $\tau(\mathbf r)=e^{\mathrm i\phi(\mathbf r)}$, and propagates a distance $D$ to the intermediate illumination image plane by angular-spectrum propagation. The objective pupil filters the modulated field before a Richards--Wolf relay \cite{richards1959,marian2007} produces the specimen excitation. We use a vectorial model for the high-NA relay, with x-polarised input and intensity $I_t=\sum_{c\in\{x,y,z\}}|E_{t,c}|^2$. Coordinates are in specimen-equivalent units. One fluorescence image is recorded per direction at a fixed detection focus; acquisition is sequential.
 
 \paragraph{Depth encoding.}
-Propagation after the plate creates spatial intensity structure. Changing the incident angle shifts this structure laterally, with displacement increasing with propagation distance. In the paraxial thin-screen approximation, a change $\Delta\mathbf s$ produces $\Delta\mathbf r\approx d\,\Delta\mathbf s$ after distance $d$. Different depths therefore experience different excitation sequences during the scan. Plate defocus places the shear pivot outside the specimen. This relation supplies intuition; the vectorial simulation includes finite-pupil effects and departures from translation.
+Propagation after the plate creates spatial intensity structure. Changing the incident angle shifts this structure laterally, with displacement increasing with propagation distance. In the ideal paraxial thin-screen model, a change $\Delta\mathbf s$ produces $\Delta\mathbf r\approx d\,\Delta\mathbf s$ after distance $d$. Since $d$ varies through the specimen, different depths experience different excitation sequences during the scan. Plate defocus places the shear pivot outside the specimen. This relation explains the encoding principle; the high-NA vectorial model includes finite-pupil effects and departures from pure translation.
 
 \paragraph{Image formation.}
 Let $X_0(\mathbf r,z)$ denote fluorescence response per unit excitation. Under linear, unsaturated fluorescence, the emission source is proportional to $X_0I_t$ \cite{yeh2019}. For laterally shift-invariant detection, the noiseless camera-plane irradiance is
@@ -27,10 +29,12 @@ X_0(\mathbf r',z')I_t(\mathbf r',z')
 where $h_{\mathrm{em}}$ is the emission intensity PSF and $\Omega$ the specimen volume. Camera pixel $p$, occupying $D_p$, records $\hat Y^0_{t,p}=|D_p|^{-1}\int_{D_p}g_t(\mathbf r)\,\mathrm d^2\mathbf r$. Fluorescence contributions add incoherently before pixel averaging. Excitation mixes specimen spatial frequencies before detection blur, allowing the angle sequence to carry information that a single image does not resolve.
 
 \paragraph{Voxel-integrated responses.}
-We evaluate the optics on a finer grid and integrate responses within each reconstruction voxel. If $\bB$ is the fine-grid operator and $\bU$ replicates reconstruction coefficients over their fine-grid cells, the reconstruction operator is $\bA=\bB\bU$. This is the exact restriction of the discretised model to a piecewise-constant basis. Sub-voxel specimen variation remains an approximation error. The assembly formula, residual model and computational details are given in the supplement.
+The illumination can vary within a reconstruction voxel. We therefore evaluate the optics on a finer grid and integrate its responses over the reconstruction basis. If $\bB$ is the fine-grid operator and $\bU$ replicates each reconstruction coefficient over its fine-grid cells, then $\bA=\bB\bU$. This is exact for the discretized model restricted to a piecewise-constant specimen, while sub-voxel specimen variation remains an approximation error. The operator thus describes the camera response of a reconstruction voxel, rather than its response at a single point. Assembly and residual details are in the supplement.
 
-\paragraph{Learning the plate.}
-For a sampled angle set $\mathcal T$, a voxel's restricted operator column collects its camera response across those angles. At lateral position $\mathbf r$ and depth $z$, let $\mathbf a_{\mathbf r,z}$ be this column after centring and unit-norm normalisation. We optimise the phase by minimising
+\subsection{Learning depth signatures}
+
+\paragraph{Training objective.}
+For a sampled angle set $\mathcal T$, a voxel's signature is its column of $\bA$ restricted to the camera samples recorded at those angles. It includes excitation modulation, emission blur and pixel averaging. At lateral position $\mathbf r$ and depth $z$, let $\mathbf a_{\mathbf r,z}$ denote this signature after centering and unit-norm normalization. We optimize the phase through
 \begin{equation}
 \mathcal L(\phi)=\mathbb E_{\mathbf r,\mathcal T}
 \frac{\sum_{z\ne z'}w_{zz'}
@@ -38,7 +42,7 @@ For a sampled angle set $\mathcal T$, a voxel's restricted operator column colle
 {\sum_{z\ne z'}w_{zz'}}.
 \label{eq:plate}
 \end{equation}
-Selected symmetric depth pairs receive weight two; other pairs receive weight one. Squaring penalises correlations of either sign, while normalisation prevents uniform amplification from reducing the loss. Gradients pass through excitation, vectorial propagation, emission blur and pixel averaging. No specimen examples, density model or reconstruction solver enters training.
+Selected depth pairs receive weight two and other distinct pairs receive weight one; the pairing and sampling are specified in the supplement. Squaring prevents positive and negative pair correlations from cancelling, while normalization prevents uniform amplification from reducing the loss. Gradients pass through the excitation and detection model. Optical training uses no specimen examples, fitted measurement distribution or reconstruction solver.
 
 \paragraph{Interpretation.}
-Stack the normalised signatures as columns of $\mathsf S_{\mathbf r}$ and write $\mathsf G_{\mathbf r}=\mathsf S_{\mathbf r}^{\top}\mathsf S_{\mathbf r}$. Comparing one signature with this bank gives its column of $\mathsf G_{\mathbf r}$: the diagonal response is one, and off-diagonal entries are responses at other depths. Apart from constant normalisation, the unweighted loss is $\|\mathsf G_{\mathbf r}-\mathsf I\|_F^2$. The weights emphasise selected axial alternatives. This explains what the criterion reduces in signature space; reconstruction uses the original operator $\bA$.
+Stack the normalized signatures as columns of $\mathsf S_{\mathbf r}$ and write $\mathsf G_{\mathbf r}=\mathsf S_{\mathbf r}^{\top}\mathsf S_{\mathbf r}$. Matching one signature against this bank gives its column of $\mathsf G_{\mathbf r}$: the diagonal is one, and off-diagonal entries measure responses at other depths. Apart from constant normalization, the unweighted loss is the familiar Gram penalty $\|\mathsf G_{\mathbf r}-\mathsf I\|_F^2$ \cite{elad2007}. It compares finite axial alternatives across the sampled depth range. This motivates the criterion but does not guarantee inversion of a volume: responses from different lateral positions also interact. Reconstruction uses the original, uncentered operator $\bA$, and its performance is evaluated separately.
