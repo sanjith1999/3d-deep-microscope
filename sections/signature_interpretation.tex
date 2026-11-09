@@ -1,0 +1,24 @@
+\section{Interpreting the recorded depth signatures}
+\label{sec:s:signatureinterpretation}
+
+The training statistic centers each voxel response over both angles and camera pixels. This differs from centering an excitation sequence over angles alone. The distinction matters because fluorescence responses have a positive mean.
+
+Let $e_z\in\mathbb R_+^T$ be an angular response sequence, with mean $\mu_z>0$, population standard deviation $\sigma_z$ and contrast $\gamma_z=\sigma_z/\mu_z$. If $r_{zz'}$ is the Pearson correlation of two sequences, their mean-kept cosine is exactly
+\begin{equation}
+c_{zz'}=
+\frac{1+r_{zz'}\gamma_z\gamma_{z'}}
+{\sqrt{(1+\gamma_z^2)(1+\gamma_{z'}^2)}}.
+\label{eq:s:cosine}
+\end{equation}
+Thus, weak correlation between fluctuations can coexist with high similarity of the non-negative responses when contrast is low. The identity uses each sequence's own contrast; substituting a median contrast does not reproduce the mean pair similarity.
+
+For intuition about the camera-space statistic, approximate co-lateral voxel responses by $q_z=e_z\otimes g$, with a common detection footprint $g\in\mathbb R_+^P$. This approximation is appropriate when detection varies little across the axial range. Centering $q_z$ over its $TP$ entries gives
+\begin{equation}
+\widetilde c_{zz'}=
+\frac{1-\eta+r_{zz'}\gamma_z\gamma_{z'}}
+{\sqrt{(1-\eta+\gamma_z^2)(1-\eta+\gamma_{z'}^2)}},
+\label{eq:s:footprint}
+\end{equation}
+where $\eta=(\sum_p g_p)^2/(P\|g\|_2^2)$. A localized footprint has small $\eta$, so this statistic can be close to the mean-kept cosine. The actual forward model retains depth-dependent footprints and within-voxel variation; it does not use this separable approximation for training or reconstruction.
+
+\paragraph{Preset example.} The angular-response panel in the main paper uses the field-center voxel location $(24,24)$, fixed in the original dump script before visualization, and the 32 directions of draw 0. Each entry is the noiseless response on that voxel's own camera pixel, summed over its fine-grid cells with their emission weights. Rows are scaled by their own maximum only for display. At this location, median angular contrast over depths increases from 0.58 to 1.53, while mean pairwise cosine decreases from 0.83 to 0.41. The mean fraction of directions exceeding 10\,\% of a depth's maximum decreases from 98\,\% to 33\,\%. These describe one preset position, rather than a field-wide mechanism test or an ablation of contrast. The whole-field Gram matrices are computed separately as described in \cref{sec:s:optics}.

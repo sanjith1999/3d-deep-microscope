@@ -6,7 +6,7 @@ Fluorescent branches that overlap in a camera image may lie at different depths.
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{overview.pdf}
-\caption{\textbf{Learn the illumination, then fix the plate for reconstruction.} (a) Optical training reduces correlations between depth-dependent measurement signatures. (b) The same learned plate improves axial-profile recovery with three reconstruction priors at eightfold measurement compression and equal deposited excitation dose. Means are over 60 neuronal crops; intervals are reported in \cref{tab:anyprior}.}
+\caption{\textbf{Learn the illumination, then fix the plate for reconstruction.} (a) Optical training reduces correlations between depth-dependent measurement signatures. (b) The same learned plate improves axial-profile recovery with three reconstruction priors at eightfold measurement compression and matched nominal excitation dose. Means are over 60 neuronal crops; intervals are reported in \cref{tab:anyprior}.}
 \label{fig:overview}
 \end{figure}
 
@@ -19,6 +19,6 @@ We evaluate the resulting encoder at both the measurement and reconstruction sta
 Our contributions are:
 \begin{enumerate}\itemsep0pt
 \item \textbf{Decoder-free excitation design.} We learn a fixed, defocused phase plate for angle-scanned fluorescence microscopy by reducing correlations between detector-integrated depth signatures, without specimen examples or a reconstruction decoder.
-\item \textbf{Assessment of axial structure.} We connect the optical design to measurement discrimination, full axial-profile recovery and controlled crossing separation, distinguishing these outcomes from centroid accuracy alone.
+\item \textbf{Assessment of axial structure.} We evaluate the optical design through measurement discrimination, axial-profile and centroid accuracy, and controlled crossing separation.
 \item \textbf{Recovery across reconstruction priors.} Paired comparisons demonstrate improvements with TV and two PnP configurations, alongside controls for alternative optical objectives, acquisition budgets, noise and optical registration.
 \end{enumerate}

@@ -1,7 +1,7 @@
 \section{Axial-profile evaluation}
 \label{sec:s:profiles}
 
-\paragraph{Metric.} Axial Wasserstein-1 compares normalized non-negative column profiles \cite{peyre2019}. For column $c$, write $p_{c,\ell}=x_{c,\ell}/\sum_m x_{c,m}$ and $\hat p_{c,\ell}=\hat x_{c,\ell}/\sum_m\hat x_{c,m}$, with cumulative sums $F_{c,\ell}$ and $\hat F_{c,\ell}$. Its discrete value is $\Delta z\sum_\ell|F_{c,\ell}-\hat F_{c,\ell}|$. We average using reference column brightness over columns above 10\,\% of its maximum, with $\Delta z=0.64\um$. Numerical normalization uses a $10^{-12}$ denominator stabilizer. For unit-mass profiles, W1 is at least the absolute centroid difference and is zero only when the profiles coincide. It evaluates depth distributions, not connectivity or total brightness.
+\paragraph{Metric.} Axial Wasserstein-1 compares normalized non-negative column profiles \cite{peyre2019}. For column $c$, write $p_{c,\ell}=x_{c,\ell}/\sum_m x_{c,m}$ and $\hat p_{c,\ell}=\hat x_{c,\ell}/\sum_m\hat x_{c,m}$, with cumulative sums $F_{c,\ell}$ and $\hat F_{c,\ell}$. Its discrete value is $\Delta z\sum_\ell|F_{c,\ell}-\hat F_{c,\ell}|$. We average using reference column brightness over columns above 10\,\% of its maximum, with $\Delta z=0.64\um$. Numerical normalization uses a $10^{-12}$ denominator stabilizer; none of the evaluated reference-selected columns had zero reconstructed intensity. For unit-mass profiles, W1 is at least the absolute centroid difference and is zero only when the profiles coincide. It evaluates depth distributions, not connectivity or total brightness.
 
 \begin{figure}[t]
 \centering
@@ -28,20 +28,36 @@
 \label{tab:s:profilequality}
 \end{table*}
 
-\paragraph{Representative volume.} Before viewing the candidate images, we selected the crop closest to the median of the mean fractional W1 reduction across the three reconstruction methods. Each crop's error is first averaged over its five draws; ties are resolved by crop identifier. This selects SOM006\_cell2\_x7. The representative views use pretrained PnP at draw 0 (\cref{fig:s:neuronpriors,fig:s:profileexample}). Lateral color indicates the depth of the brightest voxel, modulated by maximum intensity with a shared power transform of 0.7. Axial views use a common linear gray scale. This example illustrates depth placement and profile recovery; it is not a neuronal-connectivity demonstration.
+\paragraph{Neuronal example selection.} We rank all 60 crops by the mean fractional W1 change across the three priors, after averaging the five draws, and show ranks 15, 30 and 45. The crop rule was fixed before viewing the images. The selected crops are SOM006\_cell1\_x1, SOM006\_cell3\_x5 and SOM005\_cell1\_x4; every panel uses draw 0. Section and profile locations use reference structure: among interior rows and columns 2--45 with reference peaks away from the first and last planes, the section maximizes the number of qualifying layered columns, with reference energy breaking ties. The profile column has the largest reference signal among the qualifying columns. Boundary exclusions were refined during figure development and applied to all three cases.
+
+\paragraph{Display.} Lateral projections use a common linear range from zero to the reference crop's 99.5th percentile. Axial views use fixed 16-voxel lateral windows around the selected profile column, shifted inward at crop boundaries. For these windows, the shared range ends at the reference window's 99.5th percentile. All reconstructions share the reference range for that view; there is no smoothing, sharpening or per-panel adjustment. The window has the physical aspect ratio of its $10.24\times10.24\um$ extent. Locators mark its position, and the gold line in each supplementary section marks the profile column. Profile curves are normalized to unit mass and share axes within each crop. Some selected columns worsen after learning even when whole-crop W1 improves; none of these neuronal sections demonstrates separation of stacked neurites.
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=0.86\linewidth]{neuron_profiles.pdf}
-\caption{Lateral and axial views of the fixed representative crop with pretrained PnP. Lateral color denotes the brightest voxel's depth. Common intensity scales are used across the reference and reconstructions. W1 values describe the volume, not the projection.}
-\label{fig:s:neuronpriors}
+\includegraphics[width=\linewidth]{volume_recovery.pdf}
+\caption{\textbf{Crop-level axial-profile recovery.} Each point averages five draws at $C=8$ and matched nominal dose. The equality line compares learned and random W1; filled and open markers distinguish 12 prespecified and 48 additional crops. All 60 improve under each method. The horizontal and vertical scales agree within each panel.}
+\label{fig:s:scatter}
 \end{figure*}
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=\linewidth]{profile_example.pdf}
-\caption{\textbf{Axial profiles of the representative neuronal crop.} Columns are all GT signal positions, sorted by reference centroid for display; the same order is used in each panel. Profiles are normalized column-wise and share the intensity range 0--0.45. This displays the distributions evaluated by W1, using the already selected crop and pretrained PnP. Sorting is only a visualization and does not enter reconstruction or evaluation.}
-\label{fig:s:profileexample}
+\includegraphics[width=\linewidth]{neuron_rank15.pdf}
+\caption{\textbf{Rank-15 neuronal example.} Reference and reconstructed lateral projections (top), the marked axial section (middle), and unit-mass profiles at the gold line (bottom). Corresponding views share image scales, and profile axes agree within the crop. Random and learned denote the plates; the priors remain fixed. This case shows reduced smearing, especially under TV and pretrained PnP. At the marked column, neuron-trained PnP has slightly higher profile error after learning despite lower whole-crop W1.}
+\label{fig:s:neuron15}
+\end{figure*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\linewidth]{neuron_rank30.pdf}
+\caption{\textbf{Rank-30 neuronal example.} Display conventions match \cref{fig:s:neuron15}. Visible differences are small in the marked section; the pretrained-PnP profile at this column is less accurate with the learned plate despite lower whole-crop W1. The small faint structure remains weak under all reconstructions.}
+\label{fig:s:neuron30}
+\end{figure*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\linewidth]{neuron_rank45.pdf}
+\caption{\textbf{Rank-45 neuronal example.} Display conventions match \cref{fig:s:neuron15}. This lower-gain example has modest changes in the section and profiles. The three examples are retained by the ranking rule rather than selected for the strongest visible difference.}
+\label{fig:s:neuron45}
 \end{figure*}
 
 \paragraph{Layered columns.} A signal column is layered when its reference profile has at least two peaks, each with height and prominence at least 20\,\% of the column maximum. Of the 60 crops, 59 contain such columns. Under the strict TV reproduction check, their W1 falls from $0.467$ to $0.309\um$, a 33.8\,\% reduction (95\,\% CI: 31.7--36.3\,\%). The relative reduction is not larger than the corresponding centroid improvement. Peak recovery remains incomplete: overall, the learned and random plates recover both outer layers in 12 versus 4\,\% of layered columns with TV, 21 versus 12\,\% with pretrained PnP, and 20 versus 13\,\% with neuron-trained PnP. These peak-based summaries are descriptive.
@@ -81,7 +97,7 @@ The reported threshold requires at least 80\,\% success among the 15 geometry/dr
 \begin{table}[t]
 \centering\small
 \coltab{\input{tables/supplement/profile_compression.tex}}
-\caption{Axial W1 ($\mu$m) versus compression on the 12 prespecified crops at equal total deposited dose. Fewer directions receive longer exposure per image.}
+\caption{Axial W1 ($\mu$m) versus compression on the 12 prespecified crops at matched nominal total dose. Fewer directions receive longer exposure per image.}
 \label{tab:s:profilecompression}
 \end{table}
 
