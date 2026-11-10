@@ -9,7 +9,7 @@ We first verify the physical depth code without learning. Angular scanning throu
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\linewidth]{depth_signatures.pdf}
-\caption{\textbf{Learning changes the depth code before reconstruction.} (a, b) Angular responses of the 16 depth voxels at the preset field-center position, using their corresponding camera pixel and the same 32 directions. Each row is normalized by its own maximum. The learned plate concentrates responses into depth-dependent directions. (c) Poisson measurement divergence between each neuronal volume and a merged-depth alternative preserving its projection and column centroids. Each point averages the matched direction subsets of one eligible crop; the diagonal indicates equal separation. These specified alternatives test measurement discrimination independently of a decoder.}
+\caption{\textbf{Learning changes the depth code before reconstruction.} (a, b) Angular responses of the 16 depth voxels at the preset field-center position, using their corresponding camera pixel and the same 32 directions. Each row is normalized by its own maximum. The learned plate concentrates responses into depth-dependent directions. (c) Poisson measurement divergence between each neuronal volume and a merged-depth alternative preserving its projection and column centroids. Each point averages the matched direction subsets of one eligible crop; the gray diagonal indicates equal separation and the teal dashed line indicates a tenfold increase. These specified alternatives test measurement discrimination independently of a decoder.}
 \label{fig:signatures}
 \end{figure*}
 
@@ -30,6 +30,15 @@ We also test whether this change distinguishes a specific axial rearrangement of
 
 At eightfold measurement compression, the learned plate lowers mean axial-profile error by 41\,\% with TV, 50\,\% with pretrained PnP and 28\,\% with neuron-trained PnP (\cref{tab:anyprior}). W1 improves on all 60 crops under each method. Centroid error falls by 42\,\%, 54\,\% and 30\,\%, respectively, while PSNR rises by 1.6--1.8\,dB. Improvements are present on both the 12 prespecified crops and the 48 crops sampled after parameter selection. A second optimization seed from the same starting phase gives similar gains (supplement).
 
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\linewidth]{neuron_companion.pdf}
+\caption{\textbf{Where axial errors change in a second neuronal volume.} Top: matched axial band views for all three priors. Bottom: the reference lateral projection and column-wise W1 maps; gray marks columns excluded by the reference signal mask. This companion was selected from another animal using the same reference-only rule. One display scale is shared across each row. Panel values are draw-0 signal-weighted crop W1 ($\mu$m). Bars: $5\um$ (axial view), $10\um$ (lateral context).}
+\label{fig:neurons}
+\end{figure*}
+
+\Cref{fig:anyprior,fig:neurons} show the effect on depth-varying neuronal features. The opening example shows reduced axial smearing along a descending dendritic feature with pretrained PnP; the all-prior views in the supplement show the corresponding TV effect. Differences are smaller with the neuron-trained prior, which already suppresses much of the diffuse signal. The views and crops were chosen from reference structure; both examples have typical-to-lower W1 gains rather than being selected for large optical improvements. Depth-slab views and a missed weak feature are shown in the supplement.
+
 The effect is not confined to comparison with the initial phase. In the supporting encoder study on 12 crops with pretrained PnP, learned-plate centroid error is $0.230\um$, compared with $0.422$--$0.438\um$ for three random phase plates and $0.396$--$0.523\um$ for three amplitude masks. Thus, the random initialization is typical of the tested phase plates. These controls assess centroid error and image quality; they do not replicate optical training from independent initial phases.
 
 The optical and prior improvements are complementary. With the learned plate, TV attains a lower mean W1 than neuron-trained PnP with the random plate ($0.218$ versus $0.271\um$, a paired 20\,\% reduction; 95\,\% CI: 16--23\,\%). This is a comparison of these two configurations, not a general ordering of optics and priors. Neuron-trained PnP with the learned plate gives the lowest mean W1 overall. Conversely, the tested in-focus DMD remains near the depth-uniform reference under all three methods (W1 $2.24$--$2.38\um$, reference $2.27\um$ on the 12 control crops), illustrating the importance of the measurement code.
@@ -40,7 +49,7 @@ The optical and prior improvements are complementary. With the learned plate, TV
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\linewidth]{crossings.pdf}
-\caption{\textbf{Controlled crossings separate depth placement from structural separation.} Reference crossings, a TV side view and the axial profile at the crossing illustrate the effect of plate learning. Success curves require resolved peaks and correct arm ordering, across three geometries, two axial centers and five draws. At $C=8$, the learned plate lowers the qualifying equal-branch gap for TV and pretrained PnP, while neuron-trained PnP retains its previous threshold. These phantom tests do not measure resolution or connectivity in neuronal tissue.}
+\caption{\textbf{Controlled axial separation is prior-dependent.} (a) Matched sections through a crossing, using one intensity scale. (b) Mean profile over its four crossing columns. The displayed gap is the learned plate's TV threshold; geometry, center and draw are the first fixed case. (c--e) Success rates across three geometries and five draws at each of two axial centers. Lines pool centers; bands span their rates, rather than confidence intervals. The 80\,\% threshold must hold at each center separately. Bar: $5\um$.}
 \label{fig:crossings}
 \end{figure*}
 

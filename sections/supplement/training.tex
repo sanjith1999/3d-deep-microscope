@@ -1,0 +1,40 @@
+\section{Plate training and objective comparisons}
+\label{sec:s:training}
+
+\paragraph{Signatures and sampling.}
+For each lateral position and depth, we collect the detector-integrated response of its reconstruction voxel over the sampled illumination directions and camera pixels. Four directions and 24 interior lateral positions are sampled per Adam step. Each full-field depth signature therefore has $4\times144$ entries during training. Its mean over all angle--pixel entries is removed before unit-norm normalization. This is not per-pixel temporal centering. Evaluation correlations use the same definition over all 256 directions and all lateral reconstruction positions.
+
+With zero-based reconstruction-plane indices $i,j\in\{0,\ldots,15\}$, off-diagonal weights are
+\begin{equation}
+w_{ij}=\begin{cases}2,&i+j=14,\\1,&i+j\ne14,\end{cases}\qquad i\ne j.
+\end{equation}
+This emphasizes reflected pairs around grid plane 7. It is an implemented weighting choice, not a universal symmetry of a phase screen or a statement that plane 7 is exactly the physical focus. Both orderings of each pair are included and the sum is divided by the total weight. Norm denominators include $10^{-12}$ for numerical stability.
+
+We use 1000 Adam steps with learning rate 0.05. The two training seeds change the sampled positions and directions, starting from the same phase realization and frozen surround. No specimen examples, reconstruction loss or denoiser enter this process. Normalizing a signature removes uniform power scaling from the loss; dose normalization is applied separately when generating evaluation measurements.
+
+\paragraph{Worst-case coherence surrogate.}
+Let $\rho_{ij}$ be the inner product of two centered, unit-norm depth signatures. The comparison uses
+\begin{equation}
+\mathcal L_{\mathrm{coh}}=
+\mathbb E_{\mathbf r,\mathcal T}
+\left[\frac{1}{50}\log\sum_{i\ne j}\exp(50|\rho_{ij}|)\right].
+\end{equation}
+This smooth maximum targets the worst pair rather than the weighted average of squared correlations. It is motivated by coherence-based sensing and PSF design \cite{elad2007,duarte2009,yanny2020}; it does not implement Miniscope3D's full optical design or lateral-shift cross-coherence objective.
+
+\paragraph{Depth Fisher-information surrogate.}
+Let $R$ contain the raw signatures in a sampled batch. The implementation uses $s=R/\operatorname{stopgrad}(\max(\operatorname{mean}R,10^{-30}))+10^{-3}$. Finite differences $s'_z$ are taken over depth-plane index, centrally inside the grid and one-sided at its ends. With brightness treated as a nuisance parameter, the depth-information surrogate is
+\begin{equation}
+\mathcal I_z=\sum_m\frac{(s'_{z,m})^2}{s_{z,m}}
+-\frac{(\sum_m s'_{z,m})^2}{\sum_m s_{z,m}},
+\end{equation}
+where $m$ indexes angle--pixel entries. Training minimizes $-\operatorname{mean}_z\log\max(\mathcal I_z,10^{-12})$. This uses the Schur-complement form of Poisson Fisher information \cite{shechtman2014}, with the stated normalization and discretization. It is an implemented surrogate, not a comparison with every Fisher-based design.
+
+\paragraph{Matched budget and centering ablation.}
+All objectives use the same initial phase, sampled positions/directions, optimizer, learning rate and step count. Reconstruction parameters are validated independently for each resulting operator. These conditions match computational budgets, not convergence rates or optimal hyperparameters for every criterion. The uncentered variant omits mean removal and retains the weights and squared-correlation form. Under neuron-trained PnP at $C=8$, it is essentially tied with the centered version (W1 $0.207$ versus $0.206\um$). Centering is therefore not an established explanation of the gain over the tested alternatives.
+
+\begin{table*}[t]
+\centering\small
+\widetab{\input{tables/supplement/optical_criteria.tex}}
+\caption{Objective comparisons on the 12 prespecified crops at $C=8$. Errors are in $\mu$m; changes compare our plate with the comparator of the same training seed, with paired cell-bootstrap 95\,\% intervals. W1 and centroid are computed from the same completed reconstruction rows. Negative changes favor our criterion.}
+\label{tab:s:objectives}
+\end{table*}

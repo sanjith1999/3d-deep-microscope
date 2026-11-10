@@ -1,0 +1,41 @@
+\section{Neuronal views and display selection}
+\label{sec:s:views}
+
+\paragraph{Reference-only selection.}
+Before opening reconstructions for figure selection, we computed reference features for all 60 crops. Eligible crops had at least 10 skeleton endpoints (the upper quartile) and a 10--90\,\% column-centroid range of at least $3.64\um$ (the median), indicating several branches and substantial depth extent. Eight crops qualified. We ranked them by reference signal in columns with at least two axial peaks. The first was SOM004\_cell2\_x7; the companion was the highest-ranked eligible crop from another animal, SOM006\_cell1\_x7.
+
+After selection, their W1-gain ranks among 60 crops were 52/45/23 and 45/46/43 for TV/pretrained/neuron-trained PnP, where rank 1 is the largest reduction. These are typical-to-lower-gain examples. The opening figure displays pretrained PnP, the prior with the largest cohort-average gain; \cref{fig:s:mainviews} shows all priors for that same crop. No larger reconstructed field exists in this evaluation.
+
+\paragraph{Views and scales.}
+The axial band maximizes reference signal in layered columns over eight consecutive lateral rows ($5.12\um$). Its lateral window spans 24 voxels ($15.36\um$), centered on that reference signal. Lateral context is the full maximum-intensity projection; axial views are maxima over the selected band with true physical aspect ratio and depth increasing downward. Linear display limits are zero and the reference projection's 99.5th percentile, shared across the matched panels of each row. There is no gamma adjustment, smoothing or per-panel rescaling. Error maps use the reference signal mask and a common 0--$2\um$ W1 scale. All displayed volumes use draw 0.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\linewidth]{neuron_comparison.pdf}
+\caption{All three priors for the opening figure's reference-selected crop. Top: matched axial band views; bottom: reference lateral context and column-W1 maps. Gray is outside the reference signal mask. Panel values are signal-weighted crop W1 for this draw, in $\mu$m. Scale bars: $5\um$ in band views and $10\um$ in lateral context.}
+\label{fig:s:mainviews}
+\end{figure*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\linewidth]{neuron_slabs_a.pdf}
+\caption{Depth slabs of the opening neuronal example, with maximum projections over four consecutive depth planes ($2.56\um$ per slab). Reference and all reconstructions share the same linear intensity range across slabs. Slab views expose signal spread into depths absent from the corresponding reference slab. These are qualitative placement comparisons, not branch-separation measurements. Bar: $10\um$.}
+\label{fig:s:slabsa}
+\end{figure*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\linewidth]{neuron_slabs_b.pdf}
+\caption{The companion crop from another animal, with the same depth-slab conventions. Stronger priors reduce diffuse signal for both plates; the optical difference is smaller under neuron-trained PnP. The full views retain features missed by either encoder.}
+\label{fig:s:slabsb}
+\end{figure*}
+
+\paragraph{A feature missed by both plates.}
+We select one column in the companion band using reference signal alone: the layered column with largest reference mass whose two highest peaks are at least three planes apart. At $(x,y)=(18,3)$, a weak shallow peak at plane 2 lies above a deeper peak at plane 9. The shallow peak is 24.5\,\% of the column maximum and carries 7.8\,\% of its signal in planes 1--3. None of the six reconstructions has a matched shallow peak; that signal becomes a low plateau (\cref{fig:s:weakprofile}). This limit coexists with lower average W1 and improved placement of brighter features.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{neuron_weak_profile.pdf}
+\caption{Reference-selected weak-feature column in the companion crop. Profiles are normalized to unit mass. Both plates miss the shallow reference peak under all three priors, despite the lower average W1 of the learned plate. This column was fixed from reference structure before inspecting reconstructions.}
+\label{fig:s:weakprofile}
+\end{figure}

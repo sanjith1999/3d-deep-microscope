@@ -1,0 +1,47 @@
+\section{Measurement, photon and alignment controls}
+\label{sec:s:budgets}
+
+\paragraph{Dose convention.}
+Each encoder's excitation is divided by its mean over the specimen analysis grid and the full 256-direction scan. This fixes the deposited excitation per complete scan. For $k$ directions, exposure is multiplied by $256/k$. Random subsets therefore match nominal dose in expectation, not exactly for each subset. The per-specimen exposure is set from the random plate's full-scan mean signal and reused for every encoder. Equal deposited dose does not force identical detected counts: illumination can correlate differently with the specimen. For the two learned plates, mean detected signal changes by about $-1$ to $-2$\,\% across the 12 crops, with individual changes approximately $-12$ to $+9$\,\%.
+
+\paragraph{Measurement compression.}
+\Cref{tab:s:compression} reports both depth metrics at $C=1,4,8$. These values count all camera samples, not camera images alone. At matched nominal dose, fewer directions mean longer exposure per image. The learned 32-image acquisition gives lower W1 than the 256-image random acquisition for TV and pretrained PnP, but the close neuron-trained-PnP means do not establish equivalence. The TV curve is not monotone in compression: validation can prefer a stronger regularization weight at $C=4$, which smooths neuronal features more than at $C=8$.
+
+\begin{table*}[t]
+\centering\small
+\widetab{\input{tables/supplement/profile_compression.tex}}
+\caption{Measurement budgets on the 12 prespecified crops. W1 and centroid errors are in $\mu$m and come from the same reconstruction rows. $C=1$ uses all 256 directions; $C=4,8$ average five subsets of 64 and 32 directions. No missing independent-initialization results are imputed.}
+\label{tab:s:compression}
+\end{table*}
+
+\paragraph{Noise conditions.}
+The nominal model uses Poisson shot noise. The background condition adds a uniform mean equal to the random plate's mean expected signal for the same exposure, plus independent Gaussian read noise with standard deviation 2 electrons. The known mean background is subtracted before reconstruction. The same background level, exposure and noise protocol are used for each encoder. A separate low-dose condition reduces exposure to one tenth. Scalar reconstruction parameters are revalidated for each changed noise condition, while networks stay fixed. \Cref{tab:s:noise} reports all three methods.
+
+\begin{table*}[t]
+\centering\small
+\widetab{\input{tables/supplement/profile_noise.tex}}
+\caption{Noise controls on 12 crops at $C=8$. Errors are in $\mu$m; changes and cell-bootstrap 95\,\% intervals compare the learned and random plates within the same condition.}
+\label{tab:s:noise}
+\end{table*}
+
+\paragraph{Photon budget.}
+The dose sweep uses factors $0.1$, $0.3$, $1$ and $3$ of the nominal exposure (\cref{tab:s:dose}). At dose $0.3$, learned-plate W1 is $0.234$, $0.302$ and $0.220\um$ for TV, pretrained PnP and neuron-trained PnP, compared with $0.318$, $0.496$ and $0.282\um$ for the random plate at dose 1. These reductions of 26\,\%, 39\,\% and 22\,\% describe the tested simulation and inference budgets. The random curve's flattening between doses 1 and 3 is not evidence of a fundamental photon limit.
+
+\begin{table*}[t]
+\centering\small
+\input{tables/supplement/profile_dose.tex}
+\caption{Dose sweep at $C=8$, 12 crops. W1 and centroid errors ($\mu$m) are computed from the same reconstructions. Each exposure factor is relative to the matched nominal-dose protocol.}
+\label{tab:s:dose}
+\end{table*}
+
+\paragraph{Alignment.}
+Distance perturbations set $D=6.1$ or $7.1\um$. In the characterized case, the operator is rebuilt from the known distance and scalar reconstruction parameters are revalidated; the phase is unchanged. In the nominal-operator case, reconstruction ignores the perturbation. Lateral error shifts the plate by one $0.32\um$ feature. Pointing errors are offsets of 0.005 or 0.01 in transverse direction cosine. All comparisons use neuron-trained PnP, $C=8$, the same 12 crops and five draws.
+
+\Cref{tab:s:alignment} separates these assumptions. Known distance changes retain the optical gain. Ignoring distance or lateral registration can make the learned plate worse than the random one, including an 11\,\% W1 increase for a one-feature lateral shift. Rebuilding an operator with a known perturbation is not an experimentally demonstrated calibration procedure. Phase-quantization experiments are not used to claim a fabricable low-level plate: the simulated surround was not quantized with the trained center.
+
+\begin{table*}[t]
+\centering\small
+\widetab{\input{tables/supplement/profile_alignment.tex}}
+\caption{Alignment controls with neuron-trained PnP. Errors are in $\mu$m; changes compare learned and random plates under the same perturbation. ``Known'' means the offset is supplied to operator assembly and validation; ``nominal operator'' means it is ignored. Positive changes favor the random plate.}
+\label{tab:s:alignment}
+\end{table*}

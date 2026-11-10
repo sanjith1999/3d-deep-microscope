@@ -1,0 +1,26 @@
+\section{Optical implementation and discretization}
+\label{sec:s:optics}
+
+\paragraph{Coordinates and angular scan.}
+The optical axis is $z$ and $\mathbf r=(x,y)$ is transverse position. In the simulated input medium, $n=1$ and $k_{\mathrm{ex}}=2\pi/\lambda_{\mathrm{ex}}$. The incident direction is
+\begin{equation}
+\mathbf k_t/k_{\mathrm{ex}}=
+(\cos\theta_t\cos\alpha_t,\cos\theta_t\sin\alpha_t,\sin\theta_t).
+\end{equation}
+Thus, $\theta$ is the implemented vertical-plane parameter, not a polar angle from the optical axis. We use $\alpha_m=m\pi/16$, $m=0,\ldots,15$, with eight equally spaced $\theta$ values in each of $[\pi/6,\pi/3]$ and $[2\pi/3,5\pi/6]$. The second interval changes the sign of the transverse component while retaining positive longitudinal propagation. The resulting 256 directions are distinct. For $C=4$ and $8$, five fixed random subsets of 64 and 32 directions are shared across encoders.
+
+\paragraph{Propagation and sampling.}
+The incident field is uniformly $x$-polarized before phase modulation. Angular-spectrum propagation over $D=6.6\um$ carries the field from the plate to the intermediate illumination image plane. A finite NA-0.8 pupil filters the modulated angular spectrum before a vectorial Richards--Wolf relay generates three specimen-field components \cite{richards1959,marian2007}. Incident direction and transmitted angular spectrum are different quantities; the input direction range need not lie entirely inside the relay pupil. We sum the component intensities. Detection uses an NA-0.1 emission intensity PSF. Excitation and emission share $532$\,nm in this simulation; a physical implementation would use the actual spectral bands. No scattering, aberration or fluorescence saturation is modeled.
+
+The specimen field is sampled laterally at $0.08\um$ and axially at $0.32\um$. Lateral binning gives an isotropic $0.32\um$ analysis grid of $32\times96\times96$ cells. The reconstruction basis averages $2\times2\times2$ analysis cells into each $0.64\um$ voxel. Camera pixels average $8\times8$ analysis samples laterally, giving $2.56\um$ pixel pitch and $12\times12$ samples per image. Distances and pitches are expressed in specimen-equivalent coordinates.
+
+\paragraph{Aperture and control encoders.}
+The phase plate has $0.32\um$ features and initially independent phases uniform on $[0,2\pi)$. It is simulated on an aperture twice the specimen width, then the excitation is cropped to the specimen. Only the central plate region is optimized; its independent random surround remains fixed. The defocused amplitude controls use binary masks with the same feature pitch and 50\,\% open pixels at the same plate plane. The in-focus DMD uses independently drawn binary patterns relayed into focus. These are controls for the tested fixed-focus acquisition, not a comparison against all DMD microscopy configurations.
+
+A finite illumination edge can itself encode depth when tilted. The plate-free control therefore uses an aperture four times the specimen width. Its residual central/border angular modulation is about 1.0/1.2\,\%, compared with 5.6/37\,\% at twice the width. The $4\times$-aperture plate-free study is kept separate from the $2\times$ phase/mask comparison. The random plate changes little across these apertures (centroid error $0.446$ versus $0.431\um$ at $C=8$, pretrained PnP), but that does not make their learned-versus-plate-free contrast a single-aperture experiment.
+
+\paragraph{Integrated operator.}
+The detection footprint $g_{p,i}$ includes the emission PSF, camera-pixel average and fine-cell integration weight. Reusing it in $A_{(t,p),j}=\sum_{i\in\mathcal P_j}I_t(\mathbf r_i,z_i)g_{p,i}$ avoids propagating each reconstruction basis element separately. Equality $\bA=\bB\bU$ is an algebraic statement for the selected piecewise-constant basis. It does not assert that a real specimen is constant within a voxel. Test measurements use $\bB\bx_f$, while the reference for reconstruction is $\bR\bx_f$, retaining the residual $\bB(\bx_f-\bU\bR\bx_f)$.
+
+\paragraph{Computational scope.}
+The assembly complexity compares direct summation after detection-footprint precomputation with one FFT-based forward simulation per reconstruction basis element. It is not a lower bound for all alternative implementations. Representative timings on an RTX 4500 Ada are approximately 20 minutes for 1000 optical-training steps, six minutes to assemble a full plate operator, 4--6 seconds for a PnP reconstruction at $C=8$, and 17 seconds for TV. These are implementation timings rather than a controlled hardware-speed comparison.

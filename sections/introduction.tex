@@ -3,12 +3,12 @@
 
 Three-dimensional fluorescence microscopy must distinguish structures that overlap in projection but occupy different depths. When their measurement responses are similar, a sharp reconstruction may still place fluorescence at the wrong axial locations. Reconstruction priors help select a volume, but their success depends on the depth information present in the images \cite{bhadra2021,gottschling2025}. We investigate whether learning the excitation illumination can improve axial recovery across reconstruction methods.
 
-\begin{figure}[t]
+\begin{figure*}[t]
 \centering
-\includegraphics[width=\linewidth]{overview.pdf}
-\caption{\textbf{Optical learning improves depth recovery across reconstruction methods.} (a) Phase maps and depth-signature correlations before and after training. (b) Mean centroid depth error for the random and learned plates under TV and two PnP decoders, at eightfold measurement compression and matched excitation dose. The in-focus DMD is an optical control.}
+\includegraphics[width=\linewidth]{neuron_overview.pdf}
+\caption{\textbf{Learning the illumination improves axial recovery across priors.} (a) Full lateral projections and matched axial band views with pretrained PnP, the prior with the largest mean gain ($C=8$, draw 0). The crop and outlined band were selected from reference structure, before viewing reconstruction gains. Band views maximize over the outlined $5.1\um$ strip; depth increases downward. Each row shares one linear display scale. (b) Mean axial-profile W1 over the 60 test crops, using the same learned plate with all three priors. Centroid errors and paired intervals are in \cref{tab:anyprior}. Bars: $10\um$ (projections), $5\um$ (band views, true aspect).}
 \label{fig:anyprior}
-\end{figure}
+\end{figure*}
 
 Our system encodes depth through angle-scanned excitation. A plane wave illuminates a fixed, defocused phase plate, producing a spatially structured field in the specimen. Changing the incident angle shifts the excitation differently at different depths, so structures at different axial positions experience distinct sequences of illumination. A camera records one fluorescence image per angle at a fixed detection focus. Only the input angle changes; the specimen, plate and detection focus remain stationary.
 

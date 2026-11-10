@@ -1,0 +1,40 @@
+\section{Full reconstruction and optical-control results}
+\label{sec:s:results}
+
+\paragraph{Both training seeds.}
+\Cref{tab:s:main} gives the complete 60-crop comparison, including both optical sampling seeds. Each learned plate lowers W1 on every crop under each prior. Seed 0 improves centroid error on 59 of 60 crops for neuron-trained PnP and all crops for the other methods. Seed 1 improves centroid error on all crops. Both plates start from the same phase realization, so these results test sampling variability, not independence of initialization.
+
+\begin{table*}[t]
+\centering\small
+\widetab{\input{tables/supplement/main_metrics.tex}}
+\caption{Complete main comparison at $C=8$, 60 crops and five draws per crop, with matched nominal dose. Metrics in each row come from the same reconstructions. Changes compare a learned plate with its random initialization under the same prior; brackets are cell-bootstrap 95\,\% intervals.}
+\label{tab:s:main}
+\end{table*}
+
+\begin{table*}[t]
+\centering\small
+\widetab{\input{tables/supplement/profile_extended.tex}}
+\caption{Separate evaluation on the prespecified and randomly sampled crops. Negative changes favor the learned plate. Both sets contain crops from the same six cells; the 48 additional crops expand spatial coverage rather than biological replication.}
+\label{tab:s:extended}
+\end{table*}
+
+\paragraph{Reference-based and random crops.}
+\Cref{tab:s:extended} separates the 12 prespecified crops from the 48 later random crops. All methods retain positive optical gains on the latter, with parameters already fixed. This addresses dependence on the initial structure-score selection, while preserving the cell and animal limitations of the dataset.
+
+\paragraph{Comparison with untrained encoders.}
+The separate centroid study in \cref{tab:s:untrained} uses pretrained PnP, the 12 prespecified crops and the expanded validation grid. Its phase, amplitude and DMD rows share the same $2\times$ aperture, relay, photon model, direction draws and tuning procedure. Learned centroid errors of $0.230$--$0.234\um$ are below all three random phase plates ($0.422$--$0.438\um$) and amplitude masks ($0.396$--$0.523\um$). The learned seed-0 plate reduces centroid error by 42--56\,\% against the amplitude masks and 45--47\,\% against the random phase plates. This shows that its initialization is representative of these controls. It does not show that learning succeeds from other initializations.
+
+\begin{table}[t]
+\centering\small
+\coltab{\input{tables/supplement/untrained_control.tex}}
+\caption{Untrained-encoder control study at $C=8$: 12 prespecified crops, pretrained PnP. W1 was not computed in this study. The plate-free row uses a $4\times$ aperture in a separate study; its own random-plate control gives $0.446\um$/34.82\,dB. Other rows use $2\times$ apertures. Do not interpret the plate-free row as an exactly matched cross-aperture contrast.}
+\label{tab:s:untrained}
+\end{table}
+
+The two in-focus DMD pattern sets remain close in centroid error and image quality. Their low depth discrimination concerns this fixed-focus control, not all amplitude encoders. Indeed, the defocused amplitude masks recover depth and can match random phase plates in centroid error. The plate-free scan also retains weak finite-aperture diversity, so its observations are not an ideal zero-depth-information system.
+
+\paragraph{Point-emitter diagnostics.}
+For 25 interior lateral locations and 16 depths, we compare measurement columns under a Gaussian approximation of shot noise with unknown emitter brightness. Random phase plates assign the wrong depth in 1.5--1.7\,\% of cases with 32 directions; amplitude masks give about 5\,\%, the in-focus DMD about 25\,\%, and the plate-free control about 89\,\%. These are model-based emitter diagnostics, not measured resolution of dense structures. The plate-free diagnostic uses the original $2\times$ aperture; its neuronal control in \cref{tab:s:untrained} uses $4\times$.
+
+\paragraph{Comparisons across priors.}
+A descriptive pairing of learned plate + TV against random plate + neuron-trained PnP gives 19.6\,\% lower W1 (95\,\% CI: 16.4--22.5\,\%), improving 56 of 60 crops. It does not establish a general dominance relation: learned plate + pretrained PnP has 7\,\% higher mean W1 than random plate + neuron-trained PnP (interval $-2.6$ to $+17.3$\,\%). Optical and prior choices interact, and neuron-trained PnP with the learned plate performs best overall.

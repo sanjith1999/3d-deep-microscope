@@ -1,0 +1,35 @@
+\section{Complementary uncertainty analyses}
+\label{sec:s:uncertainty}
+
+These analyses ask different questions from the main reconstruction tests. Centroid intervals quantify an empirical depth error rate after reconstruction. Set-membership bounds assess admissible voxel intensities without a learned prior. Neither supplies a connectivity guarantee for the neuronal reconstructions.
+
+\paragraph{Conformal centroid intervals.}
+We form $\hat z_c\pm\lambda$ around each reconstructed axial centroid. For a volume, $L(\lambda)$ is the reference-signal-weighted fraction of evaluated columns whose true centroid lies outside the interval. It is bounded by one and decreases with $\lambda$. Conformal risk control \cite{angelopoulos2024crc} selects
+\begin{equation}
+\hat\lambda=\inf\left\{\lambda:\frac{n}{n+1}\hat R_n(\lambda)+\frac1{n+1}\le\alpha\right\},
+\end{equation}
+where $\hat R_n$ averages the loss over $n$ calibration volumes. Under exchangeability of the calibration volumes and a new volume, $\mathbb E[L(\hat\lambda)]\le\alpha$. This controls expected signal-weighted miscoverage, not each column's or specimen's coverage.
+
+We use neuron-trained PnP at $C=8$, target $\alpha=0.1$ and encoder-specific calibration on 35 non-overlapping crops from a held-out SOM009 stack. A 240-crop overlapping set is a sensitivity analysis, not independent replication. On the 12 prespecified test crops, the learned seed-0 half-width decreases from $0.646$ to $0.474\um$ (26.7\,\%), with empirical miscoverage 0.075 versus 0.060 for the random plate (\cref{tab:s:conformal}). The test animals differ from the calibration animal, so exchangeability is not established; observed miscoverage is empirical rather than a cross-animal guarantee.
+
+\begin{table}[t]
+\centering\small
+\coltab{\input{tables/supplement/conformal_intervals.tex}}
+\caption{Calibrated centroid half-widths and empirical signal-weighted test miscoverage. The 240-crop analysis reuses overlapping regions. Seed 1 gives $0.486\um$ on the primary 35-crop calibration set.}
+\label{tab:s:conformal}
+\end{table}
+
+Prespecified connectivity calls based on reconstructed bottlenecks did not meet their error target: false-disconnected rates were 0.23--0.48 against a 0.15 limit, with no connected test call. We therefore do not convert centroid calibration into error-controlled connectivity statements.
+
+\paragraph{Voxel bounds without a learned prior.}
+Given $\bx\in[0,1]^N$, define
+\begin{equation}
+\mathcal C(\by)=\{\bx:\ \ell_i\le(\bA\bx)_i\le h_i,\ 0\le\bx\le1\}.
+\end{equation}
+For a nonempty set, minimizing and maximizing $x_j$ gives the smallest and largest voxel intensities compatible with the stated constraints \cite{milanese1991,haldar2023}. We solve these linear programs with HiGHS \cite{huangfu2018}. The reconstruction's quadratic data term does not automatically place its output in this set.
+
+The reduced field contains $4\times12\times12$ reconstruction voxels and $3\times3$ camera samples per image, using 32 fixed directions. Thus, $N=576$ and $M=288$; this is a separate geometry, not the full-field $C=8$ experiment. Plates are trained separately on this reduced geometry; no reflected-depth pair qualifies for the full-grid weighting rule, so all off-diagonal weights are one.
+
+The ancillary Gaussian model uses reference full-scan mean $m_p$ for the random plate and mean $m_e$ for an encoder, with $\sigma_e=m_p10^{-q/10}\sqrt{k/256}\sqrt{m_e/m_p}$ and reference parameter $q=15$. This defines the convention explicitly rather than treating $q$ as a standard RMS SNR. Intervals use $y_i\pm z\sigma_e$, where $z=\Phi^{-1}(1-0.05/(2\cdot2880))$. The fixed family covers candidate measurement rows and projections, giving at least 95\,\% simultaneous coverage under the stated Gaussian model and exact reduced linear operator. Unmodeled optical or specimen discretization error would require a separate allowance.
+
+Across 24 synthetic phantoms and three noise realizations each, the learned reduced-field plates narrow mean voxelwise bound width by about 21\,\%. On 48 neuronal windows, however, bounds span the full admissible range for every voxel at the tested settings. Better neuronal reconstruction in the main study therefore does not imply unique voxel intensities or uniquely identified connections. These negative neuronal results are retained as limits of the measurement-only analysis, not as optical-learning performance measures.

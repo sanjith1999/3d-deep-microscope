@@ -3,19 +3,26 @@
 
 We evaluate the same learned plate with three reconstruction methods: TV, pretrained PnP and neuron-trained PnP. None participates in optical training. Each method uses the operator for its encoder, with the prior held fixed across encoders. Scalar reconstruction parameters are selected separately for each encoder and measurement budget on held-out validation volumes.
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{reconstruction.pdf}
+\caption{\textbf{Reconstruction with interchangeable priors.} A quadratic data update couples the images and forward model to a shared volume. Prior and dual updates feed back through ADMM. Each run uses one prior family; the networks remain fixed across encoders. Branch transforms $\mathsf C_j$ are identities for PnP and the gradient/identity for TV. TV enforces its box constraint in the loop; PnP clips the final estimate.}
+\label{fig:reconstruction}
+\end{figure}
+
 \paragraph{Total variation.}
 The non-learned baseline minimizes $\tfrac12\|\bA\bx-\by\|_2^2+\lambda\|\nabla\bx\|_{2,1}$ subject to $\bx\in[0,1]^N$, where $\|\nabla\bx\|_{2,1}$ is isotropic three-dimensional TV \cite{rudin1992}. We solve this problem using ADMM \cite{boyd2011}.
 
 \paragraph{Plug-and-play reconstruction.}
 PnP combines the measurement model with denoisers acting as implicit priors \cite{venkatakrishnan2013,kamilov2023pnp}. Following multi-slice fusion \cite{majee2021}, we denoise complementary slices of a shared volume. For orientation $o\in\{xy,yz,zx\}$, $\mathsf P_o$ rearranges the volume into slices processed independently by a two-dimensional denoiser, giving $\mathcal D_o=\mathsf P_o^{-1}\mathcal D\mathsf P_o$.
 
-PnP-ADMM alternates a quadratic measurement-consistency update with denoising and sparsity updates. Let $\mathcal J$ index the active prior branches, with penalties $\rho_j$, auxiliary volumes $\mathbf v_j$ and scaled dual variables $\mathbf d_j$. The volume update is
+PnP-ADMM alternates a quadratic measurement-consistency update with denoising updates. Let $\mathcal J$ index the active prior branches, with penalties $\rho_j$, auxiliary volumes $\mathbf v_j$ and scaled dual variables $\mathbf d_j$. The volume update is
 \begin{equation}
 \bx^{k+1}=\arg\min_{\bx}\tfrac12\|\bA\bx-\by\|_2^2+
 \sum_{j\in\mathcal J}\tfrac{\rho_j}{2}\|\bx-\mathbf v_j^k+\mathbf d_j^k\|_2^2,
 \label{eq:admm}
 \end{equation}
-solved by conjugate gradients. Each branch then applies its denoiser or soft-thresholding operator $\mathcal F_j$:
+solved by conjugate gradients. Each branch then applies its denoising operator $\mathcal F_j$:
 \begin{equation}
 \begin{aligned}
 \mathbf v_j^{k+1}&=\mathcal F_j(\bx^{k+1}+\mathbf d_j^k),\\
@@ -25,4 +32,4 @@ solved by conjugate gradients. Each branch then applies its denoiser or soft-thr
 \end{equation}
 These are PnP updates; a generic denoiser need not be the proximal map of an explicit regularizer.
 
-\emph{Pretrained PnP} uses a natural-image DnCNN \cite{zhang2017} along the three slice orientations and a sparsity branch. \emph{Neuron-trained PnP} replaces the slice denoiser with a neuron-trained 2D DnCNN and adds a neuron-trained 3D denoising branch. Thus, the latter changes both the training distribution and volumetric prior. The networks are trained on separate neuronal data and remain fixed during reconstruction. Both PnP variants start from normalized back-projection and clip the final estimate to $[0,1]$; TV enforces its box constraint during optimization. Network architectures, branch weights, stopping rules and parameter selection are given in the supplement.
+\emph{Pretrained PnP} uses a natural-image DnCNN \cite{zhang2017} along the three slice orientations. \emph{Neuron-trained PnP} replaces the slice denoiser with a neuron-trained 2D DnCNN and adds a neuron-trained 3D denoising branch. Thus, the latter changes both the training distribution and volumetric prior. An optional $\ell_1$ branch is weighted by validation and is inactive in every main-comparison setting. The networks are trained on separate neuronal data and remain fixed during reconstruction. Both PnP variants start from normalized back-projection and clip the final estimate to $[0,1]$; TV enforces its box constraint during optimization. Network architectures, branch weights, stopping rules and parameter selection are given in the supplement.

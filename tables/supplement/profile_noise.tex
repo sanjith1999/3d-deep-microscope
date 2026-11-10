@@ -1,0 +1,15 @@
+\begin{tabular}{@{}llcccccc@{}}
+\toprule
+Condition & Reconstruction & W1, random & W1, learned & Centroid, random & Centroid, learned & W1 change & Centroid change\\
+\midrule
+Shot noise & TV & 0.318 & 0.196 & 0.243 & 0.153 & $-38$\,\% [$-43$, $-34$] & $-37$\,\% [$-41$, $-34$]\\
+Shot noise & Pretrained PnP & 0.496 & 0.277 & 0.431 & 0.231 & $-44$\,\% [$-50$, $-39$] & $-46$\,\% [$-53$, $-41$]\\
+Shot noise & Neuron-trained PnP & 0.282 & 0.206 & 0.221 & 0.163 & $-27$\,\% [$-34$, $-20$] & $-26$\,\% [$-35$, $-18$]\\
+Background + read noise & TV & 0.324 & 0.227 & 0.249 & 0.180 & $-30$\,\% [$-38$, $-22$] & $-28$\,\% [$-36$, $-20$]\\
+Background + read noise & Pretrained PnP & 0.627 & 0.297 & 0.548 & 0.247 & $-53$\,\% [$-57$, $-48$] & $-55$\,\% [$-60$, $-50$]\\
+Background + read noise & Neuron-trained PnP & 0.288 & 0.210 & 0.228 & 0.166 & $-27$\,\% [$-35$, $-19$] & $-27$\,\% [$-36$, $-18$]\\
+0.1 dose & TV & 0.466 & 0.292 & 0.365 & 0.236 & $-37$\,\% [$-45$, $-29$] & $-35$\,\% [$-44$, $-28$]\\
+0.1 dose & Pretrained PnP & 0.834 & 0.407 & 0.733 & 0.352 & $-51$\,\% [$-57$, $-45$] & $-52$\,\% [$-58$, $-45$]\\
+0.1 dose & Neuron-trained PnP & 0.345 & 0.239 & 0.269 & 0.186 & $-31$\,\% [$-37$, $-24$] & $-31$\,\% [$-38$, $-24$]\\
+\bottomrule
+\end{tabular}
