@@ -1,0 +1,11 @@
+\begin{tabular}{@{}l ccc ccc cc@{}}
+\toprule
+ & \multicolumn{3}{c}{Axial-profile W1 $\downarrow$} & \multicolumn{3}{c}{Centroid error $\downarrow$} & \multicolumn{2}{c}{PSNR $\uparrow$}\\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}\cmidrule(l){8-9}
+Reconstruction & Random & Learned & Reduction [95\,\% CI] & Random & Learned & Reduction & Random & Learned\\
+\midrule
+TV & 0.371 & 0.218 & 41\,\% [38, 45] & 0.259 & 0.150 & 42\,\% & 36.70 & 38.29\\
+Pretrained PnP & 0.579 & 0.290 & 50\,\% [47, 53] & 0.490 & 0.224 & 54\,\% & 35.72 & 37.56\\
+Neuron-trained PnP & 0.271 & 0.195 & 28\,\% [26, 29] & 0.197 & 0.139 & 30\,\% & 38.01 & 39.60\\
+\bottomrule
+\end{tabular}

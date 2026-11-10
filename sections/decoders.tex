@@ -1,35 +1,28 @@
-\section{Decoders and depth intervals}
+\section{Reconstruction with fixed priors}
 \label{sec:decoders}
 
-We evaluate the learned optical encoder using three reconstruction methods: total variation (TV), plug-and-play (PnP) with a pretrained denoiser, and PnP with neuron-trained denoisers. None is trained jointly with the optical encoder. Each method uses the corresponding forward operator, while its prior remains fixed across encoders. Scalar reconstruction parameters are selected separately for each encoder and compression setting using held-out validation volumes.
+We evaluate the same learned plate with three reconstruction methods: TV, pretrained PnP and neuron-trained PnP. None participates in optical training. Each method uses the operator for its encoder, with the prior held fixed across encoders. Scalar reconstruction parameters are selected separately for each encoder and measurement budget on held-out validation volumes.
 
-\paragraph{Total variation.} As a non-learned baseline, we reconstruct the volume using box-constrained least squares with isotropic three-dimensional total variation regularisation \cite{rudin1992}. The resulting optimisation problem is solved using the alternating direction method of multipliers (ADMM) \cite{boyd2011}.
+\paragraph{Total variation.}
+The non-learned baseline minimizes $\tfrac12\|\bA\bx-\by\|_2^2+\lambda\|\nabla\bx\|_{2,1}$ subject to $\bx\in[0,1]^N$, where $\|\nabla\bx\|_{2,1}$ is isotropic three-dimensional TV \cite{rudin1992}. We solve this problem using ADMM \cite{boyd2011}.
 
-\paragraph{Multi-slice plug-and-play.} PnP reconstruction combines the physical measurement model with denoisers acting as implicit priors \cite{venkatakrishnan2013,kamilov2023pnp}. Following multi-slice fusion \cite{majee2021}, we denoise a shared three-dimensional volume along complementary orientations. For $o\in\{xy,yz,zx\}$, $\mathsf P_o$ rearranges the volume into two-dimensional slices, which $\mathcal D$ processes independently, giving $\mathcal D_o=\mathsf P_o^{-1}\mathcal D\mathsf P_o$.
+\paragraph{Plug-and-play reconstruction.}
+PnP combines the measurement model with denoisers acting as implicit priors \cite{venkatakrishnan2013,kamilov2023pnp}. Following multi-slice fusion \cite{majee2021}, we denoise complementary slices of a shared volume. For orientation $o\in\{xy,yz,zx\}$, $\mathsf P_o$ rearranges the volume into slices processed independently by a two-dimensional denoiser, giving $\mathcal D_o=\mathsf P_o^{-1}\mathcal D\mathsf P_o$.
 
-We combine measurement consistency, denoising and sparsity through PnP-ADMM. Let $\mathcal J$ index the active branches, with penalties $\rho_j$, auxiliary volumes $\mathbf v_j$ and scaled dual variables $\mathbf d_j$. Each iteration solves
+PnP-ADMM alternates a quadratic measurement-consistency update with denoising and sparsity updates. Let $\mathcal J$ index the active prior branches, with penalties $\rho_j$, auxiliary volumes $\mathbf v_j$ and scaled dual variables $\mathbf d_j$. The volume update is
 \begin{equation}
-\bx^{k+1}=\arg\min_{\bx}\tfrac12\|\bA\bx-\by\|_2^2+\textstyle\sum_{j\in\mathcal J}\tfrac{\rho_j}{2}\|\bx-\mathbf v_j^k+\mathbf d_j^k\|_2^2
+\bx^{k+1}=\arg\min_{\bx}\tfrac12\|\bA\bx-\by\|_2^2+
+\sum_{j\in\mathcal J}\tfrac{\rho_j}{2}\|\bx-\mathbf v_j^k+\mathbf d_j^k\|_2^2,
 \label{eq:admm}
 \end{equation}
-using conjugate gradients. The branches then apply denoising or soft thresholding, followed by
-\begin{equation*}
-\mathbf d_j^{k+1}=\mathbf d_j^k+\bx^{k+1}-\mathbf v_j^{k+1}.
-\end{equation*}
-
-\emph{Pretrained PnP} uses a natural-image DnCNN \cite{zhang2017} across the three slice orientations and a sparsity branch. \emph{Learned PnP} replaces this denoiser with a neuron-trained 2D network shared across orientations and adds a volumetric branch with a neuron-trained 3D network \cite{zhang2021drunet,kamilov2023pnp}. Both variants retain the same measurement-consistency formulation. We initialise from normalised back-projection and clip the final estimate to $[0,1]$. Iteration counts, penalties and parameter-selection procedures are specified in the supplement.
-
-\paragraph{Conformal depth intervals.} To quantify uncertainty in recovered depth, we construct calibrated intervals around the axial intensity centroids of reconstructed volumes. For each lateral column $c$ containing signal, let $\hat z_c$ and $z_c$ denote the reconstructed and reference centroids. We report intervals $\hat z_c\pm\lambda$, where $\lambda$ is a common half-width calibrated on held-out volumes separately for each encoder. For each volume, the loss $L(\lambda)$ measures the signal-weighted fraction of columns whose reference depths fall outside their intervals. Since $L(\lambda)$ is bounded by one and non-increasing in $\lambda$, conformal risk control \cite{angelopoulos2024crc} selects
+solved by conjugate gradients. Each branch then applies its denoiser or soft-thresholding operator $\mathcal F_j$:
 \begin{equation}
-\hat\lambda=\inf\Big\{\lambda:\ \tfrac{n}{n+1}\hat R_n(\lambda)+\tfrac{1}{n+1}\le\alpha\Big\}
-\label{eq:crc}
+\begin{aligned}
+\mathbf v_j^{k+1}&=\mathcal F_j(\bx^{k+1}+\mathbf d_j^k),\\
+\mathbf d_j^{k+1}&=\mathbf d_j^k+\bx^{k+1}-\mathbf v_j^{k+1}.
+\end{aligned}
+\label{eq:prior}
 \end{equation}
-where $\hat R_n(\lambda)$ is the mean loss over $n$ calibration volumes. Provided the calibration volumes and the new volume are exchangeable, this gives $\mathbb E[L(\hat\lambda)]\le\alpha$, with expectation over both calibration and the new volume. This controls expected signal-weighted miscoverage; it does not guarantee coverage for each column or specimen, or establish neuronal connectivity.
+These are PnP updates; a generic denoiser need not be the proximal map of an explicit regularizer.
 
-\paragraph{Bounds without the learned prior.} A reconstruction selects one volume, even when several volumes are consistent with the measurements. To assess this ambiguity without relying on the learned reconstruction prior, we use set-membership estimation \cite{milanese1991,haldar2023}. Given the intensity bounds $\bx\in[0,1]^N$, we define the measurement-consistency set
-\begin{equation*}
-\C(\by)=\{\bx\in[0,1]^N:\ \ell_i\le(\bA\bx)_i\le h_i\},
-\end{equation*}
-where the intervals $[\ell_i,h_i]$ jointly contain the noise-free measurements with a stated probability under the assumed noise model. For a non-empty consistency set, minimising and maximising $x_j$ over $\C(\by)$ gives the smallest and largest intensities consistent with these constraints. Both bounds are computed by linear programming. Their difference measures the remaining ambiguity in that voxel's intensity.
-
-The connection to optical learning can be understood through a two-voxel example. Let $\mathbf a_1,\mathbf a_2$ be unit-norm measurement columns with correlation $\rho$, where $|\rho|<1$. For coefficient perturbations satisfying $\|\mathbf a_1\delta x_1+\mathbf a_2\delta x_2\|_2\le\varepsilon$, allowing $\delta x_2$ to vary freely gives $|\delta x_1|\le\varepsilon/\sqrt{1-\rho^2}$. Highly correlated responses therefore permit greater ambiguity. This provides intuition for reducing depth correlations, rather than a guarantee for the full system, which couples many voxels, includes intensity constraints, and uses raw measurement columns rather than the centred training signatures. We compute the actual bounds on reduced fields where the linear programs are tractable.
+\emph{Pretrained PnP} uses a natural-image DnCNN \cite{zhang2017} along the three slice orientations and a sparsity branch. \emph{Neuron-trained PnP} replaces the slice denoiser with a neuron-trained 2D DnCNN and adds a neuron-trained 3D denoising branch. Thus, the latter changes both the training distribution and volumetric prior. The networks are trained on separate neuronal data and remain fixed during reconstruction. Both PnP variants start from normalized back-projection and clip the final estimate to $[0,1]$; TV enforces its box constraint during optimization. Network architectures, branch weights, stopping rules and parameter selection are given in the supplement.

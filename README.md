@@ -11,7 +11,7 @@ Locally, run `make`, `make main` or `make supplement`.
 - `references.bib`: shared bibliography
 - `docs/writing.md`: editing conventions
 
-Paper versions are on `paper/cvpr/init-draft`, `paper/cvpr/struct-amb` and
-`paper/cvpr/dec-agn-depth`. The original manuscript and extended experimental
+Paper versions are on `paper/cvpr/init-draft`, `paper/cvpr/struct-amb`,
+`paper/cvpr/dec-agn-depth`, `paper/cvpr/depth-sep` and `paper/cvpr/axial-rec`. The original manuscript and extended experimental
 record are on `paper/manuscript`. Experimental code is on the `base-mdl` and
 `experiment/*` branches. Each paper version is a self-contained LaTeX project.
