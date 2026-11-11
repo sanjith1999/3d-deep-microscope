@@ -1,6 +1,31 @@
 \maketitlesupplementary
 
-\Crefrange{sec:s:optics}{sec:s:evaluation} specify the optical model, training, reconstruction and evaluation. Full results, structural tests and acquisition controls follow in \cref{sec:s:results,sec:s:structure,sec:s:budgets}; \cref{sec:s:uncertainty,sec:s:views} give complementary uncertainty analyses and neuronal display conventions. Section, equation and figure numbers without an S prefix refer to the main paper. Unless stated otherwise, additional experiments use the 12 prespecified neuronal crops, with five direction subsets at $C>1$.
+\Crefrange{sec:s:optics}{sec:s:evaluation} specify the optical model, training, reconstruction and evaluation. Full results, structural tests and acquisition controls follow in \cref{sec:s:results,sec:s:structure,sec:s:budgets}; \cref{sec:s:uncertainty,sec:s:views} give complementary uncertainty analyses and neuronal display conventions. Section, equation and figure numbers without an S prefix refer to the main paper. Unless stated otherwise, additional experiments use the 12 prespecified neuronal crops, with five direction subsets at $C>1$. \Cref{tab:s:evidence} summarizes the evaluation units and controls.
+
+\begin{table*}[t]
+\centering\small
+\begin{tabular}{p{1.55in}p{1.9in}cp{1.95in}}
+\toprule
+Study & Reference units & Draws & Results \\
+\midrule
+Five designs, four methods & 60 crops, six cells, three animals & 5 & \Cref{tab:s:e2e,tab:s:criteria60,tab:s:criteria60intervals} \\
+Optical sampling seed 1 & Same 60 crops & 5 & \Cref{tab:s:main,tab:s:objectives,tab:s:seedmatched} \\
+Untrained encoder controls & 12 crops, pretrained PnP & 5 & \Cref{tab:s:untrained}; centroid/intensity metrics \\
+Full scan ($C=1$) & 12 prespecified crops & 1 & \Cref{tab:s:compression,tab:s:jointfullscan} \\
+Compression, dose, alignment & 12 prespecified crops & 5 & \Cref{tab:s:compression,tab:s:dose,tab:s:alignment} \\
+Noise and reduced-dose crops & 12 prespecified crops & 5 & \Cref{tab:s:noise,tab:s:jointdose} \\
+Merged-depth alternatives & 59 eligible test crops & 5 & Main Fig.~4; \cref{sec:s:structure} \\
+Equal-branch crossings & 36 phantoms, including zero gap & 5 & \Cref{tab:s:crossings,tab:s:jointcrossings} \\
+Weak/three-filament tests & Cases specified in \cref{sec:s:structure} & 5 & \Cref{tab:s:crossings} \\
+Reduced-dose crossings & 24 phantoms, including zero gap & 3 & \Cref{tab:s:jointdose,fig:s:lowdose} \\
+Conformal intervals & 35 calibration crops; 12 test crops & -- & \Cref{tab:s:conformal} \\
+Reduced-field bounds & 24 phantoms; 48 neuronal windows & 3 & \Cref{sec:s:uncertainty} \\
+\bottomrule
+\end{tabular}
+\caption{Evidence map. Draws are averaged within crops or phantom cases before paired statistics. Crops from the same cell are grouped during the cell bootstrap. The reduced-field row counts noise realizations per phantom. Conformal calibration follows its separate protocol in \cref{sec:s:uncertainty}. Both are complementary analyses.}
+\label{tab:s:evidence}
+\end{table*}
+
 
 \input{sections/supplement/optics}
 \input{sections/supplement/training}

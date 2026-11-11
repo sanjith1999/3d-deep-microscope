@@ -1,11 +1,13 @@
 \begin{tabular}{lrrrrr}
 \toprule
+& & \multicolumn{3}{c}{Model-only optical training} & Joint training \\
+\cmidrule(lr){3-5}\cmidrule(lr){6-6}
 Reconstruction & Untrained & Depth Fisher & Worst-case coherence & Ours & End-to-end \\
 \midrule
-TV & 0.371 & 0.251 & 0.264 & 0.218 & 0.222 \\
-Pretrained PnP & 0.579 & 0.367 & 0.390 & 0.290 & 0.281 \\
-Neuron-trained PnP & 0.271 & 0.218 & 0.223 & 0.195 & 0.189 \\
+TV & 0.371 & 0.251 & 0.264 & \textbf{0.218} & \underline{0.222} \\
+Pretrained PnP & 0.579 & 0.367 & 0.390 & \underline{0.290} & \textbf{0.281} \\
+Neuron-trained PnP & 0.271 & 0.218 & 0.223 & \underline{0.195} & \textbf{0.189} \\
 \midrule
-Feed-forward & 0.366 & 0.314 & 0.314 & 0.265 & 0.234 \\
+Feed-forward & 0.366 & 0.314 & 0.314 & \underline{0.265} & \textbf{0.234} \\
 \bottomrule
 \end{tabular}

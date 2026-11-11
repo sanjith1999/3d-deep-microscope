@@ -4,23 +4,62 @@
 \paragraph{Reference-only selection.}
 Before opening reconstructions for figure selection, we computed reference features for all 60 crops. Eligible crops had at least 10 skeleton endpoints (the upper quartile) and a 10--90\,\% column-centroid range of at least $3.64\um$ (the median), indicating several branches and substantial depth extent. Eight crops qualified. We ranked them by reference signal in columns with at least two axial peaks. The first was SOM004\_cell2\_x7; the companion was the highest-ranked eligible crop from another animal, SOM006\_cell1\_x7.
 
-After selection, their W1-gain ranks among 60 crops were 52/45/23 and 45/46/43 for TV/pretrained/neuron-trained PnP, where rank 1 is the largest reduction. These are typical-to-lower-gain examples. The main neuronal figure displays pretrained PnP, the prior with the largest cohort-average gain; \cref{fig:s:mainviews} shows all priors for that same crop. No larger reconstructed field exists in this evaluation.
+After selection, their W1-gain ranks among 60 crops were 52/45/23 and 45/46/43 for TV/pretrained/neuron-trained PnP, where rank 1 is the largest reduction. These are typical-to-lower-gain examples. The main neuronal figure displays the established generic pretrained-PnP baseline; \cref{fig:s:mainviews} shows all priors for that same crop. The full-cell panels supply two-photon context; only the marked crops generate simulated measurements.
 
 \paragraph{Views and scales.}
-The axial band maximizes reference signal in layered columns over eight consecutive lateral rows ($5.12\um$). Its lateral window spans 24 voxels ($15.36\um$), centered on that reference signal. Lateral context is the full maximum-intensity projection; axial views are maxima over the selected band with true physical aspect ratio and depth increasing downward. Linear display limits are zero and the reference projection's 99.5th percentile, shared across the matched panels of each row. There is no gamma adjustment, smoothing or per-panel rescaling. Error maps use the reference signal mask and a common 0--$2\um$ W1 scale. All displayed volumes use draw 0.
+The axial band maximizes reference signal in layered columns over three consecutive lateral rows ($1.92\um$). Within it, the profile column has the largest reference signal among layered columns whose two highest peaks are at least three planes apart. This gives $(x,y)=(35,44)$ in the first crop and $(42,16)$ in the companion; the first lies three voxels from an edge and was retained unchanged. All displayed volumes use noise draw 0. These selected columns favor the end-to-end plate more strongly than the crop-wide error; they illustrate local behavior, not a population ranking.
+
+Depth-colored projections tint each plane with a constant-lightness depth color at its linear intensity, then take the maximum independently in each color channel. Overlapping layers may mix colors or be dominated by the brighter layer, so axial bands, profiles and W1 maps accompany the projections. Reconstruction panels use one linear range per crop, from zero to the 99.5th percentile of its reference maximum projection, with no gamma, smoothing or per-panel rescaling. Maps use the reference signal mask and a common 0--$1.5\um$ W1 scale. Rows and columns correspond to $x$ and $y$ throughout; axial depth increases downward.
+
+Full-cell contexts are maximum projections of the original two-photon stacks, linearly clipped at their 99.8th percentile. They retain tissue coordinates ($0.25\um$ lateral sampling), whereas reconstructed views use simulation coordinates. The boxed $32\times32\times32\um^3$ tissue crops become $30.72\times30.72\times10.24\um^3$ simulated volumes. Exported reconstructions reproduce the recorded rows within $0.018$\,dB PSNR and $0.001\um$ W1. \Cref{fig:s:mainviews,fig:s:companion} compare all three iterative methods; the following full views retain context and individual profiles.
 
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\linewidth]{neuron_comparison.pdf}
-\caption{All three priors for the first reference-selected crop in the main neuronal figure. Top: matched axial band views; bottom: reference lateral context and column-W1 maps. Gray is outside the reference signal mask. Panel values are signal-weighted crop W1 for this draw, in $\mu$m. Scale bars: $5\um$ in band views and $10\um$ in lateral context.}
+\caption{All three iterative methods for the first reference-selected crop. Left: matched axial bands for the reference, untrained, our and end-to-end plates. Right: column-W1 maps with draw-0 crop means below. Gray lies outside the reference signal mask. The $5\um$ bar applies to both axes of each band; maps span the full $30.72\um$ lateral field.}
 \label{fig:s:mainviews}
 \end{figure*}
 
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\linewidth]{neuron_companion.pdf}
-\caption{The reference-selected companion from another animal. Top: matched axial band views; bottom: reference lateral context and column-wise W1 maps. Panel values are draw-0 signal-weighted crop W1 in $\mu$m. Shared linear scales and view conventions match the first crop. Bars: $5\um$ in band views and $10\um$ in lateral context.}
+\caption{The companion crop from another animal, using the same band and error-map conventions as \cref{fig:s:mainviews}. Values are draw-0 crop W1 in $\mu$m; the bar is $5\um$.}
 \label{fig:s:companion}
+\end{figure*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\linewidth]{neuron_tv.pdf}
+\caption{First crop with TV. Context, projection, band, profile and error-map conventions match the main neuronal figure. The marked profile is one reference-selected column; the means below the maps summarize all reference-signal columns for this draw.}
+\label{fig:s:tvview}
+\end{figure*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\linewidth]{neuron_trained.pdf}
+\caption{First crop with neuron-trained PnP. Context, projection, band, profile and error-map conventions match the main neuronal figure. The marked profile is one reference-selected column; the means below the maps summarize all reference-signal columns for this draw.}
+\label{fig:s:neuronview}
+\end{figure*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\linewidth]{companion_tv.pdf}
+\caption{Companion crop with TV. Context, projection, band, profile and error-map conventions match the main neuronal figure. The marked profile is one reference-selected column; the means below the maps summarize all reference-signal columns for this draw.}
+\label{fig:s:companTV}
+\end{figure*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\linewidth]{companion_pretrained.pdf}
+\caption{Companion crop with pretrained PnP. Context, projection, band, profile and error-map conventions match the main neuronal figure. The marked profile is one reference-selected column; the means below the maps summarize all reference-signal columns for this draw.}
+\label{fig:s:companPre}
+\end{figure*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\linewidth]{companion_trained.pdf}
+\caption{Companion crop with neuron-trained PnP. Context, projection, band, profile and error-map conventions match the main neuronal figure. The marked profile is one reference-selected column; the means below the maps summarize all reference-signal columns for this draw.}
+\label{fig:s:companNeur}
 \end{figure*}
 
 \begin{figure*}[t]
@@ -38,11 +77,11 @@ The axial band maximizes reference signal in layered columns over eight consecut
 \end{figure*}
 
 \paragraph{A feature missed by both plates.}
-We select one column in the companion band using reference signal alone: the layered column with largest reference mass whose two highest peaks are at least three planes apart. At $(x,y)=(18,3)$, a weak shallow peak at plane 2 lies above a deeper peak at plane 9. The shallow peak is 24.5\,\% of the column maximum and carries 7.8\,\% of its signal in planes 1--3. None of the six reconstructions has a matched shallow peak; that signal becomes a low plateau (\cref{fig:s:weakprofile}). This limit coexists with lower average W1 and improved placement of brighter features.
+A separate weak-feature illustration uses the earlier reference-selected companion band: the layered column with largest reference mass whose two highest peaks are at least three planes apart. Its selected column, $(x,y)=(18,3)$, contains a weak shallow peak at plane 2 above a deeper peak at plane 9. The shallow peak is 24.5\,\% of the column maximum and carries 7.8\,\% of its signal in planes 1--3. None of the six untrained- and our-plate reconstructions has a matched shallow peak; that signal becomes a low plateau (\cref{fig:s:weakprofile}). This limit coexists with lower average W1 and improved placement of brighter features.
 
 \begin{figure*}[t]
 \centering
 \includegraphics[width=.48\linewidth]{neuron_weak_profile.pdf}
-\caption{Reference-selected weak-feature column in the companion crop. Profiles are normalized to unit mass. Both plates miss the shallow reference peak under all three priors, despite the lower average W1 of the learned plate. This column was fixed from reference structure before inspecting reconstructions.}
+\caption{Reference-selected weak-feature column in the companion crop. Profiles are normalized to unit mass. Both plates miss the shallow reference peak under all three priors, despite the lower average W1 of our plate. This column was fixed from reference structure before inspecting reconstructions.}
 \label{fig:s:weakprofile}
 \end{figure*}

@@ -13,7 +13,7 @@ This emphasizes reflected pairs around grid plane 7. It is an implemented weight
 We use 1000 Adam steps with learning rate 0.05. The two training seeds change the sampled positions and directions, starting from the same phase realization and frozen surround. No specimen examples, reconstruction loss or denoiser enter this process. Normalizing a signature removes uniform power scaling from the loss; dose normalization is applied separately when generating evaluation measurements.
 
 \paragraph{Local Gaussian interpretation.}
-At one lateral position, let $\mathsf Q$ collect $Z$ unit-norm depth signatures and $\mathsf G=\mathsf Q^\top\mathsf Q$. Then $\operatorname{tr}\mathsf G=Z$ and the unweighted off-diagonal sum is $\|\mathsf G-\mathsf I\|_F^2$. Consider the idealized observation $\mathbf y=\mathsf Q\mathbf x+\boldsymbol\epsilon$, with independent $\mathbf x\sim\mathcal N(0,\sigma_x^2\mathsf I)$ and $\boldsymbol\epsilon\sim\mathcal N(0,\sigma_e^2\mathsf I)$. Writing $\gamma=\sigma_x^2/\sigma_e^2$, the mutual information and linear-MMSE are
+At one lateral position, let $\mathsf Q$ collect $Z$ unit-norm depth signatures and $\mathsf G=\mathsf Q^\top\mathsf Q$. Then $\operatorname{tr}\mathsf G=Z$ and the unweighted off-diagonal sum is $\|\mathsf G-\mathsf I\|_F^2$, the frame potential minus its diagonal contribution $Z$ \cite{benedetto2003}. Consider the idealized observation $\mathbf y=\mathsf Q\mathbf x+\boldsymbol\epsilon$, with independent $\mathbf x\sim\mathcal N(0,\sigma_x^2\mathsf I)$ and $\boldsymbol\epsilon\sim\mathcal N(0,\sigma_e^2\mathsf I)$. Writing $\gamma=\sigma_x^2/\sigma_e^2$, the mutual information and linear-MMSE are
 \begin{align}
 I(\mathbf x;\mathbf y)&=\tfrac12\log\det(\mathsf I+\gamma\mathsf G),\\
 \mathrm{MSE}_{\mathrm{lin}}&=\sigma_x^2\operatorname{tr}(\mathsf I+\gamma\mathsf G)^{-1}.
@@ -36,7 +36,7 @@ c_{zz'}=\frac{1+\rho\kappa_z\kappa_{z'}}
 {\sqrt{(1+\kappa_z^2)(1+\kappa_{z'}^2)}}.
 \label{eq:s:contrast}
 \end{equation}
-The shared mean dominates when contrasts are small, even if the fluctuations are weakly correlated. Increasing contrast and placing strong responses at different angles can reduce this overlap. At the preset field center, median contrast is 0.58/1.53 and mean raw cosine 0.83/0.41 for random/learned plates. Only one preset position is used for this illustrative decomposition; it is not a field-wide causal ablation.
+The shared mean dominates when contrasts are small, even if the fluctuations are weakly correlated. Increasing contrast and placing strong responses at different angles can reduce this overlap. At the preset field center, median contrast is 0.58/1.53 and mean raw cosine 0.83/0.41 for untrained/our plates. Only one preset position is used for this illustrative decomposition; it is not a field-wide causal ablation.
 
 A common-footprint approximation explains why centering the full angle--pixel signature does not necessarily remove the shared angular component. If $\mathbf q_z=\mathbf e_z\otimes\mathbf g$ with a fixed $P$-pixel footprint, global centering gives correlation
 \begin{equation}
@@ -67,7 +67,7 @@ where $m$ indexes angle--pixel entries. Training minimizes $-\operatorname{mean}
 All objectives use the same initial phase, sampled positions/directions, optimizer, learning rate and step count. Reconstruction parameters are validated independently for each resulting operator. These conditions match computational budgets, not convergence rates or optimal hyperparameters for every criterion. The uncentered variant omits mean removal and retains the weights and squared-correlation form. On the 12 prespecified crops with neuron-trained PnP at $C=8$, it is essentially tied with the centered version (W1 $0.207$ versus $0.206\um$). Centering is therefore not an established explanation of the gain over the tested alternatives.
 
 \paragraph{Complete 60-crop objective comparison.}
-The primary five-design table uses all 60 test crops and five draws per crop. The two alternative criteria are evaluated with TV, pretrained PnP, neuron-trained PnP and separately fine-tuned feed-forward decoders. \Cref{tab:s:criteria60} reports their full metrics, and \cref{tab:s:criteria60intervals} gives paired W1 changes relative to our sampling-seed-0 plate. The corresponding untrained, our and end-to-end rows are in \cref{tab:s:e2e}. These tables use complete configurations only. \Cref{tab:s:objectives} repeats the TV/PnP comparison with sampling seed 1 on the same 60 crops. Each criterion is compared with our matching sampling seed; all paired W1 intervals exclude zero.
+The primary five-design table uses all 60 test crops and five draws per crop. The two alternative criteria are evaluated with TV, pretrained PnP, neuron-trained PnP and separately fine-tuned feed-forward decoders. \Cref{tab:s:criteria60} reports their full metrics, and \cref{tab:s:criteria60intervals} gives paired W1 changes relative to our sampling-seed-0 plate. The corresponding untrained, our and end-to-end rows are in \cref{tab:s:e2e}. These tables use complete configurations only. \Cref{tab:s:objectives} repeats the TV/PnP comparison with sampling seed 1 on the same 60 crops. The recorded comparison uses our seed-0 plate as the fixed reference for both criterion seeds; all paired W1 intervals exclude zero. As a sensitivity check, \cref{tab:s:seedmatched} compares each seed-1 criterion with our seed-1 plate and gives the same conclusion.
 
 \begin{table*}[t]
 \centering\small
@@ -86,6 +86,13 @@ The primary five-design table uses all 60 test crops and five draws per crop. Th
 \begin{table*}[t]
 \centering\small
 \widetab{\input{tables/supplement/criteria_repeat.tex}}
-\caption{Objective comparison with the second optical sampling seed: 60 crops, $C=8$, five draws per crop. W1 is in $\mu$m; relative changes compare our plate with the comparator of the same sampling seed, with paired cell-bootstrap 95\,\% intervals. Both seeds start from the same initial phase. Negative changes favor our criterion.}
+\caption{Objective comparison with the second optical sampling seed: 60 crops, $C=8$, five draws per crop. W1 is in $\mu$m; relative changes compare our seed-0 plate with each seed-1 comparator, with paired cell-bootstrap 95\,\% intervals. Both seeds start from the same initial phase. Negative changes favor our criterion.}
 \label{tab:s:objectives}
+\end{table*}
+
+\begin{table*}[t]
+\centering\small
+\widetab{\input{tables/supplement/criteria_seed_matched.tex}}
+\caption{Seed-matched sensitivity check for the second optical sampling seed. Each criterion is paired with our seed-1 plate on the same 60 crops and five draws. W1 is in $\mu$m; negative changes favor our criterion. Brackets are paired cell-bootstrap 95\,\% intervals.}
+\label{tab:s:seedmatched}
 \end{table*}
