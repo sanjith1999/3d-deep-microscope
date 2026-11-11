@@ -6,7 +6,7 @@ Fluorescent branches that overlap in a camera image may lie at different depths.
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{overview.pdf}
-\caption{\textbf{Learn the depth code, then evaluate it across reconstruction methods.} (a) Model-only optical training compares detector-integrated depth signatures; strips are schematic. (b) Mean axial-profile W1 on simulated neuronal measurements at $C=8$ and matched nominal dose. Percentages compare ours with its untrained initialization. Legend qualifiers describe optical training. The feed-forward network is trained separately for each plate; the end-to-end marker uses its jointly trained decoder. Paired intervals are in \cref{tab:design}.}
+\caption{\textbf{Learn the depth code, then evaluate it across reconstruction methods.} (a) Model-only optical training compares detector-integrated depth signatures; strips are schematic. (b) Mean axial-profile W1 on simulated neuronal measurements at $C=8$ and matched nominal dose. Percentages compare ours with its untrained initialization. Legend qualifiers describe optical training. The feed-forward network is trained separately for each plate; the end-to-end marker uses its jointly trained decoder. Paired intervals are in the supplement.}
 \label{fig:overview}
 \end{figure}
 
@@ -19,6 +19,6 @@ We test the design at both measurement and reconstruction stages. Simulated mous
 Our contributions are:
 \begin{enumerate}\itemsep0pt
 \item \textbf{Depth encoded in excitation, learned without a decoder.} We develop angle-scanned excitation through a fixed, defocused phase plate and learn its phase by decorrelating detector-integrated depth signatures at each lateral position. Optical training requires neither specimen examples nor a reconstruction solver.
-\item \textbf{Recovery gains across reconstruction methods.} At eightfold measurement compression, the learned plate lowers axial-profile error by 27--50\,\% relative to its untrained initialization under four reconstruction methods. In the TV/PnP comparisons, it also gives lower error than the tested Fisher-information and worst-case-coherence designs.
+\item \textbf{Recovery gains across reconstruction methods.} At eightfold measurement compression, the learned plate lowers axial-profile error by 27--50\,\% relative to its untrained initialization under four reconstruction methods. It also gives lower error than the tested Fisher-information and worst-case-coherence designs under each method.
 \item \textbf{Comparison with joint optical--decoder training.} Under the three independent reconstruction methods, mean W1 differs by 1.9--3.2\,\% between the two learned plates, favoring ours under TV and end-to-end under both PnP methods. With a separately fine-tuned feed-forward decoder for each plate, the end-to-end system gives 12\,\% lower error.
 \end{enumerate}

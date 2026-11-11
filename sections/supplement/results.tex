@@ -1,13 +1,30 @@
 \section{Full reconstruction results}
 \label{sec:s:results}
 
-\paragraph{Both training seeds.}
-\Cref{tab:s:main} gives the complete 60-crop comparison, including both optical sampling seeds. Each learned plate lowers W1 on every crop under each prior. Seed 0 improves centroid error on 59 of 60 crops for neuron-trained PnP and all crops for the other methods. Seed 1 improves centroid error on all crops. Both plates start from the same phase realization, so these results test sampling variability, not independence of initialization.
+\paragraph{Three optical designs and four reconstruction methods.}
+\Cref{tab:s:e2e} reports W1, centroid error, PSNR and foreground SSIM from the same 3,600 reconstructions: three plates, four methods, 60 crops and five draws. The feed-forward decoder is fine-tuned separately for each plate, whereas TV and the PnP networks are independent of optical training. \Cref{tab:s:e2eintervals} gives paired cell-bootstrap intervals for W1. Negative changes favor the first named design. The end-to-end plate has a measurable advantage with its own decoder and under both PnP methods, while our plate has lower W1 under TV. The different directions preclude a universal ranking of the two learned plates.
+
+\begin{table*}[t]
+\centering\small
+\widetab{\input{tables/supplement/e2e_metrics.tex}}
+\caption{Three-plate comparison at $C=8$ and matched nominal dose, with 60 crops and five draws. Errors are in $\mu$m. All metrics in a row use the same reconstructions. Feed-forward networks are fine-tuned for their respective plates; their earlier training histories are specified in \cref{sec:s:joint}.}
+\label{tab:s:e2e}
+\end{table*}
+
+\begin{table*}[t]
+\centering\small
+\input{tables/design_intervals.tex}
+\caption{Paired relative W1 changes (95\,\% cell-bootstrap intervals) for the same 60-crop comparison. Each change is the ratio of crop-mean errors minus one, after averaging the five draws.}
+\label{tab:s:e2eintervals}
+\end{table*}
+
+\paragraph{Optical sampling repeats.}
+\Cref{tab:s:main} compares our two optical sampling seeds with their shared untrained initialization under TV and both PnP methods. Each learned plate lowers W1 on every crop under each method. Seed 0 improves centroid error on 59 of 60 crops for neuron-trained PnP and all crops for the other methods. Seed 1 improves centroid error on all crops. These repeats test sampling variability, not independence of phase initialization.
 
 \begin{table*}[t]
 \centering\small
 \widetab{\input{tables/supplement/main_metrics.tex}}
-\caption{Complete main comparison at $C=8$, 60 crops and five draws per crop, with matched nominal dose. Metrics in each row come from the same reconstructions. Changes compare a learned plate with its random initialization under the same prior; brackets are cell-bootstrap 95\,\% intervals.}
+\caption{Optical sampling repeats at $C=8$, 60 crops and five draws per crop, with matched nominal dose. Metrics in each row come from the same reconstructions. Changes compare a learned plate with its random initialization under the same prior; brackets are cell-bootstrap 95\,\% intervals.}
 \label{tab:s:main}
 \end{table*}
 
@@ -37,4 +54,4 @@ The two in-focus DMD pattern sets remain close in centroid error and image quali
 For 25 interior lateral locations and 16 depths, we compare measurement columns under a Gaussian approximation of shot noise with unknown emitter brightness. Random phase plates assign the wrong depth in 1.5--1.7\,\% of cases with 32 directions; amplitude masks give about 5\,\%, the in-focus DMD about 25\,\%, and the plate-free control about 89\,\%. These are model-based emitter diagnostics, not measured resolution of dense structures. The plate-free diagnostic uses the original $2\times$ aperture; its neuronal control in \cref{tab:s:untrained} uses $4\times$.
 
 \paragraph{Comparisons across priors.}
-A descriptive pairing of learned plate + TV against random plate + neuron-trained PnP gives 19.6\,\% lower W1 (95\,\% CI: 16.4--22.5\,\%), improving 56 of 60 crops. It does not establish a general dominance relation: learned plate + pretrained PnP has 7\,\% higher mean W1 than random plate + neuron-trained PnP (interval $-2.6$ to $+17.3$\,\%). Optical and prior choices interact, and neuron-trained PnP with the learned plate performs best overall.
+A descriptive pairing of learned plate + TV against random plate + neuron-trained PnP gives 19.6\,\% lower W1 (95\,\% CI: 16.4--22.5\,\%), improving 56 of 60 crops. It does not establish a general dominance relation: learned plate + pretrained PnP has 7\,\% higher mean W1 than random plate + neuron-trained PnP (interval $-2.6$ to $+17.3$\,\%). Optical and prior choices interact; the comparisons in this paragraph concern only the untrained plate and our design, not the end-to-end plate.

@@ -1,0 +1,21 @@
+\begin{tabular}{llrrrr}
+\toprule
+Reconstruction & Plate & W1 ($\mu$m) & Centroid ($\mu$m) & PSNR & FG-SSIM \\
+\midrule
+TV & Untrained & 0.371 & 0.259 & 36.70 & 0.850 \\
+TV & Ours & 0.218 & 0.150 & 38.29 & 0.910 \\
+TV & End-to-end & 0.222 & 0.151 & 38.07 & 0.905 \\
+\midrule
+Pretrained PnP & Untrained & 0.579 & 0.490 & 35.72 & 0.806 \\
+Pretrained PnP & Ours & 0.290 & 0.224 & 37.56 & 0.900 \\
+Pretrained PnP & End-to-end & 0.281 & 0.212 & 37.52 & 0.897 \\
+\midrule
+Neuron-trained PnP & Untrained & 0.271 & 0.197 & 38.01 & 0.902 \\
+Neuron-trained PnP & Ours & 0.195 & 0.139 & 39.60 & 0.934 \\
+Neuron-trained PnP & End-to-end & 0.189 & 0.131 & 39.70 & 0.936 \\
+\midrule
+Feed-forward & Untrained & 0.366 & 0.282 & 36.67 & 0.872 \\
+Feed-forward & Ours & 0.265 & 0.196 & 38.04 & 0.912 \\
+Feed-forward & End-to-end & 0.234 & 0.167 & 38.53 & 0.922 \\
+\bottomrule
+\end{tabular}

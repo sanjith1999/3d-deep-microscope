@@ -12,6 +12,23 @@ This emphasizes reflected pairs around grid plane 7. It is an implemented weight
 
 We use 1000 Adam steps with learning rate 0.05. The two training seeds change the sampled positions and directions, starting from the same phase realization and frozen surround. No specimen examples, reconstruction loss or denoiser enter this process. Normalizing a signature removes uniform power scaling from the loss; dose normalization is applied separately when generating evaluation measurements.
 
+\paragraph{Local Gaussian interpretation.}
+At one lateral position, let $\mathsf Q$ collect $Z$ unit-norm depth signatures and $\mathsf G=\mathsf Q^\top\mathsf Q$. Then $\operatorname{tr}\mathsf G=Z$ and the unweighted off-diagonal sum is $\|\mathsf G-\mathsf I\|_F^2$. Consider the idealized observation $\mathbf y=\mathsf Q\mathbf x+\boldsymbol\epsilon$, with independent $\mathbf x\sim\mathcal N(0,\sigma_x^2\mathsf I)$ and $\boldsymbol\epsilon\sim\mathcal N(0,\sigma_e^2\mathsf I)$. Writing $\gamma=\sigma_x^2/\sigma_e^2$, the mutual information and linear-MMSE are
+\begin{align}
+I(\mathbf x;\mathbf y)&=\tfrac12\log\det(\mathsf I+\gamma\mathsf G),\\
+\mathrm{MSE}_{\mathrm{lin}}&=\sigma_x^2\operatorname{tr}(\mathsf I+\gamma\mathsf G)^{-1}.
+\end{align}
+At fixed trace, concavity of the log and convexity of the inverse favor equal eigenvalues, giving the orthogonal optimum $\mathsf G=\mathsf I$ when attainable. Set $\mathsf E=\mathsf G-\mathsf I$. Since $\operatorname{tr}\mathsf E=0$, the expansions near this point are
+\begin{align}
+I&=\tfrac Z2\log(1+\gamma)
+-\tfrac14\left(\frac{\gamma}{1+\gamma}\right)^2\|\mathsf E\|_F^2
++O(\|\mathsf E\|_F^3),\\
+\mathrm{MSE}_{\mathrm{lin}}&=\sigma_x^2\left[\frac Z{1+\gamma}
++\frac{\gamma^2}{(1+\gamma)^3}\|\mathsf E\|_F^2
++O(\|\mathsf E\|_F^3)\right].
+\end{align}
+This motivates decorrelation of axial responses. It does not derive the implemented weights, centering or normalization from the full Poisson specimen model. The actual learned signatures remain correlated, other lateral columns interact, and the full reconstruction is not a Gaussian linear-MMSE estimator. The calculation is a local interpretation of a known Gram-matrix design principle \cite{elad2007,duarte2009}, not a transfer guarantee or an error bound for neuronal W1.
+
 \paragraph{Why angular modulation matters.}
 Consider a nonnegative temporal response $\mathbf e_z$ at one camera pixel, with mean $\mu_z>0$. Write $\mathbf e_z=\mu_z\mathbf1+\widetilde{\mathbf e}_z$, and define angular contrast $\kappa_z=\|\widetilde{\mathbf e}_z\|/(\sqrt T\mu_z)$. If $\rho$ is the correlation of the mean-removed fluctuations, the raw cosine is exactly
 \begin{equation}
@@ -48,6 +65,23 @@ where $m$ indexes angle--pixel entries. Training minimizes $-\operatorname{mean}
 
 \paragraph{Matched budget and centering ablation.}
 All objectives use the same initial phase, sampled positions/directions, optimizer, learning rate and step count. Reconstruction parameters are validated independently for each resulting operator. These conditions match computational budgets, not convergence rates or optimal hyperparameters for every criterion. The uncentered variant omits mean removal and retains the weights and squared-correlation form. Under neuron-trained PnP at $C=8$, it is essentially tied with the centered version (W1 $0.207$ versus $0.206\um$). Centering is therefore not an established explanation of the gain over the tested alternatives.
+
+\paragraph{Complete 60-crop objective comparison.}
+The primary five-design table uses all 60 test crops and five draws per crop. The two alternative criteria are evaluated with TV, pretrained PnP, neuron-trained PnP and separately fine-tuned feed-forward decoders. \Cref{tab:s:criteria60} reports their full metrics, and \cref{tab:s:criteria60intervals} gives paired W1 changes relative to our sampling-seed-0 plate. The corresponding untrained, our and end-to-end rows are in \cref{tab:s:e2e}. These tables use complete configurations only. The earlier 12-crop two-seed comparison is retained separately in \cref{tab:s:objectives}.
+
+\begin{table*}[t]
+\centering\small
+\widetab{\input{tables/supplement/criteria60_metrics.tex}}
+\caption{Alternative model-only objectives on all 60 crops, $C=8$, sampling seed 0. Each row averages five draws per crop and uses the same reconstruction for all four metrics. W1 and centroid errors are in $\mu$m.}
+\label{tab:s:criteria60}
+\end{table*}
+
+\begin{table*}[t]
+\centering\small
+\input{tables/supplement/criteria60_intervals.tex}
+\caption{Relative W1 changes and 95\,\% cell-bootstrap intervals for the primary 60-crop criterion comparison. Negative changes favor our plate. Each criterion shares the initial phase and model-only optimization budget.}
+\label{tab:s:criteria60intervals}
+\end{table*}
 
 \begin{table*}[t]
 \centering\small

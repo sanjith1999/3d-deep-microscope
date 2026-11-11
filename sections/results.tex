@@ -21,8 +21,8 @@ We next compare each neuronal reference with a prescribed merged-depth alternati
 \begin{table*}[t]
 \centering\small
 \setlength{\tabcolsep}{5pt}
-\input{tables/design_comparison.tex}
-\caption{\textbf{Optical design evaluated across four reconstruction methods.} Simulated measurements at $C=8$ and matched nominal dose: 60 crops from six cells and three animals, averaging five direction subsets per crop. Lower W1 and higher PSNR are better. The feed-forward network is fine-tuned separately for each plate. The untrained plate is the common phase initialization. Paired intervals, centroid error and foreground SSIM are in the supplement.}
+\input{tables/design_objectives.tex}
+\caption{\textbf{Optical design evaluated across four reconstruction methods.} Mean axial-profile W1 ($\mu$m) on simulated measurements at $C=8$ and matched nominal dose: 60 crops from six cells and three animals, averaging five direction subsets per crop. Model-only criteria use sampling seed 0 and matched optimization settings. The feed-forward network is fine-tuned separately for each plate. The untrained plate is the common phase initialization. Paired intervals and intensity metrics are in the supplement.}
 \label{tab:design}
 \end{table*}
 
@@ -42,15 +42,7 @@ Centroid errors also decrease, by 42\,\%, 54\,\% and 30\,\% under TV and the two
 \subsection{Comparison of model-only objectives}
 \label{sec:res:objective}
 
-\begin{table}[t]
-\centering\small
-\setlength{\tabcolsep}{3pt}
-\input{tables/optical_objectives.tex}
-\caption{\textbf{Model-only optical criteria under matched training settings.} Mean W1 ($\mu$m), 12 prespecified crops at $C=8$, training sampling seed 0. Objectives share initialization, sampled positions/angles, learning rate and 1000 Adam steps. Paired intervals and the second sampling seed are in the supplement.}
-\label{tab:objectives}
-\end{table}
-
-All tested criteria improve upon the untrained plate (\cref{tab:objectives}). Across both sampling seeds and the three TV/PnP methods, our criterion gives 13--20\,\% lower W1 than smoothed worst-case coherence and 14--19\,\% lower than the depth Fisher-information surrogate. These are comparisons with the stated implementations and optimization budgets. An uncentered squared-correlation variant gives nearly identical recovery under neuron-trained PnP ($0.207$ versus $0.206\um$), so centering is not an established source of the advantage.
+All tested criteria improve upon the untrained plate (\cref{tab:design}). Our criterion gives 12--26\,\% lower W1 than smoothed worst-case coherence and 10--21\,\% lower than the depth Fisher-information surrogate across the four reconstruction methods. Paired cell-bootstrap intervals exclude zero in each primary comparison. These results compare the stated implementations under matched sampling and optimization budgets, not the best possible design for each objective. The earlier 12-crop evaluation repeats the comparison with a second optical sampling seed; full results are in the supplement. An uncentered squared-correlation variant gives nearly identical recovery under neuron-trained PnP ($0.207$ versus $0.206\um$), so centering is not an established source of the advantage.
 
 \subsection{Comparison with joint optical--decoder training}
 \label{sec:res:joint}

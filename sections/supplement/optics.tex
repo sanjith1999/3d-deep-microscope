@@ -14,13 +14,29 @@ The incident field is uniformly $x$-polarized before phase modulation. Angular-s
 
 The specimen field is sampled laterally at $0.08\um$ and axially at $0.32\um$. Lateral binning gives an isotropic $0.32\um$ analysis grid of $32\times96\times96$ cells. The reconstruction basis averages $2\times2\times2$ analysis cells into each $0.64\um$ voxel. Camera pixels average $8\times8$ analysis samples laterally, giving $2.56\um$ pixel pitch and $12\times12$ samples per image. Distances and pitches are expressed in specimen-equivalent coordinates.
 
+\paragraph{Image formation.}
+Let $X_0(\mathbf r,z)$ denote fluorescence response per unit excitation and $h_{\mathrm{em}}$ the emission intensity PSF. With linear fluorescence and laterally shift-invariant detection, the noiseless camera-plane irradiance is
+\begin{equation}
+g_t(\mathbf r)=\int_{\Omega}h_{\mathrm{em}}(\mathbf r-\mathbf r',z_{\mathrm{focal}}-z')
+X_0(\mathbf r',z')I_t(\mathbf r',z')\,\mathrm d^2\mathbf r'\,\mathrm dz'.
+\label{eq:s:forward}
+\end{equation}
+Camera pixel $p$, occupying $D_p$, records $\bar y_{t,p}=|D_p|^{-1}\int_{D_p}g_t(\mathbf r)\,\mathrm d^2\mathbf r$. Emission adds incoherently over the specimen before this average. Excitation multiplies the specimen before detection blur; the detector need not resolve the illumination pattern itself.
+
 \paragraph{Aperture and control encoders.}
 The phase plate has $0.32\um$ features and initially independent phases uniform on $[0,2\pi)$. It is simulated on an aperture twice the specimen width, then the excitation is cropped to the specimen. Only the central plate region is optimized; its independent random surround remains fixed. The defocused amplitude controls use binary masks with the same feature pitch and 50\,\% open pixels at the same plate plane. The in-focus DMD uses independently drawn binary patterns relayed into focus. These are controls for the tested fixed-focus acquisition, not a comparison against all DMD microscopy configurations.
 
 A finite illumination edge can itself encode depth when tilted. The plate-free control therefore uses an aperture four times the specimen width. Its residual central/border angular modulation is about 1.0/1.2\,\%, compared with 5.6/37\,\% at twice the width. The $4\times$-aperture plate-free study is kept separate from the $2\times$ phase/mask comparison. The random plate changes little across these apertures (centroid error $0.446$ versus $0.431\um$ at $C=8$, pretrained PnP), but that does not make their learned-versus-plate-free contrast a single-aperture experiment.
 
 \paragraph{Integrated operator.}
-The detection footprint $g_{p,i}$ includes the emission PSF, camera-pixel average and fine-cell integration weight. Reusing it in $A_{(t,p),j}=\sum_{i\in\mathcal P_j}I_t(\mathbf r_i,z_i)g_{p,i}$ avoids propagating each reconstruction basis element separately. Equality $\bA=\bB\bU$ is an algebraic statement for the selected piecewise-constant basis. It does not assert that a real specimen is constant within a voxel. Test measurements use $\bB\bx_f$, while the reference for reconstruction is $\bR\bx_f$, retaining the residual $\bB(\bx_f-\bU\bR\bx_f)$.
+The detection footprint $g_{p,i}$ includes the emission PSF, camera-pixel average and fine-cell integration weight. Reusing it in $A_{(t,p),j}=\sum_{i\in\mathcal P_j}I_t(\mathbf r_i,z_i)g_{p,i}$ avoids propagating each reconstruction basis element separately. Equality $\bA=\bB\bU$ is an algebraic statement for the selected piecewise-constant basis. It does not assert that a real specimen is constant within a voxel. For a fine-grid specimen $\bx_f$, the voxel-averaged reference is $\bx_{\mathrm{gt}}=\bR\bx_f$, where $\bR$ averages within reconstruction voxels. Normalized noisy measurements satisfy
+\begin{equation}
+\by=\bA\bx_{\mathrm{gt}}+
+\underbrace{\bB(\bx_f-\bU\bR\bx_f)}_{\boldsymbol\delta_{\mathrm{disc}}}
++\boldsymbol\varepsilon.
+\label{eq:s:patch}
+\end{equation}
+The retained residual is caused by specimen structure outside the reconstruction basis, not by an algebraic discrepancy between $\bA\bx$ and $\bB\bU\bx$.
 
 \paragraph{Computational scope.}
 After detection-footprint precomputation, direct assembly costs $O(TPF)$, compared with $O(TNF\log F)$ for constructing columns through separate FFT-based forward simulations: $T$ illumination patterns, $P$ camera samples, $F$ fine-grid cells and $N$ reconstruction voxels. Representative timings on an RTX 4500 Ada are approximately 20 minutes for 1000 optical-training steps, six minutes to assemble a full plate operator, 4--6 seconds for a PnP reconstruction at $C=8$, and 17 seconds for TV.

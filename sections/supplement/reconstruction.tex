@@ -2,7 +2,17 @@
 \label{sec:s:reconstruction}
 
 \paragraph{Shared framework.}
-The encoder changes the forward operator; the prior and solver family remain fixed across encoders. TV uses $\tfrac12\|\bA\bx-\by\|_2^2+\lambda\|\nabla\bx\|_{2,1}$ with a box constraint. PnP uses the quadratic data update and denoising/sparsity branches described in the main paper. A quadratic data term penalizes residuals but does not guarantee membership in the hard measurement-interval set used in \cref{sec:s:uncertainty}. Generic denoisers need not minimize an explicit regularization energy.
+The encoder changes the forward operator; the prior and solver family remain fixed across encoders. TV uses $\tfrac12\|\bA\bx-\by\|_2^2+\lambda\|\nabla\bx\|_{2,1}$ with a box constraint. PnP uses a quadratic data update with denoising and optional sparsity branches. A quadratic data term penalizes residuals but does not guarantee membership in the hard measurement-interval set used in \cref{sec:s:uncertainty}. Generic denoisers need not minimize an explicit regularization energy.
+
+\paragraph{ADMM and plug-and-play updates.}
+Let $C_j$ map the volume to branch $j$, with auxiliary variable $\mathbf v_j$ and scaled dual $\mathbf d_j$. Each iteration computes
+\begin{align}
+\bx^{k+1}&=\arg\min_{\bx}\;\tfrac12\|\bA\bx-\by\|_2^2
++\sum_j\tfrac{\rho_j}{2}\|C_j\bx-\mathbf v_j^k+\mathbf d_j^k\|_2^2,\\
+\mathbf v_j^{k+1}&=\mathcal F_j(C_j\bx^{k+1}+\mathbf d_j^k),\\
+\mathbf d_j^{k+1}&=\mathbf d_j^k+C_j\bx^{k+1}-\mathbf v_j^{k+1}.
+\end{align}
+The data update is solved by conjugate gradients. For TV, $C_j$ is the 3D gradient or identity, and $\mathcal F_j$ is vector soft thresholding or box projection. PnP uses identity branch maps and denoisers in place of proximal functions. If $P_o$ rearranges a shared volume into slices of orientation $o\in\{xy,yz,zx\}$, the slice branch is $P_o^{-1}DP_o$, with $D$ acting independently on each slice. Pretrained PnP has these three branches; neuron-trained PnP replaces their shared 2D network and adds a 3D denoising branch. An optional $\ell_1$ branch uses scalar soft thresholding. Generic DnCNN branches are not asserted to be proximal maps of a known joint regularizer.
 
 \paragraph{TV.}
 We use isotropic 3D forward-difference TV and ADMM with separate gradient and box branches, both with unit penalty. The box branch projects its auxiliary variable at each iteration, and the final volume is clipped. There are 300 ADMM iterations; each conjugate-gradient volume update uses at most 20 iterations at relative tolerance $10^{-5}$. The starting volume is normalized back-projection clipped to $[0,1]$. The regularization weight is selected from $\{0.01,0.03,0.1,0.3,1,3\}$ using mean validation PSNR. Edge selections extend the grid by a factor of three, at most twice. These fixed iteration budgets are not claims of exact minimization. Additional checks with 1000 iterations changed mean PSNR by $-0.03$\,dB at $C=8$ and centroid error by at most $0.001\um$; checks at $C=1$ changed PSNR by at most $0.03$\,dB and centroid error by $0.006\um$.
@@ -16,4 +26,4 @@ Pretrained PnP uses SCICO's 17M natural-image DnCNN (17 layers, trained at noise
 Training uses 459 crops from cell 1, stacks 8 and 9 of animal SOM009, with stack 10 held out for monitoring. Duplicated planes and planes whose mean falls below half their neighbors' median are excluded before crop extraction. Both networks use Adam at $10^{-3}$, Gaussian noise $\sigma\sim\mathcal U(0,0.25)$, flips, lateral transpositions and intensity scaling in $[0.3,1]$. The 2D model uses random slices for 30,000 steps at batch size 64; the 3D model uses volumes for 15,000 steps at batch size 8. Neither contributes test data or is updated during optical training or reconstruction.
 
 \paragraph{Parameter selection.}
-The two vascular validation crops come from another animal and are used for all neuronal comparisons. Parameters are selected separately by encoder, compression and changed noise condition, with the same selection rule and fixed prior weights. No neuronal test crop is used for tuning. Optical design uses neither validation nor test specimens. Reference arrays are used only for metric reporting, not in the reconstruction updates.
+The two vascular validation crops come from another animal and are used for all neuronal comparisons. Parameters are selected separately by encoder, compression and changed noise condition, with the same selection rule and fixed prior weights. No neuronal test crop is used for tuning. Model-only optical design uses neither validation nor test specimens. The supervised counterpart uses its separately held-out neuronal validation volumes as described in \cref{sec:s:joint}. Reference arrays are used only for metric reporting, not in the reconstruction updates.

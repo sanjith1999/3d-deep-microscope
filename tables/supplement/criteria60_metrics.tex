@@ -1,0 +1,17 @@
+\begin{tabular}{llrrrr}
+\toprule
+Reconstruction & Plate & W1 ($\mu$m) & Centroid ($\mu$m) & PSNR & FG-SSIM \\
+\midrule
+TV & Depth Fisher & 0.251 & 0.175 & 38.33 & 0.908 \\
+TV & Worst-case coherence & 0.264 & 0.185 & 37.99 & 0.898 \\
+\midrule
+Pretrained PnP & Depth Fisher & 0.367 & 0.298 & 37.09 & 0.882 \\
+Pretrained PnP & Worst-case coherence & 0.390 & 0.320 & 36.85 & 0.871 \\
+\midrule
+Neuron-trained PnP & Depth Fisher & 0.218 & 0.157 & 39.35 & 0.927 \\
+Neuron-trained PnP & Worst-case coherence & 0.223 & 0.160 & 39.19 & 0.924 \\
+\midrule
+Feed-forward & Depth Fisher & 0.314 & 0.234 & 37.40 & 0.896 \\
+Feed-forward & Worst-case coherence & 0.314 & 0.238 & 37.31 & 0.892 \\
+\bottomrule
+\end{tabular}

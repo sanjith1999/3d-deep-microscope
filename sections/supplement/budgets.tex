@@ -2,7 +2,7 @@
 \label{sec:s:budgets}
 
 \paragraph{Dose convention.}
-Each encoder's excitation is divided by its mean over the specimen analysis grid and the full 256-direction scan. This fixes the deposited excitation per complete scan. For $k$ directions, exposure is multiplied by $256/k$. Random subsets therefore match nominal dose in expectation, not exactly for each subset. The per-specimen exposure is set from the random plate's full-scan mean signal and reused for every encoder. Equal deposited dose does not force identical detected counts: illumination can correlate differently with the specimen. For the two learned plates, mean detected signal changes by about $-1$ to $-2$\,\% across the 12 crops, with individual changes approximately $-12$ to $+9$\,\%.
+Each encoder's excitation is divided by its mean over the specimen analysis grid and the full 256-direction scan. This fixes the deposited excitation per complete scan. For $k$ directions, exposure is multiplied by $256/k$. Random subsets therefore match nominal dose in expectation, not exactly for each subset. The per-specimen exposure is set from the random plate's full-scan mean signal and reused for every encoder. Equal deposited dose does not force identical detected counts: illumination can correlate differently with the specimen. For our two optical sampling seeds, mean detected signal changes by about $-1$ to $-2$\,\% across the 12 crops, with individual changes approximately $-12$ to $+9$\,\%.
 
 \paragraph{Measurement compression.}
 \Cref{tab:s:compression} reports both depth metrics at $C=1,4,8$. These values count all camera samples, not camera images alone. At matched nominal dose, fewer directions mean longer exposure per image. The learned 32-image acquisition gives lower W1 than the 256-image random acquisition for TV and pretrained PnP, but the close neuron-trained-PnP means do not establish equivalence. The TV curve is not monotone in compression: validation can prefer a stronger regularization weight at $C=4$, which smooths neuronal features more than at $C=8$.
@@ -23,6 +23,27 @@ The nominal model uses Poisson shot noise. The background condition adds a unifo
 \caption{Noise controls on 12 crops at $C=8$. Errors are in $\mu$m; changes and cell-bootstrap 95\,\% intervals compare the learned and random plates within the same condition.}
 \label{tab:s:noise}
 \end{table*}
+
+\paragraph{Reduced-dose joint-training comparison.}
+At one tenth of the nominal dose, both learned plates are evaluated with TV and pretrained PnP on the 12 prespecified neuronal crops and on equal-branch crossings. Networks remain fixed and scalar parameters follow the condition-specific validation protocol. Neuronal W1 differences are not established (\cref{tab:s:jointdose}a). In the crossing task, however, our plate succeeds more often when pooling the three positive gaps $1.28$, $1.92$ and $2.56\um$ (\cref{tab:s:jointdose}b and \cref{fig:s:lowdose}). Each gap has six phantom cases (three geometries, two centers), with three draws per case. The paired bootstrap averages draws and resamples the 18 cases, rather than treating draws as independent phantoms. This comparison is a targeted structure stress test, not evidence of generally better low-dose neuronal reconstruction.
+
+\begin{table*}[t]
+\centering\small
+(a) Neuronal axial-profile W1 ($\mu$m), 12 crops\par\smallskip
+\input{tables/supplement/joint_low_dose.tex}
+\par\medskip
+(b) Crossing success, 18 phantom cases\par\smallskip
+\input{tables/supplement/joint_low_dose_crossings.tex}
+\caption{Joint-training control at $0.1\times$ nominal dose and $C=8$. Differences are end-to-end minus ours. Intervals resample cells for neuronal W1 and phantom cases for crossing success, after averaging measurement draws. Negative success differences favor our plate; negative W1 differences favor end-to-end.}
+\label{tab:s:jointdose}
+\end{table*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=.9\linewidth]{low_dose.pdf}
+\caption{Full low-dose crossing curves for the tested positive gaps. Each point pools the two axial centers, three lateral geometries and three draws. At zero gap, none of the tested plate--method combinations falsely splits the merged structure.}
+\label{fig:s:lowdose}
+\end{figure*}
 
 \paragraph{Photon budget.}
 The dose sweep uses factors $0.1$, $0.3$, $1$ and $3$ of the nominal exposure (\cref{tab:s:dose}). At dose $0.3$, learned-plate W1 is $0.234$, $0.302$ and $0.220\um$ for TV, pretrained PnP and neuron-trained PnP, compared with $0.318$, $0.496$ and $0.282\um$ for the random plate at dose 1. These reductions of 26\,\%, 39\,\% and 22\,\% describe the tested simulation and inference budgets. The random curve's flattening between doses 1 and 3 is not evidence of a fundamental photon limit.
