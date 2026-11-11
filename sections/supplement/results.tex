@@ -19,12 +19,12 @@
 \end{table*}
 
 \paragraph{Optical sampling repeats.}
-\Cref{tab:s:main} compares our two optical sampling seeds with their shared untrained initialization under TV and both PnP methods. Each learned plate lowers W1 on every crop under each method. Seed 0 improves centroid error on 59 of 60 crops for neuron-trained PnP and all crops for the other methods. Seed 1 improves centroid error on all crops. These repeats test sampling variability, not independence of phase initialization.
+\Cref{tab:s:main} adds our second optical sampling seed to the primary TV/PnP comparison, using the same untrained initialization. Each learned plate lowers W1 on every crop under each method. Seed 0 improves centroid error on 59 of 60 crops for neuron-trained PnP and all crops for the other methods. Seed 1 improves centroid error on all crops. These repeats test sampling variability, not independence of phase initialization.
 
 \begin{table*}[t]
 \centering\small
-\widetab{\input{tables/supplement/main_metrics.tex}}
-\caption{Optical sampling repeats at $C=8$, 60 crops and five draws per crop, with matched nominal dose. Metrics in each row come from the same reconstructions. Changes compare a learned plate with its random initialization under the same prior; brackets are cell-bootstrap 95\,\% intervals.}
+\widetab{\input{tables/supplement/sampling_repeat.tex}}
+\caption{Our second optical sampling seed at $C=8$, 60 crops and five draws per crop, with matched nominal dose. Changes compare it with the shared untrained initialization; brackets are cell-bootstrap 95\,\% intervals. Seed 0 is in \cref{tab:s:e2e}.}
 \label{tab:s:main}
 \end{table*}
 
@@ -41,12 +41,12 @@
 \paragraph{Comparison with untrained encoders.}
 The separate centroid study in \cref{tab:s:untrained} uses pretrained PnP, the 12 prespecified crops and the expanded validation grid. Its phase, amplitude and DMD rows share the same $2\times$ aperture, relay, photon model, direction draws and tuning procedure. Learned centroid errors of $0.230$--$0.234\um$ are below all three random phase plates ($0.422$--$0.438\um$) and amplitude masks ($0.396$--$0.523\um$). The learned seed-0 plate reduces centroid error by 42--56\,\% against the amplitude masks and 45--47\,\% against the random phase plates. This shows that its initialization is representative of these controls. It does not show that learning succeeds from other initializations.
 
-\begin{table}[t]
+\begin{table*}[t]
 \centering\small
-\coltab{\input{tables/supplement/untrained_control.tex}}
+\input{tables/supplement/untrained_control.tex}
 \caption{Untrained-encoder control study at $C=8$: 12 prespecified crops, pretrained PnP. W1 was not computed in this study. The plate-free row uses a $4\times$ aperture in a separate study; its own random-plate control gives $0.446\um$/34.82\,dB. Other rows use $2\times$ apertures. Do not interpret the plate-free row as an exactly matched cross-aperture contrast.}
 \label{tab:s:untrained}
-\end{table}
+\end{table*}
 
 The two in-focus DMD pattern sets remain close in centroid error and image quality. Their low depth discrimination concerns this fixed-focus control, not all amplitude encoders. Indeed, the defocused amplitude masks recover depth and can match random phase plates in centroid error. The plate-free scan also retains weak finite-aperture diversity, so its observations are not an ideal zero-depth-information system.
 

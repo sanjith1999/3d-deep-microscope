@@ -7,7 +7,7 @@
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\linewidth]{measurements.pdf}
-\caption{\textbf{Optical learning changes the depth code before reconstruction.} (a) Actual excitation sections at two scan angles selected by index, with a shared linear intensity scale relative to the untrained mean. Coordinates span the specimen volume. (b) Depth-signature correlations, averaged over $44\times44$ interior positions using the same 32 directions. (c) Poisson measurement divergence from merged-depth alternatives for 59 eligible neuronal crops. Points average the five direction subsets; the diagonal indicates equal divergence.}
+\caption{\textbf{Optical learning changes the depth code before reconstruction.} (a) Actual excitation sections at two scan angles selected by index, with a shared linear intensity scale relative to the untrained mean. Coordinates span the specimen volume. (b) Absolute correlations between depth-signature pairs, averaged over $44\times44$ interior positions using the same 32 directions. (c) Poisson measurement divergence from merged-depth alternatives for 59 eligible neuronal crops. Points average the five direction subsets; the diagonal indicates equal divergence.}
 \label{fig:measurements}
 \end{figure*}
 
@@ -28,28 +28,28 @@ We next compare each neuronal reference with a prescribed merged-depth alternati
 
 Our plate lowers mean axial-profile W1 by 41\,\% with TV, 50\,\% with pretrained PnP, 28\,\% with neuron-trained PnP and 27\,\% with the feed-forward decoder, relative to its untrained initialization (\cref{fig:overview}b, \cref{tab:design}). Paired cell-bootstrap intervals exclude zero for all four comparisons. W1 improves on all 60 crops under each TV/PnP method. The improvements persist on the prespecified and later randomly selected crops, and a second optical sampling seed gives similar results from the same phase initialization.
 
-Centroid errors also decrease, by 42\,\%, 54\,\% and 30\,\% under TV and the two PnP methods, and PSNR increases by 1.4--1.8\,dB across the four methods. Thus, profile recovery improves alongside mean depth placement and image quality.
+Centroid errors also decrease, by 42\,\%, 54\,\% and 30\,\% under TV and the two PnP methods, and PSNR increases by 1.4--1.8\,dB across the four methods. Thus, profile recovery improves alongside mean depth placement and image quality. With a non-learned TV prior, our plate also gives lower W1 than the untrained plate with neuron-trained PnP ($0.218$ versus $0.271\um$).
 
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\linewidth]{neurons.pdf}
-\caption{\textbf{Less axial smearing in neuronal reconstructions.} Two reference-selected crops from different animals, reconstructed with pretrained PnP at $C=8$. Left: reference projections with the displayed axial bands outlined. The remaining columns show reference, untrained-plate and learned-plate band views at true aspect ratio, with depth downward. One reference-set linear intensity scale is used per row. Crop and band selection do not use reconstruction gains. Bars: $10\um$ in projections, $5\um$ in axial views. All-prior views and additional depth slabs are in the supplement.}
+\caption{\textbf{Less axial smearing in neuronal reconstructions.} Two reference-selected crops from different animals, reconstructed with pretrained PnP at $C=8$. Left: reference projections with the displayed axial bands outlined. The remaining columns show reference, untrained-plate and learned-plate band views at true aspect ratio, with depth downward. Each row uses one linear intensity scale fixed from its reference. Crop and band selection do not use reconstruction gains. Bars: $10\um$ in projections, $5\um$ in axial views. All-prior views and additional depth slabs are in the supplement.}
 \label{fig:neurons}
 \end{figure*}
 
-\Cref{fig:neurons} shows reduced axial smearing along neuronal branches. Pretrained PnP, which has the largest mean gain, is shown; the selected crops have smaller W1 gains than the corresponding test-set median. The supplement includes all-prior views and a weak feature missed by both plates. Additional random-phase realizations and defocused amplitude masks verify that the common initialization is not an unusually weak control. The masks remain competitive with untrained phase plates in centroid error; their full comparison is reported separately.
+\Cref{fig:neurons} shows reduced axial smearing along neuronal branches. Pretrained PnP, which has the largest mean gain, is shown; the selected crops have smaller W1 gains than the corresponding test-set median. The supplement includes all-prior views and a weak feature missed by both plates. Additional random-phase realizations place the common initialization within the range of the tested untrained plates. Defocused amplitude masks remain competitive with untrained phase plates in centroid error; their full comparison is reported separately.
 
 \subsection{Comparison of model-only objectives}
 \label{sec:res:objective}
 
-All tested criteria improve upon the untrained plate (\cref{tab:design}). Our criterion gives 12--26\,\% lower W1 than smoothed worst-case coherence and 10--21\,\% lower than the depth Fisher-information surrogate across the four reconstruction methods. Paired cell-bootstrap intervals exclude zero in each primary comparison. These results compare the stated implementations under matched sampling and optimization budgets, not the best possible design for each objective. The earlier 12-crop evaluation repeats the comparison with a second optical sampling seed; full results are in the supplement. An uncentered squared-correlation variant gives nearly identical recovery under neuron-trained PnP ($0.207$ versus $0.206\um$), so centering is not an established source of the advantage.
+The criteria target different properties: Fisher information measures local depth sensitivity, smoothed worst-case coherence emphasizes the most similar pairs, and our loss penalizes correlations across all depth pairs. All improve upon the untrained plate (\cref{tab:design}). Our criterion gives 12--26\,\% lower W1 than smoothed worst-case coherence and 10--21\,\% lower than the depth Fisher-information surrogate across the four reconstruction methods. Paired cell-bootstrap intervals exclude zero in each primary comparison. These results compare the stated implementations under matched sampling and optimization budgets, not the best possible design for each objective. The TV/PnP gains persist with a second optical sampling seed on the same 60 crops; full results are in the supplement. On the 12 prespecified crops, an uncentered squared-correlation variant gives nearly identical recovery under neuron-trained PnP ($0.207$ versus $0.206\um$), so centering is not an established source of the advantage.
 
 \subsection{Comparison with joint optical--decoder training}
 \label{sec:res:joint}
 
 The end-to-end plate improves substantially over the untrained plate and also transfers to reconstruction methods outside its training loop (\cref{tab:design}). Relative to ours, its mean W1 is 1.9\,\% higher under TV, 3.0\,\% lower under pretrained PnP and 3.2\,\% lower under neuron-trained PnP. The paired intervals exclude zero in these directions; these small differences should not be read as established equivalence.
 
-When each plate uses its separately fine-tuned feed-forward decoder, the end-to-end system has 12\,\% lower W1 ($0.234$ versus $0.265\um$) and 0.48\,dB higher PSNR than ours. Joint training therefore provides a measurable benefit for its trained system. Model-only optical learning attains close axial recovery under the independent TV/PnP methods without requiring specimen examples or a decoder during optical training. The comparison concerns this architecture and training protocol, rather than all end-to-end designs.
+When each plate uses its separately fine-tuned feed-forward decoder, the end-to-end system has 12\,\% lower W1 ($0.234$ versus $0.265\um$) and 0.48\,dB higher PSNR than ours. This comparison includes different decoder training histories; the TV/PnP comparisons hold the priors fixed. Model-only optical learning attains close axial recovery under the independent TV/PnP methods without requiring specimen examples or a decoder during optical training. The comparison concerns this architecture and training protocol, rather than all end-to-end designs.
 
 \subsection{Recovery of overlapping structures}
 \label{sec:res:structure}
@@ -63,7 +63,7 @@ When each plate uses its separately fine-tuned feed-forward decoder, the end-to-
 
 In the controlled crossing task, the smallest gap meeting the resolution-and-ordering criterion falls from $3.84$ to $2.56\um$ with our plate under TV and pretrained PnP (\cref{fig:crossings}). It remains $3.84\um$ under neuron-trained PnP despite improved neuronal W1. The zero-gap control shows no false splitting. At full dose, crossing-success differences between the two learned plates are not established under either evaluated method.
 
-Reduced dose exposes a difference in this task. At one tenth of the nominal dose, our plate has 17 percentage points higher success under TV (95\,\% CI: 6--30) and 15 points higher under pretrained PnP (2--30), pooling the 18 phantom cases with gaps of 1.28--$2.56\um$. At the same dose on neuronal crops, W1 differences between the two learned plates are not established. The benefit is therefore specific to the tested low-dose structure task, rather than a general advantage on out-of-training conditions. Larger-gap three-filament tests and weak-branch controls are in the supplement.
+Reduced dose exposes a difference in this task. At one tenth of the nominal dose, our plate has 17 percentage points higher success under TV (95\,\% CI: 6--30) and 15 points higher under pretrained PnP (2--30), pooling the 18 phantom cases with gaps of 1.28--$2.56\um$. At the same dose on neuronal crops, W1 differences between the two learned plates are not established. Larger-gap three-filament tests and weak-branch controls are in the supplement.
 
 \subsection{Acquisition budgets and calibration}
 \label{sec:res:budgets}

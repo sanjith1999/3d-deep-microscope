@@ -17,8 +17,10 @@ The specimen field is sampled laterally at $0.08\um$ and axially at $0.32\um$. L
 \paragraph{Image formation.}
 Let $X_0(\mathbf r,z)$ denote fluorescence response per unit excitation and $h_{\mathrm{em}}$ the emission intensity PSF. With linear fluorescence and laterally shift-invariant detection, the noiseless camera-plane irradiance is
 \begin{equation}
-g_t(\mathbf r)=\int_{\Omega}h_{\mathrm{em}}(\mathbf r-\mathbf r',z_{\mathrm{focal}}-z')
-X_0(\mathbf r',z')I_t(\mathbf r',z')\,\mathrm d^2\mathbf r'\,\mathrm dz'.
+\begin{aligned}
+g_t(\mathbf r)&=\int_{\Omega}h_{\mathrm{em}}(\mathbf r-\mathbf r',z_{\mathrm{focal}}-z')\,\times\\
+&\qquad X_0(\mathbf r',z')I_t(\mathbf r',z')\,\mathrm d^2\mathbf r'\,\mathrm dz'.
+\end{aligned}
 \label{eq:s:forward}
 \end{equation}
 Camera pixel $p$, occupying $D_p$, records $\bar y_{t,p}=|D_p|^{-1}\int_{D_p}g_t(\mathbf r)\,\mathrm d^2\mathbf r$. Emission adds incoherently over the specimen before this average. Excitation multiplies the specimen before detection blur; the detector need not resolve the illumination pattern itself.
