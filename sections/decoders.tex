@@ -1,39 +1,13 @@
-\section{Reconstruction with fixed priors}
+\subsection{Reconstruction with fixed optics}
 \label{sec:decoders}
-
-We evaluate the same learned plate with three reconstruction methods: TV, pretrained PnP and neuron-trained PnP. None participates in optical training. Each method uses the operator for its encoder, with the prior held fixed across encoders. Scalar reconstruction parameters are selected separately for each encoder and measurement budget on held-out validation volumes.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{reconstruction.pdf}
-\caption{\textbf{Reconstruction with interchangeable priors.} A quadratic data update couples the images and forward model to a shared volume. Prior and dual updates feed back through ADMM. Each run uses one prior family; the networks remain fixed across encoders. Branch transforms $\mathsf C_j$ are identities for PnP and the gradient/identity for TV. TV includes a box-projection branch; PnP clips the final estimate.}
+\caption{\textbf{Reconstruction is evaluated after the plate is fixed.} TV and PnP use ADMM with different prior updates. The feed-forward route uses a regularized solve followed by a 3D U-Net whose weights are trained separately for each plate. Full updates are in the supplement.}
 \label{fig:reconstruction}
 \end{figure}
 
-\paragraph{Total variation.}
-The non-learned baseline minimizes $\tfrac12\|\bA\bx-\by\|_2^2+\lambda\|\nabla\bx\|_{2,1}$ subject to $\bx\in[0,1]^N$, where $\|\nabla\bx\|_{2,1}$ is isotropic three-dimensional TV \cite{rudin1992}. We solve this problem using ADMM \cite{boyd2011}.
+We evaluate four methods with the corresponding operator $\bA_\phi$ (\cref{fig:reconstruction}). TV combines a quadratic measurement term with isotropic 3D total variation and a $[0,1]$ box constraint \cite{rudin1992}. PnP uses denoisers as implicit priors in ADMM \cite{venkatakrishnan2013,kamilov2023pnp}. Following multi-slice fusion \cite{majee2021}, pretrained PnP applies a natural-image DnCNN independently to slices along three orientations of one shared volume \cite{zhang2017}. Neuron-trained PnP replaces that network with a neuron-trained 2D denoiser and adds a 3D denoising branch.
 
-\paragraph{Plug-and-play reconstruction.}
-PnP combines the measurement model with denoisers acting as implicit priors \cite{venkatakrishnan2013,kamilov2023pnp}. Following multi-slice fusion \cite{majee2021}, we denoise complementary slices of a shared volume. For orientation $o\in\{xy,yz,zx\}$, $\mathsf P_o$ rearranges the volume into slices processed independently by a two-dimensional denoiser, giving $\mathcal D_o=\mathsf P_o^{-1}\mathcal D\mathsf P_o$.
-
-\emph{Pretrained PnP} uses a natural-image DnCNN \cite{zhang2017} along the three orientations, giving $\mathcal J=\{xy,yz,zx\}$ without training a 3D network. \emph{Neuron-trained PnP} replaces that 2D denoiser and adds a neuron-trained volumetric branch, augmenting $\mathcal J$ with $\mathrm{3D}$. It therefore changes both the training distribution and volumetric prior.
-
-PnP-ADMM alternates a quadratic measurement-consistency update with these denoisers. Let $\rho_j$ be branch penalties, $\mathbf v_j$ auxiliary volumes and $\mathbf d_j$ scaled dual variables. The volume update is
-\begin{equation}
-\begin{aligned}
-\bx^{k+1}=\arg\min_{\bx}\Bigl[&\tfrac12\|\bA\bx-\by\|_2^2\\
-&+\sum_{j\in\mathcal J}\tfrac{\rho_j}{2}\|\bx-\mathbf v_j^k+\mathbf d_j^k\|_2^2\Bigr],
-\end{aligned}
-\label{eq:admm}
-\end{equation}
-solved by conjugate gradients. Each branch then applies its denoising operator $\mathcal F_j$:
-\begin{equation}
-\begin{aligned}
-\mathbf v_j^{k+1}&=\mathcal F_j(\bx^{k+1}+\mathbf d_j^k),\\
-\mathbf d_j^{k+1}&=\mathbf d_j^k+\bx^{k+1}-\mathbf v_j^{k+1}.
-\end{aligned}
-\label{eq:prior}
-\end{equation}
-These are PnP updates; a generic denoiser need not be the proximal map of an explicit regularizer.
-
-An optional $\ell_1$ branch is weighted by validation and is inactive in every main-comparison setting. Neuron-trained networks use a separate animal; all network weights remain fixed during reconstruction. Both PnP variants start from normalized back-projection and clip the final estimate to $[0,1]$. TV includes an internal box-projection branch. Architectures, penalties, iteration budgets and parameter selection are specified in the supplement.
+TV and PnP share a quadratic data term, with different splitting and prior updates. Their denoiser weights remain fixed across optical encoders; scalar parameters are selected separately on validation volumes. The fourth method uses \cref{eq:joint} with the phase fixed and a network fine-tuned separately for each plate. Its architecture is shared, but its learned weights are not. Only the end-to-end optical-design route includes a decoder during plate training. Solver updates, constraints and network training are specified in the supplement.

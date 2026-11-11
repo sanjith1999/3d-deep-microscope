@@ -1,4 +1,4 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-We learn a fixed phase plate for angle-scanned, fixed-focus fluorescence imaging from detector-integrated depth signatures. In simulations, it reduces axial-profile error by 28--50\,\% and centroid error by 30--54\,\% relative to its random initialization across TV and two PnP methods. Controlled crossings show improved separation under two priors. The results demonstrate that optical learning can improve axial recovery across the tested reconstruction methods without including them in training.
+We learn depth-encoding illumination from the optical model alone, without specimen examples or a reconstruction decoder. In fixed-focus fluorescence simulations, the same phase plate improves axial-profile recovery across four reconstruction methods and gives competitive results against a jointly trained plate. Joint training retains an advantage with its own decoder, while the model-only criterion improves the tested low-dose crossing task. These results show how targeting physical depth responses can improve axial recovery while leaving reconstruction choice outside optical training.

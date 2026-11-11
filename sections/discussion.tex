@@ -1,14 +1,14 @@
 \section{Discussion and limitations}
 \label{sec:discussion}
 
-\paragraph{Learning the measurements.}
-The same plate improves axial recovery under TV and two PnP priors, supporting optical design that leaves prior choice outside training. Prior choice still matters: neuron-trained PnP gives the lowest mean W1 with the learned plate, and all three methods use ADMM with different prior operators. These results concern the tested methods. We do not compare end-to-end learning or establish transfer to arbitrary decoders.
+\paragraph{Optical design before decoder choice.}
+Learning from physical depth signatures produces an encoder useful under four reconstruction configurations. The tested joint design also transfers, with slightly lower W1 under both PnP methods and a larger advantage with its own decoder. Our contribution is not the elimination of decoder-specific benefits: it is obtaining substantial axial-recovery gains without requiring specimen examples or a decoder in optical training. The comparison makes those training requirements and resulting recovery explicit.
 
-\paragraph{What improves in the recovered volume.}
-W1 and centroid error both decrease, with similar relative gains. This supports improved axial placement without showing a larger benefit to profile shape than to its centroid. Controlled crossings establish separation gains under two priors, but no threshold gain under neuron-trained PnP. General neuronal layer separation or connectivity is not established; supplementary measurement-consistency bounds remain uninformative on dense neuronal windows.
+\paragraph{Measurement discrimination and structure.}
+Our plate has lower depth correlations and greater separation from prescribed merged-depth alternatives than the end-to-end plate, yet these diagnostics do not yield a universal ranking of neuronal reconstruction error. They target particular ambiguities. Controlled crossings provide a complementary consequence: learning reduces the qualifying gap under two priors, and model-only design improves low-dose crossing success over the tested joint design. These tests concern axial profiles and controlled separation, not general neuronal connectivity.
 
 \paragraph{Physical implementation.}
-All results simulate linear fluorescence in a homogeneous medium with idealized optics and a common excitation/emission wavelength. Finer-grid measurement generation retains specimen discretization error but shares optical physics with reconstruction. Scattering, aberrations, spectral differences and unknown system calibration remain untested. The alignment results make characterization of the realized patterns and detection response a requirement for physical validation.
+All results are numerical, using linear fluorescence in a homogeneous medium with idealized optics and a common excitation/emission wavelength. Fine-grid measurement generation retains specimen approximation error but shares optical physics with reconstruction. A measured system must characterize its realized excitation and detection responses. The alignment study supports updating the operator for known perturbations, while unmodeled registration can erase the gain.
 
-\paragraph{Extent of the evidence.}
-Six cells from three animals limit biological generalization. Two optical sampling seeds share one initial phase; the additional random-plate and mask controls do not replicate learning from other starts. Objective comparisons use a matched step budget for specific surrogates, not an exhaustive search over design criteria. These boundaries define the scope of the optical improvement.
+\paragraph{Scope of the comparison.}
+The test set contains six cells from three animals, with dependent crops and approximate cell-bootstrap intervals. Two optical sampling seeds share one phase initialization. We test specific coherence and Fisher surrogates and one jointly trained architecture, with different overall training histories and an MSE-trained supervised decoder. The results establish the reported comparisons, rather than an optimum over all objectives, initializations or reconstruction methods.
