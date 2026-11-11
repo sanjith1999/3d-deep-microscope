@@ -18,6 +18,13 @@
 \label{tab:s:e2eintervals}
 \end{table*}
 
+\begin{table*}[t]
+\centering\small
+\input{tables/supplement/joint_absolute_intervals.tex}
+\caption{End-to-end minus our plate: absolute error differences and paired cell-bootstrap 95\,\% intervals ($\mu$m), on the primary 60 crops. Mean W1 differences are below $0.01\um$ under the iterative methods; this is not a bound on their intervals or individual-crop differences.}
+\label{tab:s:jointabsolute}
+\end{table*}
+
 \paragraph{Optical sampling repeats.}
 \Cref{tab:s:main} adds our second optical sampling seed to the primary TV/PnP comparison, using the same untrained initialization. Each our plate lowers W1 on every crop under each method. Seed 0 improves centroid error on 59 of 60 crops for neuron-trained PnP and all crops for the other methods. Seed 1 improves centroid error on all crops. These repeats test sampling variability, not independence of phase initialization.
 

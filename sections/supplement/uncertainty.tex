@@ -10,7 +10,7 @@ We form $\hat z_c\pm\lambda$ around each reconstructed axial centroid. For a vol
 \end{equation}
 where $\hat R_n$ averages the loss over $n$ calibration volumes. Under exchangeability of the calibration volumes and a new volume, $\mathbb E[L(\hat\lambda)]\le\alpha$. This controls expected signal-weighted miscoverage, not each column's or specimen's coverage.
 
-We use neuron-trained PnP at $C=8$, target $\alpha=0.1$ and encoder-specific calibration on 35 non-overlapping crops from a held-out SOM009 stack. A 240-crop overlapping set is a sensitivity analysis, not independent replication. On the 12 prespecified test crops, the learned seed-0 half-width decreases from $0.646$ to $0.474\um$ (26.7\,\%), with empirical miscoverage 0.075 versus 0.060 for the untrained plate (\cref{tab:s:conformal}). The test animals differ from the calibration animal, so exchangeability is not established; observed miscoverage is empirical rather than a cross-animal guarantee.
+We use neuron-trained PnP at $C=8$, target $\alpha=0.1$ and encoder-specific calibration on 35 non-overlapping crops from a held-out SOM009 stack. A 240-crop overlapping set is a sensitivity analysis, not independent replication. On the 12 prespecified test crops, our seed-0 half-width decreases from $0.646$ to $0.474\um$ (26.7\,\%), with empirical miscoverage 0.075 versus 0.060 for the untrained plate (\cref{tab:s:conformal}). The test animals differ from the calibration animal, so exchangeability is not established; observed miscoverage is empirical rather than a cross-animal guarantee.
 
 \begin{table}[t]
 \centering\small

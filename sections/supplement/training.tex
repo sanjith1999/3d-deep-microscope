@@ -10,7 +10,7 @@ w_{ij}=\begin{cases}2,&i+j=14,\\1,&i+j\ne14,\end{cases}\qquad i\ne j.
 \end{equation}
 This emphasizes reflected pairs around grid plane 7. It is an implemented weighting choice, not a universal symmetry of a phase screen or a statement that plane 7 is exactly the physical focus. Both orderings of each pair are included and the sum is divided by the total weight. Norm denominators include $10^{-12}$ for numerical stability.
 
-We use 1000 Adam steps with learning rate 0.05. The two training seeds change the sampled positions and directions, starting from the same phase realization and frozen surround. No specimen examples, reconstruction loss or denoiser enter this process. Normalizing a signature removes uniform power scaling from the loss; dose normalization is applied separately when generating evaluation measurements.
+We use 1000 Adam steps with learning rate 0.05 and retain the final iterate, without checkpoint selection. The two training seeds change the sampled positions and directions, starting from the same phase realization and frozen surround. No specimen examples, reconstruction loss or denoiser enter this process. Normalizing a signature removes uniform power scaling from the loss; dose normalization is applied separately when generating evaluation measurements.
 
 \paragraph{Local Gaussian interpretation.}
 At one lateral position, let $\mathsf Q$ collect $Z$ unit-norm depth signatures and $\mathsf G=\mathsf Q^\top\mathsf Q$. Then $\operatorname{tr}\mathsf G=Z$ and the unweighted off-diagonal sum is $\|\mathsf G-\mathsf I\|_F^2$, the frame potential minus its diagonal contribution $Z$ \cite{benedetto2003}. Consider the idealized observation $\mathbf y=\mathsf Q\mathbf x+\boldsymbol\epsilon$, with independent $\mathbf x\sim\mathcal N(0,\sigma_x^2\mathsf I)$ and $\boldsymbol\epsilon\sim\mathcal N(0,\sigma_e^2\mathsf I)$. Writing $\gamma=\sigma_x^2/\sigma_e^2$, the mutual information and linear-MMSE are
@@ -46,6 +46,8 @@ A common-footprint approximation explains why centering the full angle--pixel si
 \end{equation}
 For a localized footprint, $\eta$ can be small, so a common angular component remains. The actual operator includes depth-varying footprints and within-voxel variation; neither training nor evaluation uses this separable approximation. This provides an interpretation of the observed code, not a proof that contrast alone causes the reconstruction gain or that the objective is universally optimal.
 
+In the saved central $xz$ and $yz$ excitation sections over all 256 directions, the 99.9th-percentile intensity divided by the full-volume scan mean rises from 5.5 for the untrained plate to 17.6 for our plate. The sampled maxima are 11.5 and 50.8. These section statistics describe excitation concentration, not an experimentally established saturation or bleaching threshold. The linear fluorescence model assumes the chosen operating power keeps the response unsaturated.
+
 \paragraph{Worst-case coherence surrogate.}
 Let $\rho_{ij}$ be the inner product of two centered, unit-norm depth signatures. The comparison uses
 \begin{equation}
@@ -65,6 +67,16 @@ where $m$ indexes angle--pixel entries. Training minimizes $-\operatorname{mean}
 
 \paragraph{Matched budget and centering ablation.}
 All objectives use the same initial phase, sampled positions/directions, optimizer, learning rate and step count. Reconstruction parameters are validated independently for each resulting operator. These conditions match computational budgets, not convergence rates or optimal hyperparameters for every criterion. The uncentered variant omits mean removal and retains the weights and squared-correlation form. On the 12 prespecified crops with neuron-trained PnP at $C=8$, it is essentially tied with the centered version (W1 $0.207$ versus $0.206\um$). Centering is therefore not an established explanation of the gain over the tested alternatives.
+
+\paragraph{Recorded optimization trajectories.}
+\Cref{fig:s:trainingtraces} shows both sampling seeds for each criterion. Each trace contains 41 values: step 1 and every 25th step through 1000, evaluated on that step's four-angle, 24-position minibatch before its update. Objective values are not comparable between criteria. The common correlation statistic centers and normalizes each sampled angle--pixel signature before averaging absolute off-diagonal correlations. It differs from the main paper's 32-angle full-field statistic. For seed 0, first-100 to last-100-step window means change from 0.741 to 0.523 for our loss, $-3.490$ to $-4.082$ for depth Fisher, and 1.062 to 1.055 for worst-case coherence; seed 1 has the same trend. Every logged batch retains at least one depth pair with absolute correlation above 0.998. That global batch maximum is distinct from the coherence loss, which averages a smooth maximum at each position. No held-out or full-operator objective trajectory was recorded. These noisy traces document progress within the shared budget; they do not establish convergence of any criterion. The comparison uses a fixed budget rather than criterion-specific stopping or learning-rate tuning.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\linewidth]{training_traces.pdf}
+\caption{Recorded model-only optimization histories. Top: each criterion's own minibatch objective, with separate vertical scales. Bottom: the same mean absolute depth-correlation statistic for each criterion. Solid and dashed lines denote the two sampling seeds from the same initial phase. Values use changing minibatches and are not full-operator convergence measurements.}
+\label{fig:s:trainingtraces}
+\end{figure*}
 
 \paragraph{Complete 60-crop objective comparison.}
 The primary five-design table uses all 60 test crops and five draws per crop. The two alternative criteria are evaluated with TV, pretrained PnP, neuron-trained PnP and separately fine-tuned feed-forward decoders. \Cref{tab:s:criteria60} reports their full metrics, and \cref{tab:s:criteria60intervals} gives paired W1 changes relative to our sampling-seed-0 plate. The corresponding untrained, our and end-to-end rows are in \cref{tab:s:e2e}. These tables use complete configurations only. \Cref{tab:s:objectives} repeats the TV/PnP comparison with sampling seed 1 on the same 60 crops. The recorded comparison uses our seed-0 plate as the fixed reference for both criterion seeds; all paired W1 intervals exclude zero. As a sensitivity check, \cref{tab:s:seedmatched} compares each seed-1 criterion with our seed-1 plate and gives the same conclusion.

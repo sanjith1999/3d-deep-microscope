@@ -5,13 +5,20 @@
 Each encoder's excitation is divided by its mean over the specimen analysis grid and the full 256-direction scan. This fixes the deposited excitation per complete scan. For $k$ directions, exposure is multiplied by $256/k$. Random subsets therefore match nominal dose in expectation, not exactly for each subset. The per-specimen exposure is set from the untrained plate's full-scan mean signal and reused for every encoder. Equal deposited dose does not force identical detected counts: illumination can correlate differently with the specimen. For our two optical sampling seeds, mean detected signal changes by about $-1$ to $-2$\,\% across the 12 crops, with individual changes approximately $-12$ to $+9$\,\%.
 
 \paragraph{Measurement compression.}
-\Cref{tab:s:compression} reports both depth metrics at $C=1,4,8$. These values count all camera samples, not camera images alone. At matched nominal dose, fewer directions mean longer exposure per image. The learned 32-image acquisition gives lower W1 than the 256-image random acquisition for TV and pretrained PnP, but the close neuron-trained-PnP means do not establish equivalence. The TV curve is not monotone in compression: validation can prefer a stronger regularization weight at $C=4$, which smooths neuronal features more than at $C=8$.
+\Cref{tab:s:compression} reports both depth metrics at $C=1,4,8$. These values count all camera samples, not camera images alone. At matched nominal dose, fewer directions mean longer exposure per image. The learned 32-image acquisition gives lower W1 than the 256-image random acquisition for TV and pretrained PnP, but the close neuron-trained-PnP means do not establish equivalence (\cref{tab:s:tradeoffs}). The TV curve is not monotone in compression: validation can prefer a stronger regularization weight at $C=4$, which smooths neuronal features more than at $C=8$.
 
 \begin{table*}[t]
 \centering\small
 \widetab{\input{tables/supplement/profile_compression.tex}}
 \caption{Measurement budgets on the 12 prespecified crops. W1 and centroid errors are in $\mu$m and come from the same reconstruction rows. $C=1$ uses all 256 directions; $C=4,8$ average five subsets of 64 and 32 directions. The second seed is available across these budgets for TV and pretrained PnP; neuron-trained PnP is evaluated with seed 0 here and both seeds at $C=8$.}
 \label{tab:s:compression}
+\end{table*}
+
+\begin{table*}[t]
+\centering\small
+\widetab{\input{tables/supplement/acquisition_tradeoffs.tex}}
+\caption{Acquisition trade-offs on the 12 prespecified crops. Values are W1 in $\mu$m; changes compare our plate with the untrained acquisition specified in each row, with paired cell-bootstrap 95\,\% intervals. The image-count comparison uses matched nominal dose; the dose comparison uses $C=8$ for both plates.}
+\label{tab:s:tradeoffs}
 \end{table*}
 
 \paragraph{Full-scan joint-training comparison.}
