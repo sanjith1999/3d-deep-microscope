@@ -2,7 +2,7 @@
 \label{sec:s:evaluation}
 
 \paragraph{Dataset partitions.}
-The neuronal references are public two-photon stacks used in DEEP$^2$ \cite{wijethilake2023}. We use the term mouse pyramidal neurons with dendritic arbors. Test cells are SOM004 cells 1--2, SOM005 cell 1 and SOM006 cells 1--3: six cells from three animals. Each cell contributes two prespecified crops selected by projected foreground area times depth spread. After fixing reconstruction parameters, eight additional eligible crops per cell were sampled uniformly by location, excluding the two already selected. The resulting 48 crops were reconstructed without retuning. There are 60 test crops in the main comparison; other full-field studies use the 12 prespecified crops unless stated otherwise.
+The neuronal references are public two-photon stacks used in DEEP$^2$ \cite{wijethilake2023}. Test cells are SOM004 cells 1--2, SOM005 cell 1 and SOM006 cells 1--3: six cells from three animals. Each cell contributes two prespecified crops selected by projected foreground area times depth spread. After fixing reconstruction parameters, eight additional eligible crops per cell were sampled uniformly by location, excluding the two already selected. The resulting 48 crops were reconstructed without retuning. There are 60 test crops in the main comparison; other full-field studies use the 12 prespecified crops unless stated otherwise.
 
 Denoisers are trained on SOM009, a fourth animal, as specified in \cref{sec:s:reconstruction}. Parameter selection uses two vascular crops from a different animal. Conformal calibration uses a held-out stack of SOM009 and does not tune the reconstruction. No test volume enters optical training, denoiser training, scalar tuning or interval calibration.
 

@@ -6,7 +6,7 @@ Three-dimensional fluorescence microscopy must distinguish structures that overl
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\linewidth]{neuron_overview.pdf}
-\caption{\textbf{Learning the illumination improves axial recovery across priors.} (a) Full lateral projections and matched axial band views with pretrained PnP, the prior with the largest mean gain ($C=8$, draw 0). The crop and outlined band were selected from reference structure, before viewing reconstruction gains. Band views maximize over the outlined $5.1\um$ strip; depth increases downward. Each row shares one linear display scale. (b) Mean axial-profile W1 over the 60 test crops, using the same learned plate with all three priors. Centroid errors and paired intervals are in \cref{tab:anyprior}. Bars: $10\um$ (projections), $5\um$ (band views, true aspect).}
+\caption{\textbf{Learning the illumination improves axial recovery across priors.} (a) Reference projection and column-W1 maps above; matched axial band views below ($C=8$, draw 0). Pretrained PnP, the prior with the largest mean gain, is shown. The crop and band were selected from reference structure. Band views maximize over the outlined $5.1\um$ strip with true aspect and depth downward; one linear intensity scale is shared below. Gray marks excluded columns in the error maps. (b) Mean W1 over 60 crops using the same learned plate. Centroid errors and paired intervals: \cref{tab:anyprior}. Bars: $10\um$ (reference projection), $5\um$ (band view).}
 \label{fig:anyprior}
 \end{figure*}
 
@@ -14,7 +14,7 @@ Our system encodes depth through angle-scanned excitation. A plane wave illumina
 
 We learn the phase plate by reducing similarity between the measurement responses of voxels at different depths and the same lateral position. Each response includes the entire imaging chain: structured excitation, fluorescence detection and camera-pixel integration. The objective uses these physical responses directly, requiring neither specimen examples nor a reconstruction network. It builds on coherence-based sensing design and decoder-independent optical optimization \cite{elad2007,yanny2020,pinkard2025}, specializing them to excitation-side depth encoding. Unlike training through a chosen decoder \cite{kellman2019,nehme2020deepstorm3d}, this formulation leaves the reconstruction prior outside optical training.
 
-We evaluate the learned plate on simulated measurements of mouse pyramidal neuron volumes using total variation (TV) and plug-and-play (PnP) reconstruction with pretrained and neuron-trained denoisers. We measure both the recovered axial intensity profiles and their centroids, together with image quality. Controlled filament crossings test whether lower depth error also supports separation of overlapping structures. These evaluations distinguish improvements shared across reconstruction methods from tasks that still depend on the prior. We further compare optical objectives under the same training budget and examine reduced measurement counts, noise and alignment errors.
+We evaluate the same learned plate on simulated mouse pyramidal neuron volumes using TV and PnP with pretrained and neuron-trained denoisers. Axial-profile and centroid errors quantify depth recovery, complemented by image quality. Additional random-plate and amplitude-mask controls test the baseline choice, while controlled crossings assess separation of overlapping structures. We also compare optical criteria and examine measurement, noise and alignment budgets.
 
 Our contributions are:
 \begin{enumerate}\itemsep0pt

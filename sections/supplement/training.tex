@@ -2,7 +2,7 @@
 \label{sec:s:training}
 
 \paragraph{Signatures and sampling.}
-For each lateral position and depth, we collect the detector-integrated response of its reconstruction voxel over the sampled illumination directions and camera pixels. Four directions and 24 interior lateral positions are sampled per Adam step. Each full-field depth signature therefore has $4\times144$ entries during training. Its mean over all angle--pixel entries is removed before unit-norm normalization. This is not per-pixel temporal centering. Evaluation correlations use the same definition over all 256 directions and all lateral reconstruction positions.
+For each lateral position and depth, we collect the detector-integrated response of its reconstruction voxel over the sampled illumination directions and camera pixels. Four directions and 24 interior lateral positions are sampled per Adam step. Each full-field depth signature therefore has $4\times144$ entries during training. Its mean over all angle--pixel entries is removed before unit-norm normalization. This is not per-pixel temporal centering. The main paper's evaluation statistic uses the same centering definition over the 32 directions of draw 0 and the $44\times44$ interior lateral positions (indices 2--45). It averages absolute off-diagonal depth correlations, not the squared weighted training loss.
 
 With zero-based reconstruction-plane indices $i,j\in\{0,\ldots,15\}$, off-diagonal weights are
 \begin{equation}
@@ -11,6 +11,23 @@ w_{ij}=\begin{cases}2,&i+j=14,\\1,&i+j\ne14,\end{cases}\qquad i\ne j.
 This emphasizes reflected pairs around grid plane 7. It is an implemented weighting choice, not a universal symmetry of a phase screen or a statement that plane 7 is exactly the physical focus. Both orderings of each pair are included and the sum is divided by the total weight. Norm denominators include $10^{-12}$ for numerical stability.
 
 We use 1000 Adam steps with learning rate 0.05. The two training seeds change the sampled positions and directions, starting from the same phase realization and frozen surround. No specimen examples, reconstruction loss or denoiser enter this process. Normalizing a signature removes uniform power scaling from the loss; dose normalization is applied separately when generating evaluation measurements.
+
+\paragraph{Why angular modulation matters.}
+Consider a nonnegative temporal response $\mathbf e_z$ at one camera pixel, with mean $\mu_z>0$. Write $\mathbf e_z=\mu_z\mathbf1+\widetilde{\mathbf e}_z$, and define angular contrast $\kappa_z=\|\widetilde{\mathbf e}_z\|/(\sqrt T\mu_z)$. If $\rho$ is the correlation of the mean-removed fluctuations, the raw cosine is exactly
+\begin{equation}
+c_{zz'}=\frac{1+\rho\kappa_z\kappa_{z'}}
+{\sqrt{(1+\kappa_z^2)(1+\kappa_{z'}^2)}}.
+\label{eq:s:contrast}
+\end{equation}
+The shared mean dominates when contrasts are small, even if the fluctuations are weakly correlated. Increasing contrast and placing strong responses at different angles can reduce this overlap. At the preset field center, median contrast is 0.58/1.53 and mean raw cosine 0.83/0.41 for random/learned plates. Only one preset position is used for this illustrative decomposition; it is not a field-wide causal ablation.
+
+A common-footprint approximation explains why centering the full angle--pixel signature does not necessarily remove the shared angular component. If $\mathbf q_z=\mathbf e_z\otimes\mathbf g$ with a fixed $P$-pixel footprint, global centering gives correlation
+\begin{equation}
+\frac{1-\eta+\rho\kappa_z\kappa_{z'}}
+{\sqrt{(1-\eta+\kappa_z^2)(1-\eta+\kappa_{z'}^2)}},\quad
+\eta=\frac{(\mathbf1^\top\mathbf g)^2}{P\|\mathbf g\|^2}.
+\end{equation}
+For a localized footprint, $\eta$ can be small, so a common angular component remains. The actual operator includes depth-varying footprints and within-voxel variation; neither training nor evaluation uses this separable approximation. This provides an interpretation of the observed code, not a proof that contrast alone causes the reconstruction gain or that the objective is universally optimal.
 
 \paragraph{Worst-case coherence surrogate.}
 Let $\rho_{ij}$ be the inner product of two centered, unit-norm depth signatures. The comparison uses

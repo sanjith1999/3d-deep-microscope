@@ -10,7 +10,7 @@ Each encoder's excitation is divided by its mean over the specimen analysis grid
 \begin{table*}[t]
 \centering\small
 \widetab{\input{tables/supplement/profile_compression.tex}}
-\caption{Measurement budgets on the 12 prespecified crops. W1 and centroid errors are in $\mu$m and come from the same reconstruction rows. $C=1$ uses all 256 directions; $C=4,8$ average five subsets of 64 and 32 directions. No missing independent-initialization results are imputed.}
+\caption{Measurement budgets on the 12 prespecified crops. W1 and centroid errors are in $\mu$m and come from the same reconstruction rows. $C=1$ uses all 256 directions; $C=4,8$ average five subsets of 64 and 32 directions. The second seed is available across these budgets for TV and pretrained PnP; neuron-trained PnP is evaluated with seed 0 here and both seeds at $C=8$.}
 \label{tab:s:compression}
 \end{table*}
 
