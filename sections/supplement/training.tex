@@ -2,7 +2,14 @@
 \label{sec:s:training}
 
 \paragraph{Signatures and sampling.}
-For each lateral position and depth, we collect the detector-integrated response of its reconstruction voxel over the sampled illumination directions and camera pixels. Four directions and 24 interior lateral positions are sampled per Adam step. Each full-field depth signature therefore has $4\times144$ entries during training. Its mean over all angle--pixel entries is removed before unit-norm normalization. This is not per-pixel temporal centering. The main paper's evaluation statistic uses the same centering definition over the 32 directions of draw 0 and the $44\times44$ interior lateral positions (indices 2--45). It averages absolute off-diagonal depth correlations, not the squared weighted training loss.
+For each lateral position and depth, we collect the detector-integrated response of its reconstruction voxel over the sampled illumination directions and camera pixels. Four directions and 24 interior lateral positions are sampled per Adam step. Each full-field depth signature therefore has $4\times144$ entries during training. Its mean over all angle--pixel entries is removed before unit-norm normalization. This is not per-pixel temporal centering. The main paper's evaluation statistic uses the same centering definition over the 32 directions of draw 0 and the $44\times44$ interior lateral positions (indices 2--45). It averages absolute off-diagonal depth correlations, not the squared weighted training loss. \Cref{fig:s:signaturecorr} compares the three plates.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{signature_correlations.pdf}
+\caption{Absolute correlations of centered, unit-norm depth signatures for the untrained, our and end-to-end plates. Each signature uses the 32 directions of draw 0; matrix entries average over $44\times44$ interior positions. Values below the matrices are means of their off-diagonal entries.}
+\label{fig:s:signaturecorr}
+\end{figure}
 
 With zero-based reconstruction-plane indices $i,j\in\{0,\ldots,15\}$, off-diagonal weights are
 \begin{equation}
