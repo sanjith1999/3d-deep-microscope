@@ -11,7 +11,7 @@
 \label{fig:measurements}
 \end{figure}
 
-Learning makes the defocused plate's depth code more selective (\cref{fig:measurements}a): strong responses occupy different axial regions as the incident angle changes. Over the interior field, mean absolute depth-signature correlation falls from 0.845 to 0.480; the end-to-end plate reaches 0.628 (\cref{fig:overview}a; matrices in the supplement). These correlations use the full detector-integrated signatures, rather than illumination intensity alone.
+Learning makes the defocused plate's depth code more selective (\cref{fig:measurements}a): strong responses occupy different axial regions as the incident angle changes. Over the interior field, mean absolute depth-signature correlation falls from 0.845 to 0.480 (\cref{fig:overview}a); the end-to-end plate reaches 0.628 (matrices in the supplement). These correlations use the full detector-integrated signatures, rather than illumination intensity alone.
 
 We test whether measurements distinguish each neuronal reference from a version whose depth layers are merged while its projection and column centroids remain unchanged. Poisson Kullback--Leibler (KL) divergence measures separation between the two expected-count distributions, after fitting the alternative's global brightness. Our plate increases this divergence by a geometric mean factor of 10.0 relative to the untrained plate (95\,\% CI: 8.7--11.8), and 2.0 relative to the end-to-end plate (1.9--2.1). Both increases hold for all 59 eligible crops after averaging direction subsets (\cref{fig:measurements}b). This tests discrimination of specific axial alternatives, independently of a reconstruction prior; it does not establish unique recovery of arbitrary volumes.
 

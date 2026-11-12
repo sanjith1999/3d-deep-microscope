@@ -15,43 +15,43 @@
 \label{fig:system}
 \end{figure*}
 
-\paragraph{Depth from the scan angle.}
-A tilted plane wave illuminates a fixed phase plate, $\tau(\mathbf r)=e^{\mathrm i\phi(\mathbf r)}$. Propagation converts its phase structure into spatially varying excitation. Changing the incident angle shifts this pattern differently at different depths. In the ideal paraxial thin-screen model, a transverse direction-cosine change $\Delta\mathbf s$ produces displacement $\Delta\mathbf r\approx d\,\Delta\mathbf s$ after distance $d$. This ideal thin-screen shift is related to the angular optical memory effect \cite{feng1988,freund1988}. In this approximation, defocusing the plate places the plane of zero angular shift outside the specimen. Because detection has a broad depth of field, we use the resulting excitation sequence to encode axial differences. The vectorial relay at high numerical aperture (NA) and its finite pupil determine the actual patterns, including angle-dependent changes of shape as well as translation. Acquisition is sequential: one camera image is recorded per angle at a fixed detection focus (\cref{fig:system}a).
+\subsection{Depth-encoding acquisition}
+\label{sec:acquisition}
 
-\paragraph{Measurement model and signatures.}
-Let $X_0(\mathbf r,z)$ denote the specimen's fluorescence response per unit excitation. Under linear, unsaturated fluorescence, excitation intensity $I_t(\mathbf r,z)$ generates an emission source proportional to $X_0I_t$. Laterally shift-invariant detection sums these contributions incoherently after emission blur and camera-pixel averaging \cite{yeh2019}. Excitation modulates the specimen before this blur, so the camera need not resolve the pattern's spatial detail. We compute excitation with a vectorial Richards--Wolf relay to account for high NA \cite{richards1959,marian2007}. With a piecewise-constant reconstruction basis, the noiseless model is
+A plane wave illuminates a fixed phase plate with transmission $\tau(\mathbf r)=e^{\mathrm i\phi(\mathbf r)}$, and propagation converts its phase modulation into spatially structured excitation (\cref{fig:system}a). Changing the illumination angle shifts the excitation pattern by an amount that varies with depth. In the ideal paraxial thin-screen approximation, a change $\Delta\mathbf s$ in transverse direction cosine produces a lateral displacement $\Delta\mathbf r(z)\approx d(z)\Delta\mathbf s$, where $d(z)$ is the axial distance from the plane conjugate to the plate \cite{feng1988,freund1988}. Plate defocus places this shear pivot outside the specimen, producing depth-dependent excitation sequences as the angle is scanned. We compute the actual excitation using a vectorial relay model that accounts for the high numerical aperture (NA), finite pupil and departures from pure translation \cite{richards1959,marian2007}. Acquisition is sequential: one fluorescence image is recorded per angle, while the plate, specimen and detection focus remain fixed.
+
+\paragraph{Image formation and signatures.}
+Let $X_0(\mathbf r,z)$ denote fluorescence response per unit excitation, with $\mathbf r=(x,y)$. Under linear, unsaturated fluorescence, illumination $I_t(\mathbf r,z;\phi)$ produces an emission source proportional to $X_0I_t$. Contributions from different locations add incoherently through the detection optics. For a piecewise-constant reconstruction with coefficient $x_j$ in voxel $V_j$, the noiseless model is
 \begin{equation}
-\bar{\by}=\bA_\phi\bx,\qquad \bA_\phi=\bB_\phi\bU,
+\begin{aligned}
+\bar{\by}&=\bA_\phi\bx,\\
+(\bA_\phi)_{(t,p),j}
+&=\int_{V_j} I_t(\mathbf r,z;\phi)\,g_p(\mathbf r,z)
+\,\mathrm d^2\mathbf r\,\mathrm dz,
+\end{aligned}
 \label{eq:operator}
 \end{equation}
-where $\bx$ contains reconstruction coefficients, $\bB_\phi$ acts on a finer optical grid and $\bU$ replicates each coefficient over its fine-grid cells. This restriction integrates within-voxel optical variation. Measurements are generated from fine-grid specimens; the remaining sub-voxel residual and full image-formation model are specified in the supplement. A column of $\bA_\phi$ is the measurement signature of one voxel, stacked across illumination angles and camera pixels.
+where $g_p(\mathbf r,z)$ is the response of camera pixel $p$ to unit emission at $(\mathbf r,z)$, including the laterally shift-invariant emission point-spread function and pixel averaging \cite{yeh2019}. Excitation modulates the specimen before detection blur, so the camera need not resolve the illumination pattern itself. We evaluate the voxel integrals on a finer optical grid to retain within-voxel variation; fine-grid measurement generation and specimen discretization error are detailed in the supplement. Each column of $\bA_\phi$ collects one voxel's responses across illumination angles and camera pixels, defining its measurement signature.
 
-\paragraph{Decoder-free plate learning.}
-Depths at the same lateral position have overlapping detection responses. We target their excitation-dependent differences by comparing these columns. Let $\mathbf a_{\mathbf r,z}^{\mathcal T}$ denote a signature restricted to sampled angles $\mathcal T$, centered over its angle--pixel entries and normalized to unit norm. We minimize
+\subsection{Phase-plate learning}
+\label{sec:platelearning}
+
+Depths at the same lateral position have overlapping detection responses, so their excitation sequences provide an important source of axial discrimination. We optimize the phase plate to reduce correlations between the corresponding measurement signatures. For sampled illumination angles $\mathcal T$, let $\mathbf a_{\mathbf r,z}^{\mathcal T}$ denote the signature at lateral position $\mathbf r$ and depth $z$, centered over all angle--pixel entries and normalized to unit norm. The inner product $\rho_{zz'}=(\mathbf a_{\mathbf r,z}^{\mathcal T})^\top\mathbf a_{\mathbf r,z'}^{\mathcal T}$ measures correlation between two depths at that position.
+
+We minimize the weighted mean squared correlation, averaged over lateral positions and sampled angle sets:
 \begin{equation}
-\mathcal L(\phi)=\mathbb E_{\mathbf r,\mathcal T}
-\left[\frac{\sum_{z\ne z'}w_{zz'}
-\bigl((\mathbf a_{\mathbf r,z}^{\mathcal T})^\top
-\mathbf a_{\mathbf r,z'}^{\mathcal T}\bigr)^2}
+\mathcal L(\phi)
+=\mathbb E_{\mathbf r,\mathcal T}
+\left[\frac{\sum_{z\ne z'}w_{zz'}\,\rho_{zz'}^2}
 {\sum_{z\ne z'}w_{zz'}}\right].
 \label{eq:plate}
 \end{equation}
-Pairs reflected about a fixed grid plane receive twice the weight of other pairs; the indices are specified in the supplement. Squaring penalizes correlation of either sign. Normalization prevents uniform optical-power scaling from directly reducing the loss; excitation dose is matched separately during evaluation. Gradients pass through the excitation, vectorial relay and detector integration, without specimen examples or a reconstruction solver.
+The depth-pair weights $w_{zz'}$ are specified in the supplement. Squaring penalizes correlations of either sign. With uniform weights, the numerator is the off-diagonal energy of the depth-signature Gram matrix, equivalent to the classical frame potential up to a constant \cite{benedetto2003}. The supplement gives a statistical interpretation of the unweighted criterion.
 
-\paragraph{Why compare depth signatures?}
-With uniform weights, the unnormalized sum is the off-diagonal energy $\|\mathsf{G}-\mathsf{I}\|_F^2$ of the unit-norm signature Gram matrix, equivalent to the classical frame potential up to an additive constant \cite{benedetto2003}. In an idealized single-column Gaussian model, mutual information falls and linear-MMSE error rises in proportion to this energy, to leading order around orthogonal signatures. The supplement gives this local derivation and its assumptions; volumetric and cross-method gains are evaluated empirically.
+Training uses the optical forward model alone, without specimen examples or a reconstruction solver. We optimize the phase map by backpropagating through excitation propagation, the vectorial relay and detector integration. Signature normalization prevents uniform power scaling from directly lowering the loss; nominal excitation dose is controlled separately during evaluation.
 
-\paragraph{Other model-only criteria.}
-We compare our criterion with two other design objectives that use only the optical model. We optimize a smoothed worst-case coherence objective, $\mathbb E[\beta^{-1}\log\sum_{z\ne z'}\exp(\beta|\rho_{zz'}|)]$, with $\rho_{zz'}=\mathbf a_z^\top\mathbf a_{z'}$, and a local depth Fisher-information surrogate, $-\mathbb E_z\log\mathcal I_z$, with emitter brightness treated as a nuisance parameter \cite{elad2007,shechtman2014,yanny2020}. The coherence term emphasizes the most similar pair, while $\mathcal I_z$ measures sensitivity to a small depth change. Both use the same optical parameterization, initial phase and sampled positions/angles as our criterion. Their exact definitions and matched optimization settings are in the supplement.
+\paragraph{Alternative decoder-free objectives.}
+We compare our objective with two established design criteria: worst-case coherence \cite{elad2007} and depth Fisher information \cite{shechtman2014}. The coherence objective targets the most strongly correlated depth pair at each lateral position through a smooth maximum of $|\rho_{zz'}|$. The Fisher objective minimizes $-\mathbb E_z\log\mathcal I_z$, where $\mathcal I_z$ measures local sensitivity to axial displacement under a Poisson model with unknown emitter brightness. Both are optimized using the same optical model and phase parameterization. Their full formulations and shared optimization settings are provided in the supplement.
 
 \paragraph{End-to-end counterpart.}
-Using the same optics and initial phase, we jointly optimize the plate and a decoder on neuronal volumes. A regularized linear solve provides the network input:
-\begin{equation}
-\begin{aligned}
-\mathbf{z}_\lambda&=\mathbf{m}+\bA_\phi^\top
-(\bA_\phi\bA_\phi^\top+\lambda\mathsf{I})^{-1}(\by-\bA_\phi\mathbf{m}),\\
-\hat{\bx}&=\mathcal N_\theta(\mathbf{z}_\lambda),
-\end{aligned}
-\label{eq:joint}
-\end{equation}
-where $\mathbf{m}$ is a constant volume at the mean training intensity, $\lambda>0$ is learned, and $\mathcal N_\theta$ is a residual 3D U-Net. Training minimizes reconstruction MSE and updates both $\phi$ and the decoder parameters through the physical model. The measurement-space system is solved directly. We then fix the resulting phase and evaluate it with all reconstruction methods. Training stages, validation selection and gradient checks are detailed in the supplement.
+Using the same optical model, we jointly optimize the plate and a decoder on neuronal training volumes (\cref{fig:system}b). The decoder applies a regularized linear solve followed by a residual 3D U-Net. Training minimizes reconstruction mean squared error and updates both the phase map and decoder parameters. We then fix the learned plate and evaluate it with all reconstruction methods. The full decoder formulation and training protocol are provided in the supplement.

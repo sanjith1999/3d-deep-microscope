@@ -5,12 +5,16 @@
 The jointly trained counterpart uses the same phase parameterization, initial phase, frozen random surround, vectorial relay, detector footprints and reconstruction basis as the model-only designs. The measurement matrix is assembled differentiably from the excitation and fixed detection footprints. During joint training, each sampled 32-direction excitation is normalized by its own specimen-field mean. Evaluation instead uses the full-scan dose normalization shared by every encoder. This difference is retained explicitly in the training protocol; model-only correlation losses are invariant to a uniform scale.
 
 \paragraph{Regularized solve and network.}
-For $M=32\times144=4608$ measurements and $N=36{,}864$ coefficients, the decoder first computes
+For $M=32\times144=4608$ measurements and $N=36{,}864$ coefficients, the decoder computes
 \begin{equation}
-\mathbf z=\mathbf m+\bA^\top(\bA\bA^\top+\lambda\mathsf I)^{-1}
-(\by-\bA\mathbf m).
+\begin{aligned}
+\mathbf{z}_\lambda&=\mathbf{m}+\bA^\top
+(\bA\bA^\top+\lambda\mathsf{I})^{-1}(\by-\bA\mathbf{m}),\\
+\hat{\bx}&=\mathcal N_\theta(\mathbf{z}_\lambda).
+\end{aligned}
+\label{eq:s:joint}
 \end{equation}
-Here $\mathbf m$ is a constant volume filled with the training set's mean intensity. A learned log-parameter sets $\lambda>0$, initialized from mean training noise variance divided by training voxel variance. The solve is performed in measurement space. The Gram matrix is formed in float32 with TF32 disabled, and its Cholesky factorization and triangular solve use float64. The result is projected back in float32. One such solve is followed by one residual 3D U-Net.
+Here $\mathbf m$ is a constant volume filled with the training set's mean intensity. A learned log-parameter sets $\lambda>0$, initialized from mean training noise variance divided by training voxel variance. The solve is performed in measurement space. The Gram matrix is formed in float32 with TF32 disabled, and its Cholesky factorization and triangular solve use float64. The result is projected back in float32. The map $\mathcal N_\theta$ is the residual 3D U-Net described below.
 
 The network has three encoder widths, 16, 32 and 64. Each block contains two $3\times3\times3$ convolutions with batch normalization and ReLU. Two $2\times2\times2$ max-pooling stages reduce the spatial grid. Transposed convolutions of kernel and stride two upsample; lateral skip features are concatenated before the corresponding convolution blocks. A final $1\times1\times1$ convolution predicts a residual that is subtracted from the network input. The output has no nonnegative or box activation.
 
