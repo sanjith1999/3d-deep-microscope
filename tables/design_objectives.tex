@@ -1,13 +1,16 @@
-\begin{tabular}{lrrrrr}
+\newcommand{\twol}[2]{\begin{tabular}[b]{@{}c@{}}#1\\#2\end{tabular}}
+\newcommand{\blockdivider}{\smash{\rule[-81.9pt]{0.4pt}{89pt}}}
+\begin{tabular}{@{}l@{\hspace{6pt}}rrrrr@{\hspace{10pt}}c@{\hspace{4pt}}rrrrr@{}}
 \toprule
-& & \multicolumn{3}{c}{Model-only optical training} & Joint training \\
-\cmidrule(lr){3-5}\cmidrule(lr){6-6}
-Reconstruction & Untrained & Depth Fisher & Worst-case coherence & Ours & End-to-end \\
-\midrule
-TV & 0.371 & 0.251 & 0.264 & \textbf{0.218} & \underline{0.222} \\
-Pretrained PnP & 0.579 & 0.367 & 0.390 & \underline{0.290} & \textbf{0.281} \\
-Neuron-trained PnP & 0.271 & 0.218 & 0.223 & \underline{0.195} & \textbf{0.189} \\
-\midrule
-Feed-forward & 0.366 & 0.314 & 0.314 & \underline{0.265} & \textbf{0.234} \\
+& \multicolumn{5}{c}{Axial-profile W1 ($\mu$m)} & \blockdivider & \multicolumn{5}{c}{Centroid error ($\mu$m)} \\
+\cmidrule(lr){2-6}\cmidrule(l){8-12}
+Reconstruction & Untrained & \twol{Depth}{Fisher} & \twol{Worst-case}{coherence} & Ours & End-to-end &
+               & Untrained & \twol{Depth}{Fisher} & \twol{Worst-case}{coherence} & Ours & End-to-end \\
+\cmidrule(r){1-6}\cmidrule(l){8-12}
+TV                 & 0.371 & 0.251 & 0.264 & \textbf{0.218} & \underline{0.222} && 0.259 & 0.175 & 0.185 & \textbf{0.150} & \underline{0.151} \\
+Pretrained PnP     & 0.579 & 0.367 & 0.390 & \underline{0.290} & \textbf{0.281} && 0.490 & 0.298 & 0.320 & \underline{0.224} & \textbf{0.212} \\
+Neuron-trained PnP & 0.271 & 0.218 & 0.223 & \underline{0.195} & \textbf{0.189} && 0.197 & 0.157 & 0.160 & \underline{0.139} & \textbf{0.131} \\
+\cmidrule(r){1-6}\cmidrule(l){8-12}
+Feed-forward       & 0.366 & 0.314 & 0.314 & \underline{0.265} & \textbf{0.234} && 0.282 & 0.234 & 0.238 & \underline{0.196} & \textbf{0.167} \\
 \bottomrule
 \end{tabular}
