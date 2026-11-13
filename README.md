@@ -19,10 +19,16 @@ Paper branches:
 - `paper/manuscript` - original manuscript and extended experimental record
 - `paper/cvpr/init-draft` - initial CVPR manuscript and supplement
 - `paper/cvpr/struct-amb` - CVPR draft focused on structural ambiguity
-- `paper/cvpr/dec-agn-depth` - current CVPR draft on decoder-free depth encoding
+- `paper/cvpr/dec-agn-depth` - CVPR draft on decoder-free depth encoding
+- `paper/cvpr/depth-sep` - CVPR drafts on learned depth separation and axial
+  structure recovery
+- `paper/cvpr/axial-rec` - current CVPR draft on optical learning for axial
+  recovery, compared with established objectives and end-to-end training
 
 Each CVPR branch has `main.tex` and `supplement.tex` at the root. The original
 research branch has separate `manuscript/` and `experiments/` projects. Each
 branch includes build instructions and self-contained figures and references.
 
-Tag `cvpr-v0.1` marks the decoder-free CVPR draft.
+Tags mark successive CVPR drafts: `cvpr-v0.1` on `paper/cvpr/dec-agn-depth`,
+`cvpr-v0.2` and `cvpr-v0.3` on `paper/cvpr/depth-sep`, and `cvpr-v0.4` to
+`cvpr-v0.6` on `paper/cvpr/axial-rec`.
