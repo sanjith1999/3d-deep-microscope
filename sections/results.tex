@@ -51,7 +51,9 @@ For context, we test the same priors with random binary patterns projected in fo
 \label{fig:crossings}
 \end{figure*}
 
-Crossing filaments directly test two structures that overlap in projection but lie at different depths. In this controlled task, the smallest gap meeting the resolution-and-ordering criterion falls from $3.84$ to $2.56\um$ with our plate under TV and pretrained PnP (\cref{fig:crossings}). It remains $3.84\um$ under neuron-trained PnP despite improved neuronal W1. The zero-gap control shows no false splitting. 
+Crossing filaments directly test two structures that overlap in projection but lie at different depths. Crossing filaments use three lateral geometries, two axial centers and five measurement draws. Success requires matched axial peaks in columns carrying at least half the reference crossing signal, together with correct ordering of the arms. The smallest resolved gap must achieve 80\,\% success at each center and all larger tested gaps. Phantom intervals resample phantom cases after averaging draws. Definitions and selection rules are in the supplement.
+
+In this controlled task, the smallest gap meeting the resolution-and-ordering criterion falls from $3.84$ to $2.56\um$ with our plate under TV and pretrained PnP (\cref{fig:crossings}). It remains $3.84\um$ under neuron-trained PnP despite improved neuronal W1. The zero-gap control shows no false splitting. 
 
 The supplement reports full crossing curves and extensions with weaker and additional filaments.
 
