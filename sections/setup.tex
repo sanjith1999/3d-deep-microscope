@@ -22,9 +22,9 @@ We normalize each plate's excitation to the same mean over the specimen and full
 \paragraph{Metrics and statistics.}
 Our primary axial metric is one-dimensional Wasserstein-1 (W1) distance \cite{peyre2019}, which compares the full normalized intensity profile along depth. For each lateral column $c$, let $F_c$ and $\hat F_c$ denote the cumulative distributions of the normalized reference and nonnegative reconstructed profiles. We compute
 \begin{equation}
-E_{\mathrm{W1}}=\sum_c\pi_c\,\Delta z\sum_{i=0}^{Z-2}\left|F_c(i)-\hat F_c(i)\right|,
+E_{\mathrm{W1}}=\sum_c\pi_c\,\Delta z\sum_{i=0}^{Z-1}\left|F_c(i)-\hat F_c(i)\right|,
 \label{eq:w1}
 \end{equation}
-where $Z=16$, $\Delta z=0.64\um$, and $\pi_c$ is the reference column brightness normalized over columns exceeding 10\,\% of the maximum reference column brightness. Centroid error measures mean depth placement using the same columns and weights. PSNR and foreground SSIM complement these axial metrics by assessing intensity fidelity.
+where $Z=16$, $\Delta z=0.64\um$, and $\pi_c$ is the reference column brightness normalized over columns exceeding 10\,\% of the maximum reference column brightness. Centroid error measures mean depth placement using the same columns and weights. PSNR and foreground SSIM complement these axial metrics by assessing intensity fidelity. TV and PnP outputs are clipped to $[0,1]$ before evaluation; feed-forward outputs are clipped at zero only for W1.
 
-We compare plates on the same crops and illumination-direction subsets, at matched nominal dose and under the same noise model. For each crop, we average the reconstruction metrics over direction subsets and their associated noise realizations before calculating changes between plates. Crops from the same neuronal cell are related, so we estimate uncertainty by resampling cells. We construct 95\,\% confidence intervals using 10,000 bootstrap resamples of the six cells, retaining all crops belonging to each sampled cell.
+We compare plates on the same crops and illumination-direction subsets, at matched nominal dose and under the same noise model. For each crop, we average the reconstruction metrics over direction subsets and their associated noise realizations before calculating changes between plates. We estimate 95\,\% confidence intervals using bootstrap resampling of the six cells, keeping all crops from each sampled cell together.
