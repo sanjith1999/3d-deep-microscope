@@ -9,5 +9,19 @@ A focal stack changes the detection focus between images; our sequence changes i
 \paragraph{Existing depth encoders.}
 Light-field microscopy, DiffuserCam and Miniscope3D encode depth through detection optics \cite{broxton2013,antipa2018,yanny2020}. On the excitation side, scanned speckle supports three-dimensional fluorescence recovery \cite{pascucci2019}, and programmed axial illumination codes recover volumes from mixed camera images \cite{calisesi2019}. Yeh \etal~\cite{yeh2019} combine translated speckles with axial scanning. Yilmaz \etal~\cite{yilmaz2015} steer the incident angle through a fixed scattering layer for two-dimensional fluorescence recovery. These works establish depth coding and angular control as existing tools. Our comparison concerns how to learn the phase profile of one fixed plate that couples the illumination patterns across angles and depths.
 
+\begin{figure*}[t]
+\centering
+\begin{minipage}[t]{0.60\linewidth}
+\textbf{(a) Fixed-focus acquisition}\\[3pt]
+\includegraphics[width=\linewidth]{microscope.pdf}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.37\linewidth}
+\textbf{(b) Optical design routes}\\[3pt]
+\includegraphics[width=\linewidth]{design_routes.pdf}
+\end{minipage}
+\caption{\textbf{A shared optical model supports three design routes.} (a) Only the incident angle changes during acquisition; the phase plate, specimen and detection focus remain stationary. Blue and orange denote excitation and fluorescence. L, Obj and M denote lenses, objectives and mirrors; ex/em indicate excitation/emission. (b) The initial phase is retained, optimized using a model-only depth criterion, or learned jointly with a decoder on specimen examples.}
+\label{fig:system}
+\end{figure*}
+
 \paragraph{Strategies for optical design.}
 End-to-end methods learn optics jointly with reconstruction networks on example objects \cite{haputhanthri2022,nehme2020deepstorm3d,deb2022fouriernets}; illumination can also be optimized for a specified reconstruction algorithm \cite{kellman2019}. Model-only criteria instead evaluate predicted measurements. Fisher information measures local parameter sensitivity, while coherence measures similarity between normalized responses \cite{shechtman2014,elad2007}. Miniscope3D optimizes a detection mask using cross-coherence between depth-dependent PSFs, including lateral shifts \cite{yanny2020}. Squared-correlation criteria also have established frame-potential and sensing-matrix interpretations \cite{benedetto2003,duarte2009}. IDEAL and IDEAL-IO avoid a reconstruction decoder by optimizing estimated mutual information using fitted measurement distributions \cite{pinkard2025,markley2025}. Our criterion specializes response-based design to depths at the same lateral position across an excitation-angle sequence, without specimen examples or a fitted measurement distribution. We compare the resulting imaging quality with the implemented Fisher, coherence and end-to-end routes in the same optical model.

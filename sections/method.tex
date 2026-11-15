@@ -1,24 +1,10 @@
 \section{Method}
 \label{sec:imaging}
 
-\begin{figure*}[t]
-\centering
-\begin{minipage}[t]{0.60\linewidth}
-\textbf{(a) Fixed-focus acquisition}\\[3pt]
-\includegraphics[width=\linewidth]{microscope.pdf}
-\end{minipage}\hfill
-\begin{minipage}[t]{0.37\linewidth}
-\textbf{(b) Optical design routes}\\[3pt]
-\includegraphics[width=\linewidth]{design_routes.pdf}
-\end{minipage}
-\caption{\textbf{A shared optical model supports three design routes.} (a) Only the incident angle changes during acquisition; the phase plate, specimen and detection focus remain stationary. Blue and orange denote excitation and fluorescence. L, Obj and M denote lenses, objectives and mirrors; ex/em indicate excitation/emission. (b) The initial phase is retained, optimized using a model-only depth criterion, or learned jointly with a decoder on specimen examples.}
-\label{fig:system}
-\end{figure*}
-
 \subsection{Depth-encoding acquisition}
 \label{sec:acquisition}
 
-The phase plate in \cref{fig:system}a delays light by a different amount at each point of its surface. This map of delays is its phase profile $\phi(\mathbf r)$, with transmission $\tau(\mathbf r)=e^{\mathrm i\phi(\mathbf r)}$. Propagation converts these delays into a bright-and-dark illumination pattern. We place the plate away from an illumination image plane, a plane relayed sharply into the specimen. This fixed displacement is the plate's defocus; it is not changed during acquisition.
+The phase plate in \cref{fig:system}a delays light by a different amount at each point of its surface. This map of delays is its phase profile $\phi(\mathbf r)$, with transmission $\tau(\mathbf r)=e^{\mathrm i\phi(\mathbf r)}$. Propagation converts these delays into bright and dark illumination regions. We place the plate away from an illumination image plane, a plane relayed sharply into the specimen. This fixed displacement is the plate's defocus; it is not changed during acquisition.
 
 Tilting the incident light shifts the pattern differently at different depths. In a small-angle picture, changing the transverse part of the unit illumination direction by $\Delta\mathbf s$ produces a lateral shift $\Delta\mathbf r(z)\approx d(z)\Delta\mathbf s$ \cite{feng1988,freund1988}. Here $d(z)$ is the distance from the plane conjugate to the plate, where its sharp image would lie and the pattern does not shift. Our placement puts this pivot plane outside the specimen, so every depth inside shifts, by an amount that grows with its distance from the pivot. This relation explains the depth cue; actual excitation is computed with a vectorial relay model including the finite pupil and polarization \cite{richards1959,marian2007}.
 
@@ -44,7 +30,7 @@ A column of $\bA_\phi$ is the camera record predicted when only one voxel is flu
 \subsection{Learning the phase profile}
 \label{sec:platelearning}
 
-The phase profile determines these signatures; \cref{fig:system}b shows the three routes we compare for choosing it. Depths beneath the same lateral position have overlapping detection responses. Their excitation sequences must therefore supply useful distinctions over the scan. For sampled angles $\mathcal T$, let $\mathbf a_{\mathbf r,z}^{\mathcal T}$ denote a voxel's signature after subtracting its mean over all angle--pixel entries and normalizing it to unit norm. The inner product $\rho_{zz'}=(\mathbf a_{\mathbf r,z}^{\mathcal T})^\top\mathbf a_{\mathbf r,z'}^{\mathcal T}$ measures correlation between two depths at that lateral position.
+The phase profile determines each voxel's camera response; \cref{fig:system}b shows the three routes we compare for choosing it. Depths beneath the same lateral position have overlapping detection responses. Their excitation sequences must therefore supply useful distinctions over the scan. For sampled angles $\mathcal T$, let $\mathbf a_{\mathbf r,z}^{\mathcal T}$ denote a voxel's signature after subtracting its mean over all angle--pixel entries and normalizing it to unit norm. The inner product $\rho_{zz'}=(\mathbf a_{\mathbf r,z}^{\mathcal T})^\top\mathbf a_{\mathbf r,z'}^{\mathcal T}$ measures correlation between two depths at that lateral position.
 
 Our criterion penalizes correlations across depth pairs:
 \begin{equation}
@@ -59,7 +45,7 @@ The fixed pair weights $w_{zz'}$ set each pair's contribution; their implemented
 Training backpropagates through the optical model to the phase profile, without specimen examples or reconstruction updates. Signature normalization makes the criterion insensitive to uniform power scaling; matching nominal excitation exposure during evaluation is a separate control.
 
 \paragraph{Alternative model-only criteria.}
-The implemented worst-case coherence criterion targets the most similar pair of normalized depth responses, using a smooth maximum of $|\rho_{zz'}|$ \cite{elad2007}. The depth Fisher-information criterion targets local sensitivity to an emitter's axial displacement under a Poisson model, treating brightness as a nuisance parameter \cite{shechtman2014}. Their full formulations are in the supplement. All three model-only criteria use the same phase parameterization, initial phase, sampled positions and angles, optimizer settings and update budget. The shared optimization budget controls the comparison but does not establish equal convergence or optimal tuning for every criterion.
+The implemented worst-case coherence criterion targets the most similar pair of normalized depth responses, using a smooth maximum of $|\rho_{zz'}|$ \cite{elad2007}. The depth Fisher-information criterion targets local sensitivity to an emitter's axial displacement under a Poisson model, treating brightness as a nuisance parameter \cite{shechtman2014}. Their full formulations are in the supplement. The three model-only criteria share phase parameterization, sampling, optimizer settings and update budget; this does not establish equal convergence or optimal tuning.
 
 \paragraph{End-to-end design.}
 We also optimize the plate jointly with a reconstruction network on neuronal training volumes (\cref{fig:system}b). The decoder uses a regularized linear solve followed by a residual 3D U-Net and is trained with reconstruction mean squared error. We then fix the plate and evaluate it with all four reconstruction methods. This supervised route has a separate training and checkpoint-selection schedule, detailed in the supplement.
