@@ -11,6 +11,10 @@
 \label{tab:s:e2e}
 \end{table*}
 
+\paragraph{Intensity and axial errors under pretrained PnP.}
+For these 60 crops at $C=8$, paired end-to-end-minus-ours differences have 95\,\% cell-bootstrap intervals. PSNR changes by $-0.037$\,dB ($-0.094$ to $+0.018$), with no established difference; foreground SSIM changes by $-0.0029$ ($-0.0050$ to $-0.0008$). W1 changes by $-0.0087\um$ ($-0.0143$ to $-0.0032$), and centroid error by $-0.0120\um$ ($-0.0185$ to $-0.0056$). Thus end-to-end has slightly lower axial errors, while our plate has slightly higher foreground SSIM. The differences are small and concern this common reconstruction method, not a general conflict between intensity and depth metrics.
+
+
 \begin{table*}[t]
 \centering\small
 \input{tables/design_intervals.tex}
@@ -26,7 +30,7 @@
 \end{table*}
 
 \paragraph{Optical sampling repeats.}
-\Cref{tab:s:main} adds our second optical sampling seed to the primary TV/PnP comparison, using the same untrained initialization. Each our plate lowers W1 on every crop under each method. Seed 0 improves centroid error on 59 of 60 crops for neuron-trained PnP and all crops for the other methods. Seed 1 improves centroid error on all crops. These repeats test sampling variability, not independence of phase initialization.
+\Cref{tab:s:main} adds our second optical sampling seed to the primary TV/PnP comparison, using the same untrained initialization. Both optical sampling repeats of our criterion lower W1 on every crop under each method. Seed 0 improves centroid error on 59 of 60 crops for neuron-trained PnP and all crops for the other methods. Seed 1 improves centroid error on all crops. These repeats test sampling variability, not independence of phase initialization.
 
 \begin{table*}[t]
 \centering\small
