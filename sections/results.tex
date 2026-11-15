@@ -6,7 +6,7 @@ A random phase plate provides depth-dependent excitation during angular scanning
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{excitation_sections.pdf}
-\caption{\textbf{Optical learning changes the depth code before reconstruction.} Illustrative excitation sections at equal and opposite tilts (azimuths $0^\circ$ and $180^\circ$) in the same central vertical plane, for the untrained plate (top), ours (middle) and the end-to-end plate (bottom). The shared linear intensity scale is relative to the untrained mean.}
+\caption{\textbf{Optical learning changes the depth code before reconstruction.} Illustrative excitation sections in the same central $x$--$z$ plane at equal and opposite tilts (azimuths $0^\circ$ and $180^\circ$). Intensities share a linear scale normalized to the untrained scan mean, with values above 4.83 clipped for display. Scale bar: $5\,\mu\mathrm{m}$.}
 \label{fig:measurements}
 \end{figure}
 
@@ -46,27 +46,34 @@ With separately fine-tuned feed-forward decoders, the end-to-end system achieves
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=\linewidth]{neurons.pdf}
-\caption{\textbf{Recovery of unequal axial peaks.} Matched reconstructions with pretrained PnP at $C=8$. The marked column, chosen after inspecting reconstructions, illustrates better retention of the weaker peak by our plate (dashed depth line). Profiles have unit mass, with the reference in gray; column and crop W1 are labeled separately. The bottom-left panel shows reference intensity. Fluorescence is shown in inverted gray, so darker pixels carry more signal; W1 maps run from light pink (0) to deep purple ($\geq1\um$), and white marks pixels outside the reference signal mask. Reconstruction images share a linear intensity scale and noise draw. Reconstructed views use simulation coordinates; the two-photon context uses tissue coordinates. Five-subset profiles and selection details are in the supplement.}
-\label{fig:neurons}
+\includegraphics[width=\linewidth]{neuron_depth_overview.pdf}
+\caption{\textbf{Depth-colored neuronal reconstructions.} Two crops selected using reference structure, reconstructed from simulated measurements with pretrained PnP at $C=8$. Red boxes locate the crops in the two-photon references; white boxes mark the bands shown in \cref{fig:neurons}. Axial planes are colored by depth and combined using a maximum in each color channel, with one linear intensity scale per crop. Two-photon context uses tissue coordinates; crop views use simulation coordinates.}
+\label{fig:neuron-depth}
 \end{figure*}
 
-\Cref{fig:neurons} shows a neuronal crop where both learned plates reduce crop-wide profile error. At the marked column, two unequal axial peaks share a lateral position: our plate retains the weaker component more faithfully, while the untrained and end-to-end reconstructions attenuate it. This local W1 advantage persists across all five direction subsets, although the two learned plates have similar crop-wide W1. Reference-selected views from two animals and all three iterative methods are provided in the supplement.
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{neurons.pdf}
+\caption{\textbf{Recovery of neuronal axial structure.} Axial views of the bands outlined in white in \cref{fig:neuron-depth}, using pretrained PnP at $C=8$. Within each example, all views share a linear intensity scale; darker pixels indicate stronger fluorescence. Depth increases downward. W1 values summarize the full reconstructed crop.}
+\label{fig:neurons}
+\end{figure}
+
+\Cref{fig:neuron-depth,fig:neurons} compare two neuronal crops from different animals, selected using reference structure. With pretrained PnP at $C=8$, both learned plates preserve axial features that are blurred in reconstructions with the untrained plate. Our plate and the end-to-end plate give similar full-crop W1 in both examples. The supplement provides additional views and profiles under all three iterative methods.
 
 On reference columns with multiple axial peaks, our plate lowers W1 by 34\,\% with TV, 42\,\% with pretrained PnP and 28\,\% with neuron-trained PnP relative to the untrained plate. This descriptive comparison uses 59 eligible crops. Since multiple peaks can occur within a single branch, we use controlled filament crossings to test the separation of distinct structures.
 
-\begin{figure*}[t]
+\begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{crossings.pdf}
-\caption{\textbf{Controlled structure recovery depends on the code, prior and dose.} (a) Matched fluorescence sections and profiles through one crossing at our plate's TV threshold gap; the first fixed geometry, center and draw are shown, with a shared intensity scale. Bar: $5\um$. (b) Full-dose success rates pool the two axial centers; the 80\,\% criterion is applied to each center separately. (c) Reduced-dose success pooled over all three positive gaps ($1.28$--$2.56\um$), for each iterative method. Full gap curves and paired phantom-bootstrap intervals are in the supplement.}
+\caption{\textbf{Controlled filament separation.} TV sections and axial profiles at our plate's qualifying gap of $2.56\um$, using $C=8$ and nominal dose. The first fixed geometry, center and measurement realization are shown; sections share a linear intensity scale. Percentages give TV success pooled over six phantom cases with five realizations each. Qualifying gaps require at least 80\,\% success at each center and all larger tested gaps; full curves and reduced-dose results are in the supplement.}
 \label{fig:crossings}
-\end{figure*}
+\end{figure}
 
 At $C=8$ and nominal dose, we evaluate three lateral crossing geometries and two axial centers, with five measurement realizations per case. Success requires two matched axial peaks in columns carrying at least half the reference crossing signal, together with correct depth ordering of the filament arms. The qualifying gap is the smallest tested separation achieving at least 80\,\% success at each center and at all larger tested gaps. Confidence intervals resample phantom cases after averaging their measurement realizations.
 
-Relative to the untrained plate, our plate reduces the qualifying gap from $3.84$ to $2.56\um$ with TV and pretrained PnP (\cref{fig:crossings}). The gap remains $3.84\um$ under neuron-trained PnP despite improved neuronal W1. The zero-gap control shows no false splitting. At nominal dose, paired intervals for differences in pooled crossing success between our plate and the end-to-end plate include zero under all three methods.
+Relative to the untrained plate, our plate reduces the qualifying gap from $3.84$ to $2.56\um$ with TV and pretrained PnP. The gap remains $3.84\um$ under neuron-trained PnP despite improved neuronal W1. The zero-gap control shows no false splitting. At nominal dose, we pool crossing success over the five positive gaps. Paired intervals for differences between our plate and the end-to-end plate include zero under all three methods. \Cref{fig:crossings} shows the TV comparison at $2.56\um$; the supplement provides the full gap curves and paired intervals.
 
-At one tenth of nominal dose, we pool crossing success over gaps of $1.28$, $1.92$ and $2.56\um$, using three measurement realizations per case. Our plate achieves 17 and 15 percentage points higher success than the end-to-end plate under TV and pretrained PnP, respectively (\cref{fig:crossings}c). Both plates have low success under neuron-trained PnP, with no established difference. The supplement provides full gap curves and tests with weaker or additional filaments.
+At one tenth of nominal dose, we pool crossing success over gaps of $1.28$, $1.92$ and $2.56\um$, using three measurement realizations per case. Our plate achieves 17 and 15 percentage points higher success than the end-to-end plate under TV and pretrained PnP, respectively. Both plates have low success under neuron-trained PnP, with no established difference. The supplement provides tests with weaker or additional filaments at nominal dose, as well as the reduced-dose gap curves.
 
 \subsection{Acquisition budgets and calibration}
 \label{sec:res:budgets}

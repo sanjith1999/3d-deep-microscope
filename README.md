@@ -1,5 +1,7 @@
 # CVPR manuscript
 
+Current revision: `cvpr-v0.8`.
+
 Compile `main.tex` for the paper or `supplement.tex` for the supplement using
 pdfLaTeX and BibTeX. In Overleaf, select either file as the main document.
 Locally, run `make`, `make main` or `make supplement`.

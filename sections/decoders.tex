@@ -4,7 +4,7 @@
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{reconstruction.pdf}
-\caption{\textbf{Reconstruction is evaluated after the plate is fixed.} TV and PnP use the alternating direction method of multipliers (ADMM) with different prior updates. The feed-forward route uses a regularized solve followed by a 3D U-Net whose weights are trained separately for each plate. Full updates are in the supplement.}
+\caption{\textbf{Reconstruction with fixed optics.} Both routes produce a volume estimate $\hat{\mathbf{x}}$ from the same measurements and forward operator. TV and PnP use the alternating direction method of multipliers (ADMM), with different prior updates. The feed-forward decoder applies a regularized solve followed by a 3D U-Net fine-tuned separately for each plate. Full updates are in the supplement.}
 \label{fig:reconstruction}
 \end{figure}
 

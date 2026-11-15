@@ -9,7 +9,7 @@ Peaks are detected on zero-padded axial columns, requiring height and prominence
 
 For ordering, each filament's arm columns carry at least 20\,\% of its own maximum column signal and less than 2\,\% of the other filament's. Their reconstructed signal-weighted axial centroids must follow the true order, with consecutive arms separated by more than half a plane. A volume succeeds when the resolved fraction is at least 0.5 and ordering is correct. In the zero-gap control, two matched peaks instead count as a false split.
 
-The qualifying gap is the smallest tested gap of at least two planes with success rate at least 0.8 at that gap and every larger tested gap, at both centers separately. Each center's rate uses 15 reconstructions (three geometries and five draws). The main figure pools the two centers in each curve; the criterion uses their individual rates.
+The qualifying gap is the smallest tested gap of at least two planes with success rate at least 0.8 at that gap and every larger tested gap, at both centers separately. Each center's rate uses 15 reconstructions (three geometries and five draws). The main crossing figure reports pooled TV success at $2.56\um$; \cref{fig:s:fullcrossings} gives the full curves. The qualifying criterion uses each center's individual rates.
 
 \begin{table*}[t]
 \centering\small
@@ -18,7 +18,7 @@ The qualifying gap is the smallest tested gap of at least two planes with succes
 \label{tab:s:crossings}
 \end{table*}
 
-The displayed example uses the first lateral geometry, center 7 and draw 0. Its gap was chosen at our plate's TV threshold, so the gap is outcome-informed. Untrained and learned TV succeed in 10\,\% and 90\,\% of the pooled cases at that gap; the displayed draw is one failed/successful pair. All displayed sections share geometry and intensity scale. Neither plate falsely splits the merged control.
+The displayed example uses the first lateral geometry, center 7 and draw 0. We chose our plate's TV qualifying gap for display, so the gap choice is outcome-informed. At this gap, the untrained, our and end-to-end plates achieve TV success in 3, 27 and 26 of 30 trials, respectively (six phantom cases with five measurement realizations each). The end-to-end plate succeeds in 11 of 15 trials at center 5, below the 80\,\% criterion despite its pooled rate of 87\,\%. The displayed draw fails for the untrained plate and succeeds for both learned plates. All displayed sections share geometry and intensity scale. None of the three plates falsely splits the merged control.
 
 \paragraph{Weak and three-filament extensions.}
 The weak-branch cases use the same two-filament geometries with the deeper branch at 0.3 times the first's intensity. Gaps are 0, 3, 4, 6 and 8 planes; at two planes the reference itself fails the peak criterion. Only TV with our plate meets the two-center threshold, at $3.84\um$ (\cref{tab:s:crossings}).
