@@ -4,35 +4,31 @@
 \subsection{Depth-encoding acquisition}
 \label{sec:acquisition}
 
-The phase plate in \cref{fig:system}a delays light by a different amount at each point of its surface. This map of delays is its phase profile $\phi(\mathbf r)$, with transmission $\tau(\mathbf r)=e^{\mathrm i\phi(\mathbf r)}$. Propagation converts these delays into bright and dark illumination regions. A phase-only spatial light modulator (SLM) held at one pattern could approximate this phase modulation. We place the plate away from an illumination image plane, a plane relayed sharply into the specimen. This fixed displacement is the plate's defocus; it is not changed during acquisition.
+The fixed phase plate in \cref{fig:system}a delays the incident light by different amounts across its surface. Its phase profile $\phi(\mathbf r)$ describes these relative delays at position $\mathbf r$, giving transmission $\tau(\mathbf r)=e^{\mathrm i\phi(\mathbf r)}$. As light propagates, interference converts the phase differences into bright and dark illumination regions. A phase-only spatial light modulator (SLM) held at one pattern could approximate this single phase layer. We place the plate before an illumination image plane, a plane imaged sharply into the specimen. Its fixed displacement from this plane is the plate's defocus.
 
-Tilting the incident light shifts the pattern differently at different depths. In a small-angle picture, changing the transverse part of the unit illumination direction by $\Delta\mathbf s$ produces a lateral shift $\Delta\mathbf r(z)\approx d(z)\Delta\mathbf s$ \cite{feng1988,freund1988}. Here $d(z)$ is the distance from the plane conjugate to the plate, where its sharp image would lie and the pattern does not shift. Our placement puts this pivot plane outside the specimen, so every depth inside shifts, by an amount that grows with its distance from the pivot. This relation explains the depth cue; actual excitation is computed with a vectorial relay model including the finite pupil and polarization \cite{richards1959,marian2007}.
-
-We record one fluorescence image per illumination angle. A location in the specimen therefore experiences a sequence of excitation intensities that depends on its depth. The plate, specimen and detection focus remain stationary throughout this sequential acquisition.
+Tilting the incident light shifts the illumination pattern differently at different depths. In a small-angle model, the shift is $\Delta\mathbf r(z)\approx d(z)\Delta\mathbf s$, where $\Delta\mathbf s$ is the change in the lateral components of the unit illumination direction \cite{feng1988,freund1988}. The distance $d(z)$ is measured from the plane where the plate would be sharply imaged. This plane acts as a pivot with zero shift; our fixed defocus places it outside the specimen. We record one fluorescence image per angle, so structures at different depths can follow different brightness sequences while the plate, specimen and detection focus remain fixed. Our simulations compute illumination using a vectorial wave-optics model that includes the finite aperture and light polarization \cite{richards1959,marian2007}.
 
 \paragraph{Image formation and responses.}
-Let $X_0(\mathbf r,z)$ describe how strongly each location fluoresces for a unit of illumination, with lateral position $\mathbf r=(x,y)$. Under linear, unsaturated fluorescence, the illumination at the $t$-th angle, $I_t(\mathbf r,z;\phi)$, produces an emission source proportional to $X_0I_t$. The camera sums this emission through the detection blur. For a reconstruction whose coefficient $x_j$ is constant within voxel $V_j$, the noiseless model is
+Illumination, or excitation, makes fluorescent labels emit light. Let $X_0(\mathbf r,z)$ be the fluorescence response per unit illumination at lateral position $\mathbf r=(x,y)$ and depth $z$. Under a linear, unsaturated response, illumination $I_t(\mathbf r,z;\phi)$ at the $t$-th angle produces fluorescence emission proportional to $X_0I_t$. The camera sums this emission through detection blur. In the reconstruction, we represent the fluorescence response by a constant $x_j$ within each voxel $V_j$, giving the noiseless model
 \begin{equation}
 \begin{aligned}
 \bar{\by}&=\bA_\phi\bx,\\
 (\bA_\phi)_{(t,p),j}
 &=\int_{V_j} I_t(\mathbf r,z;\phi)\,g_p(\mathbf r,z)
-\,\mathrm d^2\mathbf r\,\mathrm dz,
+\,\mathrm d^2\mathbf r\,\mathrm dz.
 \end{aligned}
 \label{eq:operator}
 \end{equation}
-where $\bx$ is the volume, $\bar{\by}$ stacks all camera pixels across the image sequence, and $g_p$ is the response of pixel $p$ to unit emission at $(\mathbf r,z)$, including the emission PSF and pixel averaging \cite{yeh2019}. Excitation modulates the specimen before detection blur, so the camera need not resolve the illumination pattern itself.
+Here $\bx$ collects the voxel coefficients, $\bar{\by}$ stacks all noiseless images, and $g_p(\mathbf r,z)$ is pixel $p$'s response to unit emission at $(\mathbf r,z)$. It includes the emission point-spread function (PSF), the camera blur of a point emitter, and averaging over the pixel area \cite{yeh2019}. Illumination modulates the specimen before detection blur, so the camera need not resolve the illumination pattern itself.
 
-A column of $\bA_\phi$ is the camera record predicted when only one voxel is fluorescent. This measurement response, or signature, includes all angles and detector pixels. Voxel integrals are evaluated on a finer optical grid, and simulated measurements retain specimen variation below the reconstruction-voxel scale; the supplement details the resulting discretization residual.
-
-\input{sections/decoders}
+Each column of $\bA_\phi$ predicts the complete camera record of one voxel with unit fluorescence response and all other voxels dark. This record is the voxel's depth signature, combining responses across illumination angles and camera pixels. We evaluate the voxel integrals on a finer optical grid and preserve finer specimen structure when simulating measurements. The supplement describes the resulting difference between these measurements and the reconstruction voxel model.
 
 \subsection{Learning the phase profile}
 \label{sec:platelearning}
 
-The phase profile determines each voxel's camera response; \cref{fig:system}b shows the three routes we compare for choosing it. Depths beneath the same lateral position have overlapping detection responses. Their excitation sequences must therefore supply useful distinctions over the scan. For sampled angles $\mathcal T$, let $\mathbf a_{\mathbf r,z}^{\mathcal T}$ denote a voxel's signature after subtracting its mean over all angle--pixel entries and normalizing it to unit norm. The inner product $\rho_{zz'}=(\mathbf a_{\mathbf r,z}^{\mathcal T})^\top\mathbf a_{\mathbf r,z'}^{\mathcal T}$ measures correlation between two depths at that lateral position.
+Voxels at different depths but the same lateral position $\mathbf r$ overlap in projection. An untrained random phase plate supplies depth cues, but their depth signatures can remain similar, leaving ambiguity in fluorescence placement. We therefore optimize the phase profile to reduce correlations between these signatures, with one profile shared across all illumination angles (\cref{fig:system}b).
 
-Our criterion penalizes correlations across depth pairs:
+At each training step, we sample lateral positions and a set $\mathcal T$ of illumination angles, restricting each depth signature to these angles. To compare response patterns on a common scale, we subtract each restricted signature's mean over all its angle--pixel entries and normalize it to unit norm. Let $\mathbf a_{\mathbf r,z}^{\mathcal T}$ denote the resulting signature at position $\mathbf r$ and depth $z$. The correlation between depths $z$ and $z'$ is $\rho_{zz'}=(\mathbf a_{\mathbf r,z}^{\mathcal T})^\top\mathbf a_{\mathbf r,z'}^{\mathcal T}$. We minimize the weighted mean of these squared correlations over depth pairs:
 \begin{equation}
 \mathcal L(\phi)
 =\mathbb E_{\mathbf r,\mathcal T}
@@ -40,12 +36,14 @@ Our criterion penalizes correlations across depth pairs:
 {\sum_{z\ne z'}w_{zz'}}\right].
 \label{eq:plate}
 \end{equation}
-The fixed pair weights $w_{zz'}$ set each pair's contribution; their implemented rule is given in the supplement. Squaring penalizes correlations of either sign. With uniform weights, this is the off-diagonal energy of the depth-signature Gram matrix, equivalent to the classical frame potential up to a constant \cite{benedetto2003,duarte2009}. The supplement gives its local statistical interpretation. It is a design criterion, not a guarantee of accurate reconstruction.
+The expectation averages over sampled positions and angle sets. Squaring penalizes correlations of either sign. Fixed weights $w_{zz'}$ give twice the weight to depth pairs mirrored about a prescribed grid plane; the full rule is in the supplement. With uniform weights, minimizing this loss is equivalent to minimizing the frame potential of these normalized signatures, averaged over positions and angle sets \cite{benedetto2003,duarte2009}. The supplement gives a local statistical interpretation of this unweighted case.
 
-Training backpropagates through the optical model to the phase profile, without specimen examples or reconstruction updates. Signature normalization makes the criterion insensitive to uniform power scaling; matching nominal excitation exposure during evaluation is a separate control.
+We update the phase profile by backpropagating the loss in \cref{eq:plate} through the optical model. Predicted voxel responses supply the training signal, so optical training requires neither specimen examples nor reconstruction feedback. Signature normalization makes the criterion insensitive to uniform power scaling; nominal illumination exposure is matched separately during evaluation. The loss is a design criterion, not a guarantee of accurate reconstruction.
 
 \paragraph{Alternative model-only criteria.}
-The implemented worst-case coherence criterion targets the most similar pair of normalized depth responses, using a smooth maximum of $|\rho_{zz'}|$ \cite{elad2007}. The depth Fisher-information criterion targets local sensitivity to an emitter's axial displacement under a Poisson model, treating brightness as a nuisance parameter \cite{shechtman2014}. Their full formulations are in the supplement. The three model-only criteria share phase parameterization, sampling, optimizer settings and update budget; this does not establish equal convergence or optimal tuning.
+We implement worst-case coherence using a smooth maximum of $|\rho_{zz'}|$, targeting the most similar depth pair at each lateral position \cite{elad2007}. The depth Fisher-information criterion instead targets sensitivity to small axial shifts under Poisson noise, treating emitter brightness as unknown \cite{shechtman2014}. All three model-only criteria use the same initial phase, sampled positions and angles, phase parameterization, optimizer settings and number of updates. These controls match the update budget; they do not establish equal convergence or optimal tuning. Full formulations are given in the supplement.
 
-\paragraph{End-to-end design.}
-We also optimize the plate jointly with a reconstruction network on neuronal training volumes (\cref{fig:system}b). The decoder uses a regularized linear solve followed by a residual 3D U-Net and is trained with reconstruction mean squared error. We then fix the plate and evaluate it with all four reconstruction methods. This supervised route has a separate training and checkpoint-selection schedule, detailed in the supplement.
+\paragraph{End-to-end reference.}
+As a supervised reference, we jointly optimize the phase profile and a decoder on neuronal training volumes (\cref{fig:system}b). The decoder forms an initial volume with a regularized linear solve, then refines it with a residual 3D U-Net. We backpropagate reconstruction mean squared error through the decoder and optical model to update the phase profile and decoder parameters. After training, we fix the plate and evaluate it with all four reconstruction methods. This reference uses a separate training and checkpoint-selection schedule, detailed in the supplement.
+
+\input{sections/decoders}
