@@ -30,7 +30,7 @@ With TV, mean centroid error falls from $0.259$ to $0.150\um$ (\cref{tab:design}
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\linewidth]{neuron_depth_overview.pdf}
-\caption{\textbf{Depth-colored neuronal reconstructions.} Two reference-selected crops reconstructed from simulated measurements with TV at $C=8$. Panel PSNR and W1 describe each full crop for one noise realization. Red boxes locate the crops in the two-photon references; white boxes mark the bands shown in \cref{fig:neurons}. Axial planes are colored by depth and combined using a maximum in each color channel, with one linear intensity scale per crop. Two-photon context uses tissue coordinates; crop views use simulation coordinates.}
+\caption{\textbf{Depth-colored neuronal reconstructions.} Two reference-selected crops reconstructed from simulated measurements with TV at $C=8$. Panel PSNR and W1 describe each full crop for one noise realization. Red boxes locate the crops in the two-photon references; white boxes mark the axial bands. Axial planes are colored by depth and combined using a maximum in each color channel, with one linear intensity scale per crop. Two-photon context uses tissue coordinates; crop views use simulation coordinates.}
 \label{fig:neuron-depth}
 \end{figure*}
 
@@ -66,16 +66,16 @@ With pretrained PnP, W1 and foreground SSIM rank the two learned plates differen
 
 We examine reference columns containing multiple axial peaks in the descriptive 59-crop subset. With TV, mean W1 falls from $0.467$ for untrained coding to $0.309\um$ for our plate. Both PnP methods also lower mean W1, as reported in the supplement. Multiple peaks can belong to one thick branch, so we test filament separation directly with controlled crossings.
 
+A controlled crossing places two simulated filaments at different depths while their projections intersect. Success requires two reference-matched peaks and the correct depth ordering of the filament arms. The qualifying gap is the smallest positive tested separation with at least 80\,\% success at each of two axial centers and all larger tested gaps. The supplement gives the protocol, curves and paired intervals.
+
+With TV, our plate reduces the qualifying gap from $3.84$ to $2.56\um$ relative to untrained coding (\cref{fig:crossings}). No zero-gap control is falsely split. Pooled success over positive gaps shows no established difference between ours and end-to-end under TV. Pretrained PnP gives the same gap reduction; with neuron-trained PnP, the untrained plate and ours remain at $3.84\um$ despite lower neuronal W1 for ours.
+
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{crossings.pdf}
 \caption{\textbf{Controlled filament separation.} TV sections and axial profiles at our plate's qualifying gap of $2.56\um$, using $C=8$ and nominal dose. The first fixed geometry, center and measurement realization are shown; sections share a linear intensity scale. Percentages give TV success pooled over six phantom cases with five realizations each. Qualifying gaps require at least 80\,\% success at each center and all larger tested gaps; full curves and reduced-dose results are in the supplement.}
 \label{fig:crossings}
 \end{figure}
-
-A controlled crossing places two simulated filaments at different depths while their projections intersect. Success requires two reference-matched peaks and the correct depth ordering of the filament arms. The qualifying gap is the smallest positive tested separation with at least 80\,\% success at each of two axial centers and all larger tested gaps. The supplement gives the protocol, curves and paired intervals.
-
-With TV, our plate reduces the qualifying gap from $3.84$ to $2.56\um$ relative to untrained coding (\cref{fig:crossings}). No zero-gap control is falsely split. Pooled success over positive gaps shows no established difference between ours and end-to-end under TV. Pretrained PnP gives the same gap reduction; with neuron-trained PnP, the untrained plate and ours remain at $3.84\um$ despite lower neuronal W1 for ours.
 
 \subsection{Acquisition budgets and model accuracy}
 \label{sec:res:budgets}
