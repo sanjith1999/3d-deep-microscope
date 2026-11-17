@@ -22,7 +22,7 @@ Paper branches:
 - `paper/cvpr/dec-agn-depth` - CVPR draft on decoder-free depth encoding
 - `paper/cvpr/depth-sep` - CVPR drafts on learned depth separation and axial
   structure recovery
-- `paper/cvpr/axial-rec` - current CVPR draft on optical learning for axial
+- `paper/cvpr/axial-rec` - CVPR submission on optical learning for axial
   recovery, compared with established objectives and end-to-end training
 
 Each CVPR branch has `main.tex` and `supplement.tex` at the root. The original
@@ -31,4 +31,5 @@ branch includes build instructions and self-contained figures and references.
 
 Tags mark successive CVPR drafts: `cvpr-v0.1` on `paper/cvpr/dec-agn-depth`,
 `cvpr-v0.2` and `cvpr-v0.3` on `paper/cvpr/depth-sep`, and `cvpr-v0.4` to
-`cvpr-v0.8` on `paper/cvpr/axial-rec`.
+`cvpr-v0.8` on `paper/cvpr/axial-rec`. `cvpr-v1.0` on `paper/cvpr/axial-rec` is the
+CVPR submission.
