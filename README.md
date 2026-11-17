@@ -11,7 +11,6 @@ Locally, run `make`, `make main` or `make supplement`.
 - `figures/`: figures used by the documents
 - `tables/`: main tables and `supplement/` tables
 - `references.bib`: shared bibliography
-- `docs/writing.md`: editing conventions
 
 Paper versions are on `paper/cvpr/init-draft`, `paper/cvpr/struct-amb`,
 `paper/cvpr/dec-agn-depth`, `paper/cvpr/depth-sep` and `paper/cvpr/axial-rec`. The original manuscript and extended experimental
