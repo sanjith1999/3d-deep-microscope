@@ -1,6 +1,6 @@
 # CVPR manuscript
 
-Current revision: `cvpr-v0.8`.
+Current revision: `cvpr-v1.0`, the CVPR submission.
 
 Compile `main.tex` for the paper or `supplement.tex` for the supplement using
 pdfLaTeX and BibTeX. In Overleaf, select either file as the main document.
