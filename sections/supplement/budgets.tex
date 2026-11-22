@@ -22,14 +22,7 @@ We divide each encoder's excitation by its mean over the specimen analysis grid 
 \end{table*}
 
 \paragraph{Full-scan joint-training comparison.}
-At $C=1$ (256 images), our plate has lower neuronal W1 than end-to-end under pretrained PnP; differences under TV and neuron-trained PnP are not established (\cref{tab:s:jointfullscan}). Both plates use the same 12 crops and exposure protocol, with one full scan per crop.
-
-\begin{table*}[t]
-\centering\small
-\input{tables/supplement/joint_full_scan.tex}
-\caption{Full-scan comparison on the 12 prespecified crops at $C=1$ and matched nominal dose. W1 and end-to-end-minus-ours differences are in $\mu$m, with paired cell-bootstrap 95\,\% intervals.}
-\label{tab:s:jointfullscan}
-\end{table*}
+At $C=1$ (256 images), our plate has lower neuronal W1 than end-to-end under pretrained PnP; differences under TV and neuron-trained PnP are not established (\cref{tab:s:jointdose}a). Both plates use the same 12 crops and exposure protocol, with one full scan per crop.
 
 \paragraph{Noise conditions.}
 The nominal model uses Poisson shot noise. The background condition adds a uniform mean equal to the untrained plate's expected mean signal at the same exposure, plus independent Gaussian read noise with standard deviation 2 electrons. We subtract the known background mean before reconstruction. All encoders share the background, exposure and noise protocol. A separate low-dose condition uses one tenth of the exposure. We revalidate scalar reconstruction parameters for each changed condition and keep networks fixed. \Cref{tab:s:noise} reports all three methods.
@@ -42,23 +35,24 @@ The nominal model uses Poisson shot noise. The background condition adds a unifo
 \end{table*}
 
 \paragraph{Reduced-dose joint-training comparison.}
-At one tenth of nominal dose, we test both learned plates under all three iterative methods on the 12 prespecified neuronal crops and equal-branch crossings. We keep networks fixed and revalidate scalar parameters for this condition. End-to-end gives lower neuronal W1 with neuron-trained PnP ($0.227$ versus $0.239\um$); differences under TV and pretrained PnP are not established (\cref{tab:s:jointdose}a). For crossings, our plate succeeds more often under TV and pretrained PnP across the positive gaps $1.28$, $1.92$ and $2.56\um$. Both plates rarely succeed under neuron-trained PnP, with no established difference (\cref{tab:s:jointdose}b, \cref{fig:s:lowdose}). Each gap has six cases (three geometries, two centers), each with three draws. The paired bootstrap averages draws within each case and resamples the 18 cases. This structural stress test does not establish generally better low-dose neuronal reconstruction.
+At one tenth of nominal dose, we test both learned plates under all three iterative methods on the 12 prespecified neuronal crops and equal-branch crossings. We keep networks fixed and revalidate scalar parameters for this condition. End-to-end gives lower neuronal W1 with neuron-trained PnP ($0.227$ versus $0.239\um$); differences under TV and pretrained PnP are not established (\cref{tab:s:jointdose}b). For crossings, our plate succeeds more often under TV and pretrained PnP across the positive gaps $1.28$, $1.92$ and $2.56\um$. Both plates rarely succeed under neuron-trained PnP, with no established difference (\cref{tab:s:jointdose}c, \cref{fig:s:lowdose}). Each gap has six cases (three geometries, two centers), each with three draws. The paired bootstrap averages draws within each case and resamples the 18 cases. This structural stress test does not establish generally better low-dose neuronal reconstruction.
 
 \begin{table*}[t]
 \centering\small
-(a) Neuronal axial-profile W1 ($\mu$m), 12 crops\par\smallskip
+(a) Full scan at nominal dose ($C=1$), neuronal W1 ($\mu$m)\par\smallskip
+\input{tables/supplement/joint_full_scan.tex}
+\par\smallskip (b) 32 images at $0.1\times$ nominal dose ($C=8$), neuronal W1 ($\mu$m)\par\smallskip
 \input{tables/supplement/joint_low_dose.tex}
-\par\medskip
-(b) Crossing success, 18 phantom cases\par\smallskip
+\par\smallskip (c) 32 images at $0.1\times$ nominal dose ($C=8$), crossing success (\%)\par\smallskip
 \input{tables/supplement/joint_low_dose_crossings.tex}
-\caption{Joint-training control at $0.1\times$ nominal dose and $C=8$. Differences are end-to-end minus ours. Intervals resample cells for neuronal W1 and phantom cases for crossing success, after averaging measurement draws. Negative success differences favor our plate; negative W1 differences favor end-to-end.}
+\caption{End-to-end design compared with ours under two acquisition conditions. Differences are end-to-end minus ours. W1 uses the same 12 neuronal crops. Crossing success pools 18 positive-gap phantom cases. Paired 95\% intervals resample cells for W1 and cases for crossing success after averaging draws. A lower W1 and a higher success rate indicate better recovery.}
 \label{tab:s:jointdose}
 \end{table*}
 
 \begin{figure*}[t]
 \centering
 \includegraphics[width=.9\linewidth]{low_dose.pdf}
-\caption{Full low-dose crossing curves for the tested positive gaps. Each point pools the two axial centers, three lateral geometries and three draws. At zero gap, none of the tested plate--method combinations falsely splits the merged structure.}
+\caption{Full low-dose crossing curves for the tested positive gaps. Each point pools 18 trials across two centers, three geometries and three draws. Untrained coding has zero successes at every gap for all three methods. End-to-end also stays at zero under TV and neuron-trained PnP. At zero gap, none of the tested plate--method combinations falsely splits the merged structure.}
 \label{fig:s:lowdose}
 \end{figure*}
 

@@ -2,7 +2,7 @@
 \label{sec:s:reconstruction}
 
 \paragraph{Shared framework.}
-For TV and PnP, we change the operator and validation-selected scalar parameters across encoders, while keeping denoiser weights and solver families fixed. \Cref{sec:s:joint} specifies the separately fine-tuned feed-forward decoder. TV minimizes $\tfrac12\|\bA\bx-\by\|_2^2+\lambda\|\nabla\bx\|_{2,1}$ with a box constraint. PnP alternates a quadratic data update with denoising and optional sparsity branches. A quadratic penalty does not enforce the hard measurement intervals in \cref{sec:s:uncertainty}, and a generic denoiser need not minimize a known regularization energy.
+For TV and PnP, we change the operator and validation-selected scalar parameters across encoders, while keeping denoiser weights and solver families fixed. \Cref{sec:s:joint} specifies the separately fine-tuned feed-forward decoder. TV minimizes $\tfrac12\|\bA\bx-\by\|_2^2+\lambda\|\nabla\bx\|_{2,1}$ with a box constraint. PnP alternates a quadratic data update with denoising and optional sparsity branches. A generic denoiser need not minimize a known regularization energy.
 
 \paragraph{ADMM and plug-and-play updates.}
 Let $C_j$ map the volume to branch $j$, with auxiliary variable $\mathbf v_j$ and scaled dual $\mathbf d_j$. Each iteration computes

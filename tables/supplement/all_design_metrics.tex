@@ -1,0 +1,29 @@
+\begin{tabular}{@{}llrrrr@{}}
+\toprule
+Reconstruction & Plate & W1 ($\mu$m) $\downarrow$ & Centroid error ($\mu$m) $\downarrow$ & PSNR (dB) $\uparrow$ & FG-SSIM $\uparrow$ \\
+\midrule
+TV & Untrained & 0.371 & 0.259 & 36.70 & 0.850 \\
+ & Depth Fisher & 0.251 & 0.175 & 38.33 & 0.908 \\
+ & Worst-case coherence & 0.264 & 0.185 & 37.99 & 0.898 \\
+ & Ours & 0.218 & 0.150 & 38.29 & 0.910 \\
+ & End-to-end & 0.222 & 0.151 & 38.07 & 0.905 \\
+\midrule
+Pretrained PnP & Untrained & 0.579 & 0.490 & 35.72 & 0.806 \\
+ & Depth Fisher & 0.367 & 0.298 & 37.09 & 0.882 \\
+ & Worst-case coherence & 0.390 & 0.320 & 36.85 & 0.871 \\
+ & Ours & 0.290 & 0.224 & 37.56 & 0.900 \\
+ & End-to-end & 0.281 & 0.212 & 37.52 & 0.897 \\
+\midrule
+Neuron-trained PnP & Untrained & 0.271 & 0.197 & 38.01 & 0.902 \\
+ & Depth Fisher & 0.218 & 0.157 & 39.35 & 0.927 \\
+ & Worst-case coherence & 0.223 & 0.160 & 39.19 & 0.924 \\
+ & Ours & 0.195 & 0.139 & 39.60 & 0.934 \\
+ & End-to-end & 0.189 & 0.131 & 39.70 & 0.936 \\
+\midrule
+Feed-forward & Untrained & 0.366 & 0.282 & 36.67 & 0.872 \\
+ & Depth Fisher & 0.314 & 0.234 & 37.40 & 0.896 \\
+ & Worst-case coherence & 0.314 & 0.238 & 37.31 & 0.892 \\
+ & Ours & 0.265 & 0.196 & 38.04 & 0.912 \\
+ & End-to-end & 0.234 & 0.167 & 38.53 & 0.922 \\
+\bottomrule
+\end{tabular}

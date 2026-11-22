@@ -1,17 +1,15 @@
 \section{Plate training and criterion comparisons}
 \label{sec:s:training}
 
-
-
 \paragraph{Signatures and sampling.}
 We collect each voxel's camera responses over the sampled illumination directions and pixels. At each Adam step, we sample four directions and 24 interior lateral positions, giving $4\times144$ entries per depth signature. We subtract the mean over all angle--pixel entries and normalize to unit norm; we do not center each pixel's temporal sequence separately. For the main paper's correlation statistic, we apply the same centering and normalization to the 32 directions of draw 0 and $44\times44$ interior positions (indices 2--45). That statistic averages absolute off-diagonal depth correlations (\cref{fig:s:signaturecorr}), rather than the weighted squared correlations in the training loss.
 
-\begin{figure}[t]
+\begin{figure*}[t]
 \centering
-\includegraphics[width=\linewidth]{signature_correlations.pdf}
+\includegraphics[width=.68\linewidth]{signature_correlations.pdf}
 \caption{Absolute correlations of centered, unit-norm depth signatures for the untrained, our and end-to-end plates. Each signature uses the 32 directions of draw 0; matrix entries average over $44\times44$ interior positions. Values below the matrices are means of their off-diagonal entries.}
 \label{fig:s:signaturecorr}
-\end{figure}
+\end{figure*}
 
 With zero-based reconstruction-plane indices $i,j\in\{0,\ldots,15\}$, off-diagonal weights are
 \begin{equation}
@@ -87,37 +85,4 @@ All criteria share the initial phase, sampled positions/directions, optimizer, l
 \label{fig:s:trainingtraces}
 \end{figure*}
 
-\paragraph{Complete 60-crop criterion comparison.}
-The five-design comparison uses all 60 test crops and five draws per crop under TV, both PnP methods and separately fine-tuned feed-forward decoders. \Cref{tab:s:criteria60,tab:s:criteria60intervals} report complete seed-0 metrics and paired W1 changes relative to our seed-0 plate for the alternative criteria; \cref{tab:s:e2e} gives the untrained, our and end-to-end rows. \Cref{tab:s:objectives} repeats the TV/PnP comparisons with the alternatives' sampling seed 1, retaining our seed-0 plate as the reference. \Cref{tab:s:seedmatched} instead pairs every seed-1 alternative with our seed-1 plate. Both comparisons favor our criterion, with all paired W1 intervals excluding zero.
-
-\begin{table*}[t]
-\centering\small
-\widetab{\input{tables/supplement/criteria60_metrics.tex}}
-\caption{Alternative model-only objectives on all 60 crops, $C=8$, sampling seed 0. Each row averages five draws per crop and uses the same reconstruction for all four metrics. W1 and centroid errors are in $\mu$m.}
-\label{tab:s:criteria60}
-\end{table*}
-
-\paragraph{Intensity and axial errors under TV.}
-On these 60 crops at $C=8$, our-minus-Fisher PSNR changes by $-0.044$\,dB (95\,\% cell-bootstrap interval: $-0.105$ to $+0.014$), with no established difference. Foreground SSIM changes by $+0.0029$ ($+0.0012$ to $+0.0045$), W1 by $-0.0328\um$ ($-0.0367$ to $-0.0281$), and centroid error by $-0.0252\um$ ($-0.0285$ to $-0.0206$). These paired intervals support improved axial placement despite similar PSNR, without establishing a PSNR reversal.
-
-
-\begin{table*}[t]
-\centering\small
-\input{tables/supplement/criteria60_intervals.tex}
-\caption{Relative W1 changes and 95\,\% cell-bootstrap intervals for the primary 60-crop criterion comparison. Negative changes favor our plate. Each criterion shares the initial phase and model-only optimization budget.}
-\label{tab:s:criteria60intervals}
-\end{table*}
-
-\begin{table*}[t]
-\centering\small
-\widetab{\input{tables/supplement/criteria_repeat.tex}}
-\caption{Objective comparison with the second optical sampling seed: 60 crops, $C=8$, five draws per crop. W1 is in $\mu$m; relative changes compare our seed-0 plate with each seed-1 comparator, with paired cell-bootstrap 95\,\% intervals. Both seeds start from the same initial phase. Negative changes favor our criterion.}
-\label{tab:s:objectives}
-\end{table*}
-
-\begin{table*}[t]
-\centering\small
-\widetab{\input{tables/supplement/criteria_seed_matched.tex}}
-\caption{Seed-matched sensitivity check for the second optical sampling seed. Each criterion is paired with our seed-1 plate on the same 60 crops and five draws. W1 is in $\mu$m; negative changes favor our criterion. Brackets are paired cell-bootstrap 95\,\% intervals.}
-\label{tab:s:seedmatched}
-\end{table*}
+\Cref{tab:s:e2e,tab:s:e2eintervals} compare the three model-only criteria on reconstructions. \Cref{tab:s:main} repeats the comparison with a second sampling sequence.

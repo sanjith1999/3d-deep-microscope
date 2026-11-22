@@ -1,53 +1,46 @@
 \section{Full reconstruction results}
 \label{sec:s:results}
 
-\paragraph{Three optical designs and four reconstruction methods.}
-\Cref{tab:s:e2e} gives W1, centroid error, PSNR and foreground SSIM for the untrained, our and end-to-end plates: four methods, 60 crops and five draws, or 3,600 reconstructions. \Cref{tab:s:criteria60} gives the alternative-objective rows. We fine-tune each plate's feed-forward decoder separately and keep TV/PnP priors fixed across plates. \Cref{tab:s:e2eintervals} gives paired cell-bootstrap W1 intervals; negative changes favor the first named design. Our plate has lower W1 under TV; end-to-end has lower W1 under both PnP methods and its own decoder. Neither learned plate leads under every method.
+\paragraph{Five designs under matched acquisition.}
+\Cref{tab:s:e2e} groups the five plates by reconstruction method. With TV, our plate gives the lowest mean W1. End-to-end gives the lowest W1 with either PnP prior and with its own decoder. \Cref{tab:s:e2eintervals} gives paired differences, including the intervals around the small mean gaps between our plate and end-to-end under iterative reconstruction.
 
 \begin{table*}[t]
 \centering\small
-\widetab{\input{tables/supplement/e2e_metrics.tex}}
-\caption{Three-plate comparison at $C=8$ and matched nominal dose, with 60 crops and five draws. Errors are in $\mu$m. All metrics in a row use the same reconstructions. Feed-forward networks are fine-tuned for their respective plates; their earlier training histories are specified in \cref{sec:s:joint}.}
+\widetab{\input{tables/supplement/all_design_metrics.tex}}
+\caption{Five optical designs evaluated with the same 60 crops and five direction subsets per crop, at $C=8$ and matched nominal dose. Arrows give the preferred direction. FG-SSIM is foreground SSIM. We fine-tune each feed-forward decoder for its plate. The end-to-end decoder also receives joint training (\cref{sec:s:joint}).}
 \label{tab:s:e2e}
 \end{table*}
 
-\paragraph{Intensity and axial errors under pretrained PnP.}
-On these 60 crops at $C=8$, end-to-end-minus-ours PSNR changes by $-0.037$\,dB (95\,\% cell-bootstrap interval: $-0.094$ to $+0.018$), with no established difference. Foreground SSIM changes by $-0.0029$ ($-0.0050$ to $-0.0008$), W1 by $-0.0087\um$ ($-0.0143$ to $-0.0032$), and centroid error by $-0.0120\um$ ($-0.0185$ to $-0.0056$). Thus end-to-end gives slightly lower axial errors under pretrained PnP while our plate gives slightly higher foreground SSIM. This comparison illustrates different metric rankings under one reconstruction method, not a general conflict between intensity and depth metrics.
-
-
 \begin{table*}[t]
 \centering\small
-\input{tables/design_intervals.tex}
-\caption{Paired relative W1 changes (95\,\% cell-bootstrap intervals) for the same 60-crop comparison. Each change is the ratio of crop-mean errors minus one, after averaging the five draws.}
+(a) Relative change in mean W1 (\%)\par\smallskip
+\widetab{\input{tables/supplement/all_design_w1_intervals.tex}}
+\par\medskip (b) Absolute error difference ($\mu$m), end-to-end minus ours\par\smallskip
+\input{tables/supplement/joint_absolute_intervals.tex}
+\caption{Paired comparisons on the 60 crops in \cref{tab:s:e2e}. In (a), each entry is $100(r-1)$, where $r$ is the column's ratio of mean W1 values. Negative values favor the numerator. In (b), negative values favor end-to-end. Brackets give paired 95\% cell-bootstrap intervals in the units of each panel.}
 \label{tab:s:e2eintervals}
 \end{table*}
 
-\begin{table*}[t]
-\centering\small
-\input{tables/supplement/joint_absolute_intervals.tex}
-\caption{End-to-end minus our plate: absolute error differences and paired cell-bootstrap 95\,\% intervals ($\mu$m), on the primary 60 crops. Mean W1 differences are below $0.01\um$ under the iterative methods; this is not a bound on their intervals or individual-crop differences.}
-\label{tab:s:jointabsolute}
-\end{table*}
+\paragraph{When intensity and axial errors rank plates differently.}
+Under TV, our plate and the depth Fisher plate give similar PSNR. The paired difference (ours minus Fisher) is $-0.044$\,dB (95\,\% cell-bootstrap interval: $-0.105$ to $+0.014$), with no established difference. Foreground SSIM changes by $+0.0029$ ($+0.0012$ to $+0.0045$), W1 by $-0.0328\um$ ($-0.0367$ to $-0.0281$), and centroid error by $-0.0252\um$ ($-0.0285$ to $-0.0206$). Across the other method and model-only criterion pairings, both intensity scores favor our plate.
+
+Under pretrained PnP, the two learned designs exchange places in the W1 and foreground SSIM rankings. The PSNR difference (end-to-end minus ours) is $-0.037$\,dB (95\,\% cell-bootstrap interval: $-0.094$ to $+0.018$), with no established difference. Foreground SSIM changes by $-0.0029$ ($-0.0050$ to $-0.0008$), W1 by $-0.0087\um$ ($-0.0143$ to $-0.0032$), and centroid error by $-0.0120\um$ ($-0.0185$ to $-0.0056$). These comparisons show how intensity and depth scores can give different rankings for a particular method and pair of plates.
 
 \paragraph{Optical sampling repeats.}
-\Cref{tab:s:main} adds our second optical sampling seed to the TV/PnP comparison, keeping the same initial phase. Both seeds lower W1 on every crop under each method. Seed 0 lowers centroid error on 59 of 60 crops with neuron-trained PnP and all crops with the other methods; seed 1 lowers it on all crops. These repeats test sampled training positions and angles, not different phase initializations.
+With a second optical sampling sequence, our plate retains lower W1 than untrained coding and both alternative criteria under all three iterative methods (\cref{tab:s:main}). The same ordering holds whether we compare the alternatives with our first or second sampling sequence. Both of our plates improve W1 over untrained coding on all 60 crops under each method. Seed 0 lowers centroid error on 59 of 60 crops with neuron-trained PnP and all crops under the other methods. Seed 1 lowers it on all crops.
 
 \begin{table*}[t]
 \centering\small
+(a) Our plate trained with seed 1\par\smallskip
 \widetab{\input{tables/supplement/sampling_repeat.tex}}
-\caption{Our second optical sampling seed at $C=8$, 60 crops and five draws per crop, with matched nominal dose. Changes compare it with the shared untrained initialization; brackets are cell-bootstrap 95\,\% intervals. Seed 0 is in \cref{tab:s:e2e}.}
+\par\medskip (b) W1 with seed-1 alternatives and paired changes from each alternative (\%)\par\smallskip
+\widetab{\input{tables/supplement/criterion_sampling_pairs.tex}}
+\caption{Repeating the optical design with a second sequence of positions and illumination angles. Both training sequences start from the same phase. All comparisons use $C=8$, the same 60 crops and five measurement draws per crop. Changes in (a) compare with the untrained plate. In (b), negative changes favor our indicated seed. Brackets give paired 95\% cell-bootstrap intervals.}
 \label{tab:s:main}
 \end{table*}
 
-\begin{table*}[t]
-\centering\small
-\widetab{\input{tables/supplement/profile_extended.tex}}
-\caption{Separate evaluation on the prespecified and randomly sampled crops. Negative changes favor our plate. Both sets contain crops from the same six cells; the 48 additional crops expand spatial coverage rather than biological replication.}
-\label{tab:s:extended}
-\end{table*}
-
-\paragraph{Reference-based and random crops.}
-\Cref{tab:s:extended} separates the 12 prespecified crops from the 48 later random crops. With reconstruction parameters already fixed, every method retains an optical gain on the random crops. This checks dependence on initial crop selection, while adding spatial coverage rather than new cells or animals.
+\paragraph{Dependence on crop selection.}
+The 48 randomly sampled crops come from the same six cells as the 12 prespecified crops. At seed 0, our plate lowers mean W1 relative to untrained coding by 42\% on the random crops and 38\% on the prespecified crops under TV. The corresponding reductions are 51\% and 44\% with pretrained PnP and 28\% and 27\% with neuron-trained PnP. W1 improves on all 48 random crops under each method and both sampling seeds.
 
 \paragraph{Comparison with untrained encoders.}
 The separate centroid study in \cref{tab:s:untrained} uses pretrained PnP, the 12 prespecified crops and an expanded validation grid. Phase, amplitude and DMD controls share the $2\times$ aperture, relay, photon model, direction draws and tuning procedure. Our learned plates give centroid errors of $0.230$--$0.234\um$, below the three random phase plates ($0.422$--$0.438\um$) and amplitude masks ($0.396$--$0.523\um$). Seed 0 reduces centroid error by 42--56\,\% against the masks and 45--47\,\% against random phase plates. These controls show that the initial plate is representative of random phase plates, not that learning succeeds from other initial phases.
@@ -55,7 +48,7 @@ The separate centroid study in \cref{tab:s:untrained} uses pretrained PnP, the 1
 \begin{table*}[t]
 \centering\small
 \input{tables/supplement/untrained_control.tex}
-\caption{Untrained-encoder control study at $C=8$: 12 prespecified crops, pretrained PnP. W1 was not computed in this study. The plate-free row uses a $4\times$ aperture in a separate study; its own random-plate control gives $0.446\um$/34.82\,dB. Other rows use $2\times$ apertures. Do not interpret the plate-free row as an exactly matched cross-aperture contrast.}
+\caption{Untrained-encoder control study at $C=8$: 12 prespecified crops, pretrained PnP. W1 was not computed in this study. The bottom group isolates plate removal at the same $4\times$ aperture. All other encoders use the primary $2\times$ aperture.}
 \label{tab:s:untrained}
 \end{table*}
 
