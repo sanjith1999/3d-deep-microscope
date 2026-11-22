@@ -2,7 +2,7 @@
 \label{sec:s:results}
 
 \paragraph{Three optical designs and four reconstruction methods.}
-\Cref{tab:s:e2e} reports W1, centroid error, PSNR and foreground SSIM from the same 3,600 reconstructions: three plates, four methods, 60 crops and five draws. The feed-forward decoder is fine-tuned separately for each plate, whereas TV and the PnP networks are independent of optical training. \Cref{tab:s:e2eintervals} gives paired cell-bootstrap intervals for W1. Negative changes favor the first named design. The end-to-end plate has a measurable advantage with its own decoder and under both PnP methods, while our plate has lower W1 under TV. The different directions preclude a universal ranking of the two learned plates.
+\Cref{tab:s:e2e} gives W1, centroid error, PSNR and foreground SSIM for the untrained, our and end-to-end plates: four methods, 60 crops and five draws, or 3,600 reconstructions. \Cref{tab:s:criteria60} gives the alternative-objective rows. We fine-tune each plate's feed-forward decoder separately and keep TV/PnP priors fixed across plates. \Cref{tab:s:e2eintervals} gives paired cell-bootstrap W1 intervals; negative changes favor the first named design. Our plate has lower W1 under TV; end-to-end has lower W1 under both PnP methods and its own decoder. Neither learned plate leads under every method.
 
 \begin{table*}[t]
 \centering\small
@@ -12,7 +12,7 @@
 \end{table*}
 
 \paragraph{Intensity and axial errors under pretrained PnP.}
-For these 60 crops at $C=8$, paired end-to-end-minus-ours differences have 95\,\% cell-bootstrap intervals. PSNR changes by $-0.037$\,dB ($-0.094$ to $+0.018$), with no established difference; foreground SSIM changes by $-0.0029$ ($-0.0050$ to $-0.0008$). W1 changes by $-0.0087\um$ ($-0.0143$ to $-0.0032$), and centroid error by $-0.0120\um$ ($-0.0185$ to $-0.0056$). Thus end-to-end has slightly lower axial errors, while our plate has slightly higher foreground SSIM. The differences are small and concern this common reconstruction method, not a general conflict between intensity and depth metrics.
+On these 60 crops at $C=8$, end-to-end-minus-ours PSNR changes by $-0.037$\,dB (95\,\% cell-bootstrap interval: $-0.094$ to $+0.018$), with no established difference. Foreground SSIM changes by $-0.0029$ ($-0.0050$ to $-0.0008$), W1 by $-0.0087\um$ ($-0.0143$ to $-0.0032$), and centroid error by $-0.0120\um$ ($-0.0185$ to $-0.0056$). Thus end-to-end gives slightly lower axial errors under pretrained PnP while our plate gives slightly higher foreground SSIM. This comparison illustrates different metric rankings under one reconstruction method, not a general conflict between intensity and depth metrics.
 
 
 \begin{table*}[t]
@@ -30,7 +30,7 @@ For these 60 crops at $C=8$, paired end-to-end-minus-ours differences have 95\,\
 \end{table*}
 
 \paragraph{Optical sampling repeats.}
-\Cref{tab:s:main} adds our second optical sampling seed to the primary TV/PnP comparison, using the same untrained initialization. Both optical sampling repeats of our criterion lower W1 on every crop under each method. Seed 0 improves centroid error on 59 of 60 crops for neuron-trained PnP and all crops for the other methods. Seed 1 improves centroid error on all crops. These repeats test sampling variability, not independence of phase initialization.
+\Cref{tab:s:main} adds our second optical sampling seed to the TV/PnP comparison, keeping the same initial phase. Both seeds lower W1 on every crop under each method. Seed 0 lowers centroid error on 59 of 60 crops with neuron-trained PnP and all crops with the other methods; seed 1 lowers it on all crops. These repeats test sampled training positions and angles, not different phase initializations.
 
 \begin{table*}[t]
 \centering\small
@@ -47,10 +47,10 @@ For these 60 crops at $C=8$, paired end-to-end-minus-ours differences have 95\,\
 \end{table*}
 
 \paragraph{Reference-based and random crops.}
-\Cref{tab:s:extended} separates the 12 prespecified crops from the 48 later random crops. All methods retain positive optical gains on the latter, with parameters already fixed. This addresses dependence on the initial structure-score selection, while preserving the cell and animal limitations of the dataset.
+\Cref{tab:s:extended} separates the 12 prespecified crops from the 48 later random crops. With reconstruction parameters already fixed, every method retains an optical gain on the random crops. This checks dependence on initial crop selection, while adding spatial coverage rather than new cells or animals.
 
 \paragraph{Comparison with untrained encoders.}
-The separate centroid study in \cref{tab:s:untrained} uses pretrained PnP, the 12 prespecified crops and the expanded validation grid. Its phase, amplitude and DMD rows share the same $2\times$ aperture, relay, photon model, direction draws and tuning procedure. Learned centroid errors of $0.230$--$0.234\um$ are below all three random phase plates ($0.422$--$0.438\um$) and amplitude masks ($0.396$--$0.523\um$). The learned seed-0 plate reduces centroid error by 42--56\,\% against the amplitude masks and 45--47\,\% against the random phase plates. This shows that its initialization is representative of these controls. It does not show that learning succeeds from other initializations.
+The separate centroid study in \cref{tab:s:untrained} uses pretrained PnP, the 12 prespecified crops and an expanded validation grid. Phase, amplitude and DMD controls share the $2\times$ aperture, relay, photon model, direction draws and tuning procedure. Our learned plates give centroid errors of $0.230$--$0.234\um$, below the three random phase plates ($0.422$--$0.438\um$) and amplitude masks ($0.396$--$0.523\um$). Seed 0 reduces centroid error by 42--56\,\% against the masks and 45--47\,\% against random phase plates. These controls show that the initial plate is representative of random phase plates, not that learning succeeds from other initial phases.
 
 \begin{table*}[t]
 \centering\small
@@ -59,10 +59,10 @@ The separate centroid study in \cref{tab:s:untrained} uses pretrained PnP, the 1
 \label{tab:s:untrained}
 \end{table*}
 
-The two in-focus DMD pattern sets remain close in centroid error and image quality. On the same 12 prespecified crops, the primary DMD control gives W1 of $2.375$, $2.238$ and $2.270\um$ under TV, pretrained PnP and neuron-trained PnP, respectively, close to the $2.266\um$ uniform-depth reference. Their low depth discrimination concerns this fixed-focus control, not all amplitude encoders. Indeed, the defocused amplitude masks recover depth and can match random phase plates in centroid error. The plate-free scan also retains weak finite-aperture diversity, so its observations are not an ideal zero-depth-information system.
+The two in-focus DMD pattern sets give similar centroid error and image quality. On the same 12 crops, the first set gives W1 of $2.375$, $2.238$ and $2.270\um$ under TV, pretrained PnP and neuron-trained PnP, near the flat reference's $2.266\um$. This poor depth recovery concerns the in-focus control: defocused amplitude masks recover depth and can match random phase plates in centroid error. The plate-free scan also retains weak finite-aperture cues, rather than providing exactly depth-independent measurements.
 
 \paragraph{Point-emitter diagnostics.}
-For 25 interior lateral locations and 16 depths, we compare measurement columns under a Gaussian approximation of shot noise with unknown emitter brightness. Random phase plates assign the wrong depth in 1.5--1.7\,\% of cases with 32 directions; amplitude masks give about 5\,\%, the in-focus DMD about 25\,\%, and the plate-free control about 89\,\%. These are model-based emitter diagnostics, not measured resolution of dense structures. The plate-free diagnostic uses the original $2\times$ aperture; its neuronal control in \cref{tab:s:untrained} uses $4\times$.
+We compare measurement columns at 25 interior lateral positions and 16 depths under a Gaussian shot-noise approximation with unknown emitter brightness. With 32 directions, random phase plates assign the wrong depth in 1.5--1.7\,\% of cases, versus about 5\,\% for amplitude masks, 25\,\% for in-focus DMD and 89\,\% without the plate. These modeled point-emitter errors do not measure dense-structure resolution. The plate-free diagnostic uses the original $2\times$ aperture, whereas its neuronal study uses $4\times$ (\cref{tab:s:untrained}).
 
 \paragraph{Comparisons across priors.}
-A descriptive pairing of our plate + TV against untrained plate + neuron-trained PnP gives 19.6\,\% lower W1 (95\,\% CI: 16.4--22.5\,\%), improving 56 of 60 crops. It does not establish a general dominance relation: our plate + pretrained PnP has 7\,\% higher mean W1 than untrained plate + neuron-trained PnP (interval $-2.6$ to $+17.3$\,\%). Optical and prior choices interact; the comparisons in this paragraph concern only the untrained plate and our design, not the end-to-end plate.
+Our plate with TV has 19.6\,\% lower W1 than untrained coding with neuron-trained PnP (95\,\% CI: 16.4--22.5\,\%), improving 56 of 60 crops. In contrast, our plate with pretrained PnP has 7\,\% higher mean W1 than untrained coding with neuron-trained PnP (interval $-2.6$ to $+17.3$\,\%). These descriptive comparisons show that optical and prior choices interact; they establish no general dominance and do not compare with end-to-end.

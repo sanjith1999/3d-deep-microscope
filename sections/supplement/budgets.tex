@@ -2,10 +2,10 @@
 \label{sec:s:budgets}
 
 \paragraph{Dose convention.}
-Each encoder's excitation is divided by its mean over the specimen analysis grid and the full 256-direction scan. This fixes the deposited excitation per complete scan. For $k$ directions, exposure is multiplied by $256/k$. Random subsets therefore match nominal dose in expectation, not exactly for each subset. Camera counts follow $n_i\sim\operatorname{Poisson}(\kappa_0\,256\bar y_i/k)$, and reconstruction uses the normalized data $y_i=n_i/(\kappa_0\,256/k)$, where $k$ is the number of acquired directions and $\bar y_i$ is the noiseless measurement. The per-specimen factor $\kappa_0$ is set from the untrained plate so that its full scan gives a mean of 1000 expected photons per camera pixel per image; it is reused for every encoder. Equal deposited dose does not force identical detected counts: illumination can correlate differently with the specimen. For our two optical sampling seeds, mean detected signal changes by about $-1$ to $-2$\,\% across the 12 crops, with individual changes approximately $-12$ to $+9$\,\%. Mean-dose matching does not constrain excitation peaks; the model assumes an unsaturated response throughout.
+We divide each encoder's excitation by its mean over the specimen analysis grid and full 256-direction scan. For $k$ directions, we multiply exposure by $256/k$. This matches nominal dose in expectation over random subsets, not exactly for each subset. We draw $n_i\sim\operatorname{Poisson}(\kappa_0\,256\bar y_i/k)$ and reconstruct from $y_i=n_i/(\kappa_0\,256/k)$, where $\bar y_i$ is the noiseless measurement. For each specimen, we set $\kappa_0$ so the untrained full scan gives 1000 expected photons per pixel per image on average, then reuse it for every encoder. Equal nominal dose does not force equal detected counts because illumination overlaps differently with the specimen. Across the 12 crops, our two sampling seeds change mean detected signal by about $-1$ to $-2$\,\%, with individual changes around $-12$ to $+9$\,\%. Matching mean dose does not constrain excitation peaks; we assume fluorescence stays unsaturated.
 
 \paragraph{Measurement compression.}
-\Cref{tab:s:compression} reports both depth metrics at $C=1,4,8$. These values count all camera samples, not camera images alone. At matched nominal dose, fewer directions mean longer exposure per image. The learned 32-image acquisition gives lower W1 than the 256-image random acquisition for TV and pretrained PnP, but the close neuron-trained-PnP means do not establish equivalence (\cref{tab:s:tradeoffs}). The TV curve is not monotone in compression: validation can prefer a stronger regularization weight at $C=4$, which smooths neuronal features more than at $C=8$.
+\Cref{tab:s:compression} gives both depth errors at $C=1,4,8$, counting all camera samples rather than images alone. At matched nominal dose, fewer directions require longer exposures. Our 32-image scan gives lower W1 than the untrained 256-image scan under TV and pretrained PnP; the similar neuron-trained-PnP means do not establish equivalence (\cref{tab:s:tradeoffs}). TV error is not monotone in compression: validation can favor stronger regularization at $C=4$, smoothing more neuronal detail than at $C=8$.
 
 \begin{table*}[t]
 \centering\small
@@ -22,7 +22,7 @@ Each encoder's excitation is divided by its mean over the specimen analysis grid
 \end{table*}
 
 \paragraph{Full-scan joint-training comparison.}
-With all 256 directions ($C=1$), our plate has lower neuronal W1 than the end-to-end plate under pretrained PnP; differences under TV and neuron-trained PnP are not established (\cref{tab:s:jointfullscan}). The 12 crops and exposure protocol are shared, with one complete scan per crop. This complements the primary compressed-scan comparison.
+At $C=1$ (256 images), our plate has lower neuronal W1 than end-to-end under pretrained PnP; differences under TV and neuron-trained PnP are not established (\cref{tab:s:jointfullscan}). Both plates use the same 12 crops and exposure protocol, with one full scan per crop.
 
 \begin{table*}[t]
 \centering\small
@@ -32,7 +32,7 @@ With all 256 directions ($C=1$), our plate has lower neuronal W1 than the end-to
 \end{table*}
 
 \paragraph{Noise conditions.}
-The nominal model uses Poisson shot noise. The background condition adds a uniform mean equal to the untrained plate's mean expected signal for the same exposure, plus independent Gaussian read noise with standard deviation 2 electrons. The known mean background is subtracted before reconstruction. The same background level, exposure and noise protocol are used for each encoder. A separate low-dose condition reduces exposure to one tenth. Scalar reconstruction parameters are revalidated for each changed noise condition, while networks stay fixed. \Cref{tab:s:noise} reports all three methods.
+The nominal model uses Poisson shot noise. The background condition adds a uniform mean equal to the untrained plate's expected mean signal at the same exposure, plus independent Gaussian read noise with standard deviation 2 electrons. We subtract the known background mean before reconstruction. All encoders share the background, exposure and noise protocol. A separate low-dose condition uses one tenth of the exposure. We revalidate scalar reconstruction parameters for each changed condition and keep networks fixed. \Cref{tab:s:noise} reports all three methods.
 
 \begin{table*}[t]
 \centering\small
@@ -42,7 +42,7 @@ The nominal model uses Poisson shot noise. The background condition adds a unifo
 \end{table*}
 
 \paragraph{Reduced-dose joint-training comparison.}
-At one tenth of the nominal dose, both learned plates are evaluated under all three iterative methods on the 12 prespecified neuronal crops and on equal-branch crossings. Networks remain fixed and scalar parameters follow the condition-specific validation protocol. On neuronal crops, the end-to-end plate has lower W1 under neuron-trained PnP ($0.227$ versus $0.239\um$), while differences under TV and pretrained PnP are not established (\cref{tab:s:jointdose}a). For crossings, our plate succeeds more often under TV and pretrained PnP when pooling the three positive gaps $1.28$, $1.92$ and $2.56\um$. Both plates have low success under neuron-trained PnP, without an established difference (\cref{tab:s:jointdose}b and \cref{fig:s:lowdose}). Each gap has six phantom cases (three geometries, two centers), with three draws per case. The paired bootstrap averages draws and resamples the 18 cases, rather than treating draws as independent phantoms. This comparison is a targeted structure stress test, not evidence of generally better low-dose neuronal reconstruction.
+At one tenth of nominal dose, we test both learned plates under all three iterative methods on the 12 prespecified neuronal crops and equal-branch crossings. We keep networks fixed and revalidate scalar parameters for this condition. End-to-end gives lower neuronal W1 with neuron-trained PnP ($0.227$ versus $0.239\um$); differences under TV and pretrained PnP are not established (\cref{tab:s:jointdose}a). For crossings, our plate succeeds more often under TV and pretrained PnP across the positive gaps $1.28$, $1.92$ and $2.56\um$. Both plates rarely succeed under neuron-trained PnP, with no established difference (\cref{tab:s:jointdose}b, \cref{fig:s:lowdose}). Each gap has six cases (three geometries, two centers), each with three draws. The paired bootstrap averages draws within each case and resamples the 18 cases. This structural stress test does not establish generally better low-dose neuronal reconstruction.
 
 \begin{table*}[t]
 \centering\small
@@ -63,7 +63,7 @@ At one tenth of the nominal dose, both learned plates are evaluated under all th
 \end{figure*}
 
 \paragraph{Photon budget.}
-The dose sweep uses factors $0.1$, $0.3$, $1$ and $3$ of the nominal exposure (\cref{tab:s:dose}). At dose $0.3$, our plate's W1 is $0.234$, $0.302$ and $0.220\um$ for TV, pretrained PnP and neuron-trained PnP, compared with $0.318$, $0.496$ and $0.282\um$ for the untrained plate at dose 1. These reductions of 26\,\%, 39\,\% and 22\,\% describe the tested simulation and inference budgets. The untrained curve's flattening between doses 1 and 3 is not evidence of a fundamental photon limit.
+We test exposure factors $0.1$, $0.3$, $1$ and $3$ (\cref{tab:s:dose}). At dose $0.3$, our plate gives W1 of $0.234$, $0.302$ and $0.220\um$ for TV, pretrained PnP and neuron-trained PnP, against $0.318$, $0.496$ and $0.282\um$ for untrained coding at dose 1. The reductions of 26\,\%, 39\,\% and 22\,\% apply to these simulation and inference budgets. The untrained curve's flattening between doses 1 and 3 does not establish a fundamental photon limit.
 
 \begin{table*}[t]
 \centering\small
@@ -73,9 +73,9 @@ The dose sweep uses factors $0.1$, $0.3$, $1$ and $3$ of the nominal exposure (\
 \end{table*}
 
 \paragraph{Alignment.}
-Distance perturbations set $D=6.1$ or $7.1\um$. In the characterized case, the operator is rebuilt from the known distance and scalar reconstruction parameters are revalidated; the phase is unchanged. In the nominal-operator case, reconstruction ignores the perturbation. Lateral error shifts the plate by one $0.32\um$ feature. Pointing errors are offsets of 0.005 or 0.01 in transverse direction cosine. All comparisons use neuron-trained PnP, $C=8$, the same 12 crops and five draws.
+We perturb the plate distance to $D=6.1$ or $7.1\um$. For known offsets, we rebuild the operator and revalidate scalar parameters without changing the phase. For nominal-operator reconstruction, we ignore the perturbation. We also test a lateral shift of one phase element ($0.32\um$) and pointing offsets of 0.005 or 0.01 in transverse direction cosine. All tests use neuron-trained PnP, $C=8$, the same 12 crops and five draws.
 
-\Cref{tab:s:alignment} separates these assumptions. Known distance changes retain the optical gain. Ignoring distance or lateral registration can make our plate worse than the random one, including an 11\,\% W1 increase for a one-feature lateral shift. Rebuilding an operator with a known perturbation is not an experimentally demonstrated calibration procedure. Phase-quantization experiments are not used to claim a fabricable low-level plate: the simulated surround was not quantized with the trained center.
+\Cref{tab:s:alignment} separates known and ignored perturbations. Known distance changes retain the optical gain. Ignoring distance or lateral registration can reverse it. When reconstruction ignores a lateral shift of one phase element, mean W1 is $0.500\um$ for our plate and $0.451\um$ for the untrained plate. Rebuilding an operator from a known offset does not demonstrate a hardware calibration procedure.
 
 \begin{table*}[t]
 \centering\small
