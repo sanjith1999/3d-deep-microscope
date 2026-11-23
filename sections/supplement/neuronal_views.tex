@@ -1,24 +1,24 @@
 \section{Neuronal views and display selection}
 \label{sec:s:views}
 
-\paragraph{Reference-only selection.}
-Before inspecting reconstructions for figure selection, we compute reference features for all 60 crops. We require at least 10 skeleton endpoints (upper quartile) and a 10--90\,\% column-centroid range of at least $3.64\um$ (median). Eight crops meet these branch-count and depth-extent criteria. We rank them by reference signal in columns with multiple axial peaks, selecting SOM004\_cell2\_x7 first and SOM006\_cell1\_x7 as the highest-ranked crop from another animal.
+\paragraph{How we chose the two examples.}
+We selected the examples using only the reference volumes, before viewing any reconstructions. We looked for crops with branching structures spanning a range of depths. Of the 60 test crops, eight had at least 10 endpoints in the neuronal skeleton (the upper quartile across crops) and at least $3.64\um$ between the 10th and 90th percentiles of the column centroids (the median spread across crops). We ranked the eight by the fraction of reference fluorescence in columns with multiple axial peaks. Main Figure~5a shows the highest-ranked crop. For main Figure~5b we took the highest-ranked crop from a different mouse. Both came from the 48 randomly sampled test crops in \cref{sec:s:evaluation}.
 
-Under TV the gains in W1 over untrained coding for these two crops rank 52nd and 45th out of 60, with the largest gain ranked first. The main paper shows their TV reconstructions. \Cref{fig:s:mainviews,fig:s:companion} use the same acquisition (the first fixed set of 32 angles and its noise realization) for all three iterative methods.
+Under TV the gains in W1 over untrained coding for these two crops rank 52nd and 45th out of 60, with the largest gain ranked first. \Cref{fig:s:mainviews,fig:s:companion} use the same acquisition (the first fixed set of 32 angles and its noise realization) for all three iterative methods.
 
 \paragraph{Where the profiles come from.}
-For the main axial views, we select the eight consecutive $y$ rows with the most reference signal in columns that contain multiple axial peaks. We center a 24-voxel $x$ window on that signal. The supplementary figures show another section through each crop. Here the band spans the three consecutive $x$ rows with the most such signal. Within it we choose the column with the largest total reference intensity among those whose two highest peaks are at least three reconstruction planes apart. The selected $(x,y)$ indices are $(35,44)$ and $(42,16)$. End-to-end has the lowest W1 at both selected columns under all three methods. The crop means beside the maps show how much smaller the differences are across each volume.
+For the main axial views, we select the eight consecutive $y$ rows with the most reference signal in columns that contain multiple axial peaks. We center a 24-voxel $x$ window on that signal. The supplementary figures show another section through each crop. Here the band spans the three consecutive $x$ rows with the most such signal. Within it we choose the column with the largest total reference intensity among those whose two highest peaks are at least three reconstruction planes apart. The marked column is at $(x,y)=(35,44)$ for the crop in main Figure~5a and $(42,16)$ for the crop in main Figure~5b. End-to-end has the lowest W1 at both selected columns under all three methods. The crop means beside the maps show how much smaller the differences are across each volume.
 
 Each supplementary band shows the maximum over its three $x$ rows, with depth downward and $y$ across. A darker pixel indicates stronger fluorescence. All bands for a crop use one linear scale up to the 99.5th percentile of its reference maximum projection. In the W1 maps, $x$ runs across and $y$ downward. White marks columns outside the reference signal mask.
 
 \begin{figure*}[p]
 \centering
 \includegraphics[width=.935\linewidth]{neuron_comparison_profiles.pdf}
-\caption{First reference-selected crop (SOM004), $C=8$, first angle subset. Each row compares the same axial band and marked column across the three plates. Gray shading gives the reference. Every profile has unit mass. Each map gives W1 for individual columns. The number below it is the signal-weighted crop mean. The dotted strip marks the band. The scale bar is $5\um$ in simulation coordinates and map colors saturate at $1\um$.}
+\caption{The neuronal crop from main Figure~5a, reconstructed using the first fixed set of 32 illumination angles ($C=8$). Each row compares the same axial band and marked column across the three plates. Gray shading gives the reference. Every profile has unit mass. Each map gives W1 for individual columns. The number below it is the signal-weighted crop mean. The dotted strip marks the band. The scale bar is $5\um$ in simulation coordinates and map colors saturate at $1\um$.}
 \label{fig:s:mainviews}
 \par\medskip
 \includegraphics[width=.935\linewidth]{neuron_companion_profiles.pdf}
-\caption{Second reference-selected crop (SOM006, another animal), using the same acquisition and display conventions as \cref{fig:s:mainviews}. With TV, end-to-end gives lower W1 than ours at the marked column ($0.08$ versus $0.44\um$), while the corresponding crop means are $0.29$ and $0.30\um$.}
+\caption{Second example, from a different mouse (main Figure~5b). We use the same acquisition and display settings as in \cref{fig:s:mainviews}. With TV, end-to-end gives lower W1 than ours at the marked column ($0.08$ versus $0.44\um$), while the corresponding crop means are $0.29$ and $0.30\um$.}
 \label{fig:s:companion}
 \end{figure*}
 

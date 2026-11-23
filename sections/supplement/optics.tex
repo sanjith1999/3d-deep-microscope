@@ -80,9 +80,9 @@ Two controls test whether binary illumination patterns also encode depth. One re
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{supp_phase_maps.pdf}
-\caption{Phase in the central $96\times96$ elements of the untrained, model-only and end-to-end plates. Color gives the phase modulo $2\pi$. Each panel spans $30.72\um$ at specimen scale.}
+\caption{Phase in the central $96\times96$ elements of the untrained plate, our model-only plate and the end-to-end plate. Color gives the phase modulo $2\pi$. Each panel spans $30.72\um$ at specimen scale.}
 \label{fig:s:phasemaps}
 \end{figure}
 
 \paragraph{Reconstruction time.}
-For one neuronal crop and 32 angles on an RTX 5080, TV took about 8\,s with either the untrained plate or ours. Pretrained PnP took about 4\,s and 3\,s, respectively, on the same crop and GPU.
+For one neuronal crop and 32 angles on an RTX 5080 GPU, total variation (TV) reconstruction took about 8\,s with either the untrained plate or ours. Plug-and-play (PnP) reconstruction with a pretrained denoiser took about 4\,s with the untrained plate and 3\,s with ours.

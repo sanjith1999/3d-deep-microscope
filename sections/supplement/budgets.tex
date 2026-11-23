@@ -4,7 +4,7 @@
 \begin{figure*}[t]
 \centering
 \includegraphics[width=.96\linewidth]{supp_acquisition_budgets.pdf}
-\caption{Mean axial W1 on the 12 reference-selected neuronal crops for the untrained plate and our plate (seed 0). In (a) we vary image count at matched nominal specimen dose. In (b) we hold image count at 32 and vary exposure. The dotted line marks the untrained reference for each row. It uses 256 images at nominal dose in (a) and 32 images at nominal exposure in (b). At 32 images and nominal exposure, separate reconstructions on the same crops and draws give our neuron-trained PnP means of $0.2064\um$ in (a) and $0.2065\um$ in (b).}
+\caption{Mean axial W1 on the 12 reference-selected neuronal crops for the untrained plate and our plate from the first training run. In (a) we vary image count at matched nominal specimen dose. In (b) we hold image count at 32 and vary exposure. The dotted line marks the untrained reference for each row. It uses 256 images at nominal dose in (a) and 32 images at nominal exposure in (b). At the shared nominal condition, separate reconstructions of the same crops and draws give mean W1 values of $0.2064\um$ in (a) and $0.2065\um$ in (b) for our plate with neuron-trained PnP.}
 \label{fig:s:budgetcurves}
 \end{figure*}
 
@@ -17,12 +17,12 @@ We divide the excitation for each plate by its mean over the specimen grid and t
 Matching mean dose still allows different peak illumination. Across the central $xz$ and $yz$ sections and all 256 angles, the 99.9th percentile of excitation divided by the full-scan specimen mean rises from 5.5 for the untrained plate to 17.6 for ours. The model assumes linear fluorescence at these peaks.
 
 \paragraph{Measurement compression.}
-\Cref{fig:s:budgetcurves}a compares W1 at 32, 64 and 256 images. \Cref{tab:s:budgetdetails} gives centroid errors for both sweeps and W1 for the second optical seed where tested. At matched nominal dose, fewer directions require longer exposures. For our seed-0 plate, TV gives a lower W1 with 32 images than with 64 ($0.196$ versus $0.208\um$). For both optical seeds, validation selects a smaller TV weight at 32 images ($0.1$) than at 64 ($1.0$), so both sampling and regularization change. Our 32-image scan gives lower W1 than the untrained 256-image scan under TV and pretrained PnP; the interval for neuron-trained PnP includes zero (\cref{tab:s:tradeoffs}).
+\Cref{fig:s:budgetcurves}a compares W1 at 32, 64 and 256 images. \Cref{tab:s:budgetdetails} gives centroid errors for both sweeps and W1 for our plate from the repeat training run where tested. At matched nominal dose, fewer directions require longer exposures. For our plate from the first run, TV gives a lower W1 with 32 images than with 64 ($0.196$ versus $0.208\um$). For our plates from both training runs, validation selects a smaller TV weight at 32 images ($0.1$) than at 64 ($1.0$), so both sampling and regularization change. Our 32-image scan gives lower W1 than the untrained 256-image scan under TV and pretrained PnP; the interval for neuron-trained PnP includes zero (\cref{tab:s:tradeoffs}).
 
 \begin{table*}[t]
 \centering\small
 \widetab{\input{tables/supplement/budget_details.tex}}
-\caption{Centroid errors and second-seed W1 for the acquisition sweeps in \cref{fig:s:budgetcurves} ($\mu$m). The 256-image scan uses every direction once. Each compressed setting averages five subsets. Dashes mark conditions without a second-seed measurement.}
+\caption{Acquisition sweeps in \cref{fig:s:budgetcurves}. The table gives centroid error for each plate and W1 for our plate from the repeat training run ($\mu$m). The 256-image scan uses every direction once. Each compressed setting averages five subsets. The 32-image and $1\times$ exposure columns report separate reconstructions of the same condition. Their displayed centroid means differ by at most $0.001\um$. Dashes mark conditions evaluated only for the first trained plate and the untrained plate.}
 \label{tab:s:budgetdetails}
 \end{table*}
 
@@ -74,12 +74,12 @@ At one tenth of nominal dose, we test both learned plates under all three iterat
 \begin{table*}[t]
 \centering\small
 \widetab{\input{tables/supplement/profile_alignment.tex}}
-\caption{Alignment controls with neuron-trained PnP. Errors are in $\mu$m; changes compare our and untrained plates under the same perturbation. ``Known'' means the offset is supplied to operator assembly and validation; ``nominal operator'' means it is ignored. Positive changes favor the untrained plate.}
+\caption{Alignment controls with neuron-trained PnP. Errors are in $\mu$m. Each row compares our plate with the untrained plate under the same physical offset. The row label specifies whether reconstruction accounts for the offset or ignores it. Positive changes favor the untrained plate.}
 \label{tab:s:alignment}
 \end{table*}
 
 \paragraph{Alignment.}
-We change the plate-to-image-plane distance $D$ from $6.6\um$ to $6.1$ or $7.1\um$. For known offsets, we rebuild the operator and revalidate scalar parameters without changing the phase. For nominal-operator reconstruction, we ignore the perturbation. We also test a lateral shift of one phase element ($0.32\um$) and pointing offsets of 0.005 or 0.01 in transverse direction cosine. All tests use neuron-trained PnP, $C=8$, the same 12 crops and five draws.
+We change the plate-to-image-plane distance $D$ from $6.6\um$ to $6.1$ or $7.1\um$. When the offset is known, we update the forward model and revalidate the reconstruction parameters. To test the effect of ignoring the offset, we reconstruct with the original model. We also test a lateral shift of one phase element ($0.32\um$) and pointing offsets of 0.005 or 0.01 in transverse direction cosine. All tests use neuron-trained PnP, $C=8$, the same 12 crops and five draws.
 
-\Cref{tab:s:alignment} separates known and ignored perturbations. Known distance changes retain the optical gain. Ignoring distance or lateral registration can reverse it. When reconstruction ignores a lateral shift of one phase element, mean W1 is $0.500\um$ for our plate and $0.451\um$ for the untrained plate. Rebuilding an operator from a known offset does not demonstrate a hardware calibration procedure.
+\Cref{tab:s:alignment} separates known and ignored perturbations. Our plate retains its advantage when the model uses the actual distance. Ignoring distance or lateral registration can reverse it. When reconstruction ignores a lateral shift of one phase element, mean W1 is $0.500\um$ for our plate and $0.451\um$ for the untrained plate. Rebuilding an operator from a known offset does not demonstrate a hardware calibration procedure.
 

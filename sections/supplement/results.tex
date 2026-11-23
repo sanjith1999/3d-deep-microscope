@@ -26,27 +26,27 @@ Under TV, our plate and the depth Fisher plate give similar PSNR. The paired dif
 
 Under pretrained PnP, the two learned designs exchange places in the W1 and foreground SSIM rankings. The PSNR difference (end-to-end minus ours) is $-0.037$\,dB (95\,\% cell-bootstrap interval: $-0.094$ to $+0.018$), with no established difference. Foreground SSIM changes by $-0.0029$ ($-0.0050$ to $-0.0008$), W1 by $-0.0087\um$ ($-0.0143$ to $-0.0032$), and centroid error by $-0.0120\um$ ($-0.0185$ to $-0.0056$). These comparisons show how intensity and depth scores can give different rankings for a particular method and pair of plates.
 
-\paragraph{Optical sampling repeats.}
-We repeat optical training with a new sequence of sampled positions and angles, starting from the same phase. Under all three iterative methods, our second plate gives lower W1 than untrained coding and both seed-1 alternatives (\cref{tab:s:main}). Both sampling sequences improve W1 over untrained coding on all 60 crops under each method.
+\paragraph{Repeating optical training.}
+We repeat optical training with a new sequence of sampled positions and angles, starting from the same phase. Under all three iterative methods, our plate from the repeat run gives lower W1 than the untrained plate and both alternative designs trained with that sequence (\cref{tab:s:main}). Our plates from both runs improve W1 over the untrained plate on all 60 crops under each method.
 
 \begin{table*}[t]
 \centering\small
-(a) Our plate trained with seed 1\par\smallskip
+(a) Our plate from the repeat training run\par\smallskip
 \widetab{\input{tables/supplement/sampling_repeat.tex}}
-\par\medskip (b) W1 with seed-1 alternatives and paired changes from each alternative (\%)\par\smallskip
+\par\medskip (b) W1 for alternative designs from the repeat run and paired changes with our plates (\%)\par\smallskip
 \widetab{\input{tables/supplement/criterion_sampling_pairs.tex}}
-\caption{Repeating the optical design with a second sequence of positions and illumination angles. Both training sequences start from the same phase. All comparisons use $C=8$, the same 60 crops and five measurement draws per crop. Changes in (a) compare with the untrained plate. In (b), negative changes favor our indicated seed. Brackets give paired 95\% cell-bootstrap intervals.}
+\caption{Repeating the optical design with a second sequence of positions and illumination angles. Both training sequences start from the same phase. All comparisons use $C=8$, the same 60 crops and five measurement draws per crop. Changes in (a) compare with the untrained plate. In (b), each change compares our plate from the indicated run with the alternative in that row. Negative values favor our plate. Brackets give paired 95\% cell-bootstrap intervals.}
 \label{tab:s:main}
 \end{table*}
 
-With the first sampling seed, mean W1 on the 48 randomly sampled crops falls by 42\% under TV, 51\% under pretrained PnP and 28\% under neuron-trained PnP relative to untrained coding. On the 12 reference-selected crops the reductions are 38\%, 44\% and 27\%, respectively.
+In the first training run, mean W1 on the 48 randomly sampled crops falls by 42\% under TV, 51\% under pretrained PnP and 28\% under neuron-trained PnP relative to untrained coding. On the 12 reference-selected crops the reductions are 38\%, 44\% and 27\%, respectively.
 
 \paragraph{Optical controls.}
-\Cref{tab:s:untrained} isolates the effect of inserting a plate. With the same fourfold aperture and pretrained PnP, adding an untrained plate lowers centroid error from $1.102$ to $0.446\um$. The other rows compare designs at the primary twofold aperture. Random phase plates give centroid errors of $0.422$--$0.438\um$, and our two sampling seeds give $0.230$ and $0.234\um$. Both sets of in-focus DMD patterns give $2.169\um$, close to the $2.148\um$ obtained by spreading each reference column's fluorescence uniformly over depth. Defocused binary amplitude masks give $0.396$--$0.523\um$ on the same 12 crops.
+\Cref{tab:s:untrained} isolates the effect of inserting a plate. With the same fourfold aperture and pretrained PnP, adding an untrained plate lowers centroid error from $1.102$ to $0.446\um$. The other rows compare designs at the primary twofold aperture. Random phase plates give centroid errors of $0.422$--$0.438\um$, and our plates from the first and repeat training runs give $0.230$ and $0.234\um$. Both sets of in-focus DMD patterns give $2.169\um$, close to the $2.148\um$ obtained by spreading each reference column's fluorescence uniformly over depth. Defocused binary amplitude masks give $0.396$--$0.523\um$ on the same 12 crops.
 
 \begin{table*}[t]
 \centering\small
 \input{tables/supplement/untrained_control.tex}
-\caption{Optical controls on 12 reference-selected crops under pretrained PnP at $C=8$. W1 was not computed in this study. The bottom group isolates plate removal at the same $4\times$ aperture. All other rows use the $2\times$ aperture.}
+\caption{Optical controls on 12 reference-selected crops under pretrained PnP at $C=8$. For each untrained control, the numbered rows distinguish different random patterns or pattern sets. This comparison measures centroid error, PSNR and foreground SSIM. The bottom group isolates plate removal at the same $4\times$ aperture. All other rows use the $2\times$ aperture.}
 \label{tab:s:untrained}
 \end{table*}
