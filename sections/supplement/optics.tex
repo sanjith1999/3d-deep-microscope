@@ -27,7 +27,7 @@ H_d(\mathbf f)=
 0,&\text{otherwise}.
 \end{cases}
 \end{equation}
-Here $\mathbf f=(f_x,f_y)$ is lateral spatial frequency in cycles per unit length. The simulation propagates the finite input field $3.3$\,nm to the plate, then propagates the modulated field $D=6.6\um$ to the illumination image plane. We model an ideal thin plate and give its element size and separation $D$ at specimen scale. Each propagation uses a zero-padded Fourier transform followed by a crop back to the aperture.
+Here $\mathbf f=(f_x,f_y)$ is lateral spatial frequency in cycles per unit length. The simulation propagates the finite input field $3.3$\,nm to the plate, then propagates the modulated field $D=6.6\um$ to the illumination image plane. We model an ideal thin plate and give its element size and separation $D$ at specimen scale. For each propagation, we double each lateral grid dimension by zero-padding, then crop the propagated field back to the aperture.
 
 The relay passes spatial frequencies up to $\mathrm{NA}_{\rm ex}/\lambda$, where the excitation numerical aperture is $\mathrm{NA}_{\rm ex}=0.8$. Specifically, if $v_t$ denotes the propagated field at the illumination image plane, the field passed by the pupil is
 \begin{equation}
@@ -59,7 +59,9 @@ g_p(\mathbf r',z)\,\mathrm d^2\mathbf r'\,\mathrm dz ,
 with $\Omega$ the simulated specimen volume. The model assumes a homogeneous medium and excludes scattering and aberrations.
 
 \paragraph{Discretization.}
-We sample the excitation field every $0.08\um$ laterally and $0.32\um$ axially. Lateral averaging gives $32\times96\times96$ specimen cells of side $0.32\um$. A reconstruction voxel contains $2\times2\times2$ such cells. The simulated detection PSF spans 32 axial planes. At the camera slice used here, it gives effectively zero response to the first of the 32 fine planes. Of the two fine planes in the first reconstruction voxel, only the second contributes appreciably to the recorded signal. The reference averages both. This numerical boundary affects all plates. A camera pixel spans $8\times8$ cells laterally, giving a $2.56\um$ pitch and a $12\times12$ image. For each angle and camera pixel, we sum the product of excitation and pixel response over the eight cells of each reconstruction voxel. These sums form the columns of the reconstruction matrix $\mathbf A$.
+We sample the excitation field every $0.08\um$ laterally and $0.32\um$ axially. Lateral averaging gives $32\times96\times96$ specimen cells of side $0.32\um$. A reconstruction voxel contains $2\times2\times2$ such cells. We read slice 16 of the convolution of emitted fluorescence with the 32-plane detection PSF, counting from zero. An emitter on fine plane 17 gives the sharpest camera image, $0.64\um$ from the excitation focus at plane 15. At the edge of the grid, the finite PSF gives effectively zero response to fine plane 0 for every plate. Only fine plane 1 therefore contributes appreciably to the measurements from the first reconstruction plane, although the reference averages planes 0 and 1. Across the 60 neuronal test crops, plane 0 contains 2.96\% of each crop's reference fluorescence on average (range 0.31--9.09\%). Its effect on the plate rankings remains unmeasured.
+
+A camera pixel spans $8\times8$ cells laterally, giving a $2.56\um$ pitch and a $12\times12$ image. For each angle and camera pixel, we sum the product of excitation and pixel response over the eight cells of each reconstruction voxel. These sums form the columns of the reconstruction matrix $\mathbf A$.
 
 To see what the coarser grid loses, let $\mathbf B$ map fine-grid fluorescence to camera readings, $\mathbf U$ repeat each voxel value over its eight cells, and $\mathbf R$ average those cells. Then $\mathbf A=\mathbf B\mathbf U$. For a fine specimen $\mathbf x_f$, the reference on the reconstruction grid is $\mathbf x_{\rm gt}=\mathbf R\mathbf x_f$. Its simulated camera measurements satisfy
 \begin{equation}
@@ -71,9 +73,16 @@ To see what the coarser grid loses, let $\mathbf B$ map fine-grid fluorescence t
 where $\boldsymbol\varepsilon$ is measurement noise. The middle term is the contribution of fluorescence variation within a reconstruction voxel. It can contribute to the camera readings even when the optics are known exactly.
 
 \paragraph{Optical controls.}
-To isolate what the phase plate contributes, we compare it with a plate-free scan at the same aperture. A finite aperture can itself produce a moving illumination edge. For this comparison we widen the aperture to four times the specimen width to limit that cue. The other designs use twice the specimen width (\cref{tab:s:untrained}). Each phase element spans $4\times4$ optical samples. We initialize the $0.32\um$ phase elements independently and uniformly on $[0,2\pi)$, optimize the central region and keep the random surround fixed.
+To isolate what the phase plate contributes, we compare it with a plate-free scan at the same aperture. A finite aperture can itself produce a moving illumination edge. For this comparison we widen the aperture to four times the specimen width to limit that cue. The other designs use twice the specimen width (\cref{tab:s:untrained}). The primary plate has $192\times192$ phase elements of width $0.32\um$, each spanning $4\times4$ optical samples. We initialize their phases independently and uniformly on $[0,2\pi)$ and train the central $96\times96$ elements. The surrounding border, 48 elements wide on each side, stays fixed. \Cref{fig:s:phasemaps} shows the phase in the central region for three plates.
 
 Two controls test whether binary illumination patterns also encode depth. One replaces the phase plate with a defocused binary amplitude mask at the same pitch and plane, with half its elements open on average. The other uses a simulated digital micromirror device (DMD) to project independent binary patterns in focus. The latter tests in-focus modulation in this optical arrangement.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{supp_phase_maps.pdf}
+\caption{Phase in the central $96\times96$ elements of the untrained, model-only and end-to-end plates. Color gives the phase modulo $2\pi$. Each panel spans $30.72\um$ at specimen scale.}
+\label{fig:s:phasemaps}
+\end{figure}
 
 \paragraph{Reconstruction time.}
 For one neuronal crop and 32 angles on an RTX 5080, TV took about 8\,s with either the untrained plate or ours. Pretrained PnP took about 4\,s and 3\,s, respectively, on the same crop and GPU.
