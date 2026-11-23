@@ -44,9 +44,9 @@ In the first training run, mean W1 on the 48 randomly sampled crops falls by 42\
 \paragraph{Optical controls.}
 \Cref{tab:s:untrained} isolates the effect of inserting a plate. With the same fourfold aperture and pretrained PnP, adding an untrained plate lowers centroid error from $1.102$ to $0.446\um$. The other rows compare designs at the primary twofold aperture. Random phase plates give centroid errors of $0.422$--$0.438\um$, and our plates from the first and repeat training runs give $0.230$ and $0.234\um$. Both sets of in-focus DMD patterns give $2.169\um$, close to the $2.148\um$ obtained by spreading each reference column's fluorescence uniformly over depth. Defocused binary amplitude masks give $0.396$--$0.523\um$ on the same 12 crops.
 
-\begin{table*}[t]
-\centering\small
-\input{tables/supplement/untrained_control.tex}
+\begin{table}[t]
+\centering\footnotesize\setlength{\tabcolsep}{4pt}
+\coltab{\input{tables/supplement/untrained_control.tex}}
 \caption{Optical controls on 12 reference-selected crops under pretrained PnP at $C=8$. For each untrained control, the numbered rows distinguish different random patterns or pattern sets. This comparison measures centroid error, PSNR and foreground SSIM. The bottom group isolates plate removal at the same $4\times$ aperture. All other rows use the $2\times$ aperture.}
 \label{tab:s:untrained}
-\end{table*}
+\end{table}

@@ -49,17 +49,17 @@ The nominal model uses Poisson shot noise. The background condition adds a unifo
 \paragraph{Reduced-dose joint-training comparison.}
 At one tenth of nominal dose, we test both learned plates under all three iterative methods on the 12 reference-selected neuronal crops and equal-branch crossings. We keep networks fixed and revalidate scalar parameters for this condition. End-to-end gives lower neuronal W1 with neuron-trained PnP ($0.227$ versus $0.239\um$); differences under TV and pretrained PnP are not established (\cref{tab:s:jointdose}b). For crossings, our plate succeeds more often under TV and pretrained PnP across the positive gaps $1.28$, $1.92$ and $2.56\um$. Both plates rarely succeed under neuron-trained PnP, with no established difference (\cref{tab:s:jointdose}c, \cref{fig:s:lowdose}). Each gap has six cases (three geometries, two centers), each with three draws. The paired bootstrap averages draws within each case and resamples the 18 cases. This structural stress test does not establish generally better low-dose neuronal reconstruction.
 
-\begin{table*}[t]
-\centering\small
+\begin{table}[t]
+\centering\footnotesize\setlength{\tabcolsep}{4pt}
 (a) Full scan at nominal dose ($C=1$), neuronal W1 ($\mu$m)\par\smallskip
-\input{tables/supplement/joint_full_scan.tex}
+\coltab{\input{tables/supplement/joint_full_scan.tex}}
 \par\smallskip (b) 32 images at $0.1\times$ nominal dose ($C=8$), neuronal W1 ($\mu$m)\par\smallskip
-\input{tables/supplement/joint_low_dose.tex}
+\coltab{\input{tables/supplement/joint_low_dose.tex}}
 \par\smallskip (c) 32 images at $0.1\times$ nominal dose ($C=8$), crossing success (\%)\par\smallskip
-\input{tables/supplement/joint_low_dose_crossings.tex}
+\coltab{\input{tables/supplement/joint_low_dose_crossings.tex}}
 \caption{End-to-end design compared with ours under two acquisition conditions. Differences are end-to-end minus ours. W1 uses the same 12 neuronal crops. Crossing success pools 18 positive-gap phantom cases. Paired 95\% intervals resample cells for W1 and cases for crossing success after averaging draws. A lower W1 and a higher success rate indicate better recovery.}
 \label{tab:s:jointdose}
-\end{table*}
+\end{table}
 
 \begin{figure*}[t]
 \centering
