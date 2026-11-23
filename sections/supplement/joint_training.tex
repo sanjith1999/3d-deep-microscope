@@ -1,48 +1,30 @@
-\section{Joint optical--decoder training}
+\section{Joint training of the plate and decoder}
 \label{sec:s:joint}
 
-\paragraph{Shared optics.}
-The end-to-end reference shares the model-only designs' phase parameterization, initial phase, frozen random surround, vectorial relay, detector footprints and reconstruction basis. We assemble its measurement matrix differentiably from excitation and fixed detection footprints. During joint training, we normalize each 32-direction excitation by its own specimen-field mean. Evaluation uses the common full-scan dose normalization. Model-only correlation losses are invariant to uniform scaling.
+The supervised comparison asks what changes when reconstruction error guides the design of the plate. The optical model, initial phase and trainable region are the same as in \cref{sec:s:optics,sec:s:training}. During training, we normalize illumination by its mean over the specimen and the 32 directions in the batch. At test time, all plates use the full-scan dose convention in \cref{sec:s:budgets}.
 
-\paragraph{Regularized solve and network.}
-For $M=32\times144=4608$ measurements and $N=36{,}864$ coefficients, the decoder computes
+\paragraph{From measurements to a volume.}
+For 32 images, the forward matrix $\mathbf A$ maps $36{,}864$ voxel intensities to $4608$ pixel readings $\mathbf y$. The decoder first finds the volume $\mathbf z_\lambda$ that minimizes
 \begin{equation}
-\begin{aligned}
-\mathbf{z}_\lambda&=\mathbf{m}+\bA^\top
-(\bA\bA^\top+\lambda\mathsf{I})^{-1}(\by-\bA\mathbf{m}),\\
-\hat{\bx}&=\mathcal N_\theta(\mathbf{z}_\lambda).
-\end{aligned}
-\label{eq:s:joint}
+\|\mathbf A\mathbf x-\mathbf y\|_2^2+
+\lambda\|\mathbf x-\mathbf m\|_2^2 ,
 \end{equation}
-We fill $\mathbf m$ with the training set's mean intensity and set $\lambda>0$ through a learned log-parameter, initialized from mean training noise variance divided by training voxel variance. We solve in measurement space: we form the Gram matrix in float32 with TF32 disabled, factorize it by Cholesky and solve in float64, then project back in float32. The residual 3D U-Net $\mathcal N_\theta$ refines this initial volume.
+where $\mathbf m$ is a constant volume set to the mean training intensity. \Cref{fig:s:decoder} gives the solution in measurement space, where $\mathbf I$ is the $4608\times4608$ identity. We use Cholesky factorization and learn $\log\lambda$, initializing $\lambda$ to the ratio of mean training noise variance to training voxel variance. A 3D U-Net predicts a residual $\mathbf r$ to subtract from the first volume. At test time it uses stored batch-normalization statistics and returns the estimate without clipping.
 
-The network has encoder widths 16, 32 and 64. Each block uses two $3\times3\times3$ convolutions with batch normalization and ReLU. Two $2\times2\times2$ max-pooling stages reduce the grid. Transposed convolutions with kernel and stride two upsample, and each corresponding block concatenates lateral skip features. A final $1\times1\times1$ convolution predicts a residual, which we subtract from the network input. We impose no nonnegative or box activation.
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{supp_joint_decoder.pdf}
+\caption{From camera readings to a volume. The U-Net takes the regularized estimate as input. Each level shows the channel count and the grid size in $(z,x,y)$. Max pooling halves each spatial dimension. A stride-two transposed convolution restores each finer grid, where the decoder concatenates features from the matching encoder level.}
+\label{fig:s:decoder}
+\end{figure}
 
-\paragraph{Training data and noise.}
-We use the denoiser study's 459 neuronal crops from stacks 8 and 9 of the fourth animal. From stack 10's 240 held-out crops, we take every fifth crop to give 48 validation volumes. Validation uses two fixed direction subsets and fixed noise shared across designs. No test animal enters training or validation. We augment training volumes with independent flips along each axis and lateral transposition.
+\paragraph{Supervised measurements.}
+We train on 459 neuronal crops from a fourth animal. From a separate stack of that animal, we use every fifth one of 240 crops for validation (48 volumes). Validation uses two fixed direction subsets with fixed noise. For training, we augment volumes by flipping each axis and transposing the lateral axes. We simulate the noiseless measurements $\bar{\mathbf y}=\mathbf A\mathbf x$ of a training volume on the reconstruction grid. To each reading we add independent zero-mean Gaussian noise with variance $\max(\bar y_i,0)/\kappa_{32}+10^{-12}$, where $\kappa_{32}$ converts intensity to expected photon counts for 32 exposures (\cref{sec:s:budgets}). Test measurements use fine-grid specimens and Poisson sampling. Thus test images also contain the within-voxel contribution in \cref{eq:s:patch}.
 
-Supervised training generates measurements from the coarse reconstruction-basis model $\bar{\by}=\bA\bx$. The noise approximation is
-\begin{equation}
-\widetilde y_i=\bar y_i+
-\sqrt{\max(\bar y_i,0)/\kappa_k+10^{-12}}\,\xi_i,
-\quad \xi_i\sim\mathcal N(0,1),
-\end{equation}
-with $\kappa_k=\kappa_0\,256/32$ and exposure calibrated per crop using the untrained plate. Evaluation uses fine-grid specimens and exact Poisson sampling, retaining their within-voxel residual. Supervised training instead uses the coarse-basis measurements above.
+\paragraph{Training schedule and model selection.}
+We minimize mean squared error against the reference volume with Adam and batches of 16. First, we train the decoder for 5000 updates with the initial plate fixed and learning rate $10^{-3}$. During joint training, each update of both the plate and decoder is followed by four decoder-only updates on fresh batches with the same acquisition operator. The decoder learning rate is $3\times10^{-4}$. For the first 1200 plate updates, the phase learning rate is 0.05 with a cosine decay to 0.005 over the last 30\%. For the final 600 updates we restart Adam at 0.005 with fresh optimizer states. We set this schedule before testing because validation error was still changing by more than 2\% over the preceding 300 updates. We evaluate checkpoints every 500 updates during warm-up and every 100 plate updates during joint training, selecting by lowest validation mean squared error. The selected checkpoint is at plate update 1500.
 
-\paragraph{Optimization schedule.}
-All stages use batch size 16 and reconstruction MSE. We warm the decoder for 5000 Adam steps on the frozen untrained plate at learning rate $10^{-3}$, then jointly train plate and decoder for 1200 plate steps. The plate learning rate starts at 0.05 and follows a cosine decay to 0.005 over the last 30\,\% of steps. The decoder learning rate is $3\times10^{-4}$. After each joint step, we take four decoder-only steps on fresh batches with the same direction subset and a detached operator. The phase outside the central region stays fixed.
+\paragraph{Comparison with other plates.}
+With the phase fixed, we fine-tune a decoder of the same architecture for each plate for 3000 updates at $3\times10^{-4}$. We validate every 500 updates and use the decoder with lowest validation mean squared error. The model-only and untrained plates start from the common warmed decoder. The end-to-end plate starts from its selected joint checkpoint. Its total is therefore $5000+5(1500)+3000=15{,}500$ decoder updates, compared with $5000+3000=8000$ for each other plate. We compare one jointly trained design and one optical initialization. All plates also undergo the same fixed-optics TV and PnP evaluations (\cref{sec:s:reconstruction}).
 
-The first 1200 steps did not meet the prespecified plateau criterion: validation MSE changed by 3.2\,\% over the last 300 plate updates, above the 2\,\% threshold. Before test evaluation, we specified 600 further updates at phase learning rate 0.005, with the same decoder schedule, restored model parameters and fresh optimizer states. The continuation's last-300-step change was 0.025\,\%. We select update 1500, which has the lowest validation MSE among continuation checkpoints; its phase RMS change from initialization is 1.44 radians. These checks document training and selection, not global convergence.
-
-\paragraph{Numerical checks.}
-At initialization, differentiable assembly matches stored operator rows to relative error $8.5\times10^{-8}$ after accounting for the subset/full-scan normalization scalar. An adjoint check and three central finite-difference gradient projections pass, with directional derivatives agreeing to 0.03--0.07\,\%. A short descent check confirms that the phase changes and the loss decreases.
-
-\paragraph{Decoder comparison after optical training.}
-We fix the phase before testing TV and both PnP methods, keep denoisers unchanged and select scalar parameters by validation for each plate. For feed-forward reconstruction, we give every plate 3000 further decoder-only steps at learning rate $3\times10^{-4}$, validating every 500 steps. Untrained and model-only plates start from the same warmed decoder; end-to-end starts from its selected joint checkpoint. That checkpoint includes $1500\times5=7500$ joint-stage decoder updates, giving 15{,}500 total updates with warm-up and final fine-tuning, versus 8000 for each other plate. The untrained decoder receives all 8000 on its own operator; other fixed-plate decoders receive 3000 on theirs. Architecture and final fine-tuning match, but total training does not. We select each plate's decoder by lowest validation MSE.
-
-We keep raw feed-forward outputs for PSNR, foreground SSIM and centroid error, and use their nonnegative part for W1 (\cref{sec:s:evaluation}). All plates follow this convention; TV/PnP outputs are clipped instead.
-
-\paragraph{Comparison scope and timing.}
-The end-to-end reference uses one optical initialization and one supervised training run. It optimizes MSE, while our main axial metric is W1. On an RTX 5080, warm-up, joint training and continuation took about 4500, 11{,}150 and 5574 seconds; per-plate fine-tuning took about 2700 seconds. We measured the approximately 20-minute model-only training time on an RTX 4500 Ada. These different machines preclude a controlled runtime comparison.
-
-All designs share the neuronal test crops and evaluation acquisition conditions. \Cref{sec:s:budgets} gives full-scan and reduced-dose comparisons under all three iterative methods.
+On an RTX 5080, decoder warm-up took about 75 minutes and all 1800 joint updates took 4.6 hours. Fine-tuning took 45--81 minutes per plate while evaluation jobs shared that GPU.

@@ -2,28 +2,16 @@
 \label{sec:s:structure}
 
 \paragraph{Crossing phantoms.}
-We build Gaussian fluorescent tubes on the $32\times96\times96$ analysis grid at $0.32\um$ spacing. Each tube has lateral and axial standard deviations of $0.32\um$ and half-length $12.8\um$. We combine equal-intensity tubes by their maximum, then average $2\times2\times2$ cells for reconstruction. Three lateral geometries use filament-a orientation/crossing-angle pairs $(0^\circ,90^\circ)$, $(30^\circ,60^\circ)$ and $(60^\circ,45^\circ)$. Centers are planes 7 and 5. Gaps of 0, 2, 3, 4, 6 and 8 planes ($0$, $1.28$, $1.92$, $2.56$, $3.84$ and $5.12\um$) give 36 phantoms, each with five measurement draws. We use $C=8$, matched nominal dose and parameters selected on vascular validation crops, without tuning on the phantoms.
+We build Gaussian fluorescent tubes on the $32\times96\times96$ grid of specimen cells at $0.32\um$ spacing. Each tube has lateral and axial standard deviations of $0.32\um$ and half-length $12.8\um$. We combine equal-intensity tubes by their maximum, then average $2\times2\times2$ cells for reconstruction. The three geometries pair the orientation of the first filament with the angle between filaments, giving pairs $(0^\circ,90^\circ)$, $(30^\circ,60^\circ)$ and $(60^\circ,45^\circ)$. We center each pair at reconstruction plane 5 or 7. Gaps of 0, 2, 3, 4, 6 and 8 planes ($0$, $1.28$, $1.92$, $2.56$, $3.84$ and $5.12\um$) give 36 phantoms, each with five measurement draws. We use $C=8$, matched nominal dose and parameters selected on vascular validation crops, without tuning on the phantoms.
 
 \paragraph{Resolved peaks and arm ordering.}
-We detect peaks on zero-padded axial columns, requiring height and prominence of at least 20\,\% of each column's maximum. We match reference and reconstructed peaks one-to-one within one reconstruction plane, closest first. Crossing columns must contain reference peaks at both filament planes and carry more than 20\,\% of each filament's maximum column signal. The resolved fraction is the share of reference crossing-column signal where reconstruction retains both matched peaks. It is not an absolute recovered-brightness cutoff.
+We detect peaks on zero-padded axial columns, requiring height and prominence of at least 20\,\% of each column's maximum. We match reference and reconstructed peaks one-to-one within one reconstruction plane, closest first. Crossing columns must contain reference peaks at both filament planes and carry more than 20\,\% of each filament's maximum column signal. The resolved fraction is the share of reference crossing-column signal where reconstruction retains both matched peaks.
 
 For arm ordering, we use columns carrying at least 20\,\% of one filament's maximum column signal and less than 2\,\% of the other's. Their reconstructed signal-weighted centroids must follow the true depth order, with consecutive arms separated by more than half a plane. Success requires a resolved fraction of at least 0.5 and correct ordering. At zero gap, two matched peaks count as a false split.
 
-The qualifying gap is the smallest tested gap of at least two planes with at least 80\,\% success at that gap and every larger tested gap, at each center separately. Each center contributes 15 reconstructions: three geometries and five draws. The main figure reports TV success pooled over centers at $2.56\um$; \cref{fig:s:fullcrossings} gives the full curves. Pooled success alone does not determine qualification.
+The qualifying gap is the smallest tested gap of at least two planes with at least 80\,\% success at that gap and every larger tested gap, at each center separately. Each center contributes 15 reconstructions: three geometries and five draws. Main Figure~7 reports TV success pooled over centers at $2.56\um$; \cref{fig:s:fullcrossings} gives the full curves. Pooled success alone does not determine qualification.
 
-\begin{table*}[t]
-\centering\small
-\input{tables/supplement/crossing_thresholds.tex}
-\caption{Qualifying gaps ($\mu$m) under the same success rule. A dash means the criterion is not reached at both centers over the tested gaps. Weak branch: the second filament has 0.3 times the first's intensity. The three-filament columns include the descriptive wider-gap extension: $3.20\um$ was tested at both centers, and $3.84\um$ only at center 7, since the other geometry would leave the field.}
-\label{tab:s:crossings}
-\end{table*}
-
-We display the first geometry, center 7 and draw 0 at our plate's TV qualifying gap; the choice of gap therefore uses reconstruction outcomes. At this gap, untrained, our and end-to-end plates succeed in 3, 27 and 26 of 30 TV trials. End-to-end succeeds in only 11 of 15 trials at center 5, so its pooled 87\,\% does not meet the two-center rule. In the displayed draw, untrained coding fails and both learned plates succeed. All sections share geometry and intensity scale. None of the three plates falsely splits the zero-gap control.
-
-\paragraph{Weak and three-filament extensions.}
-Weak-branch cases use the same geometries with the deeper filament at 0.3 times the other's intensity. We test gaps of 0, 3, 4, 6 and 8 planes; at two planes the reference itself fails the peak criterion. Only our plate with TV meets the two-center threshold, at $3.84\um$ (\cref{tab:s:crossings}).
-
-Three equal filaments occupy planes $c-d,c,c+d$, at orientations $(0^\circ,60^\circ,120^\circ)$ or $(30^\circ,90^\circ,150^\circ)$. None of the initial spacings $d=0,2,3,4$ planes reaches 80\,\% success. A descriptive extension tests five planes at both centers and six at center 7, using the same parameters and success rule. Our plate reaches the criterion at five planes ($3.20\um$) under TV and pretrained PnP at both centers. The untrained plate reaches 80\,\% only at center 7: six planes with TV and five with pretrained PnP. Under neuron-trained PnP, our plate reaches it at six planes at center 7 but not center 5; untrained coding reaches it at neither. These extensions show dependence on spacing and reconstruction, rather than guaranteed recovery of denser structures.
+Main Figure~7 shows the first geometry and first measurement draw at center 7. We chose the displayed gap from our plate's TV result. At this gap, untrained, our and end-to-end plates succeed in 3, 27 and 26 of 30 TV trials. End-to-end succeeds in only 11 of 15 trials at center 5, so its pooled 87\,\% does not meet the two-center rule. In the displayed draw, untrained coding fails and both learned plates succeed.
 
 \paragraph{Joint-training control.}
 We test the end-to-end plate on the same equal-branch phantoms under all three iterative methods. Across the five positive gaps, end-to-end-minus-ours success is $-3.3$ percentage points under TV (95\,\% paired phantom-bootstrap interval: $-8.7$ to $+1.3$), $+0.7$ under pretrained PnP ($-1.3$ to $+2.7$), and $-0.7$ under neuron-trained PnP ($-5.3$ to $+4.7$). All three intervals include zero. \Cref{fig:s:fullcrossings} gives all gap curves; none of these combinations falsely splits the zero-gap control. \Cref{sec:s:budgets} gives reduced-dose comparisons.
@@ -31,19 +19,19 @@ We test the end-to-end plate on the same equal-branch phantoms under all three i
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\linewidth]{crossing_curves.pdf}
-\caption{Full-dose equal-branch crossing curves for all three iterative methods, at $C=8$ and matched nominal dose. Each point pools three lateral geometries, two axial centers and five draws. The qualifying gaps use the success rates at each center separately and require at least 80\% at that gap and every larger tested gap. Under neuron-trained PnP, both the untrained and our plates qualify at $3.84\um$. Zero-gap controls have no false splitting.}
+\caption{Full-dose equal-branch crossing curves for all three iterative methods, at $C=8$ and matched nominal dose. Each point pools three lateral geometries, two axial centers and five draws. The qualifying gaps use the success rates at each center separately and require at least 80\% at that gap and every larger tested gap. Under TV, only our plate qualifies at $2.56\um$. Under pretrained PnP both learned plates qualify at $2.56\um$. The remaining plate--method pairs qualify at $3.84\um$.}
 \label{fig:s:fullcrossings}
 \end{figure*}
 
 \paragraph{Neuronal columns with multiple peaks.}
 We apply the same peak height and prominence thresholds to each reference column in the signal mask. A layered column contains at least two such peaks. We find eligible columns in 59 of the 60 crops.
-Layered columns carry about 17\,\% of reference signal on average. \Cref{tab:s:layered} uses the primary reconstruction rows for the 59 eligible crops. Against untrained coding, our plate lowers subset W1 by 34\,\% under TV, 42\,\% under pretrained PnP and 28\,\% under neuron-trained PnP. End-to-end has higher W1 than ours under TV, no established difference under either PnP method, and lower W1 with its own decoder. These descriptive results contextualize individual-column views. Multiple peaks often lie within one thick branch, so lower profile error does not establish separation of distinct branches or a larger benefit than centroid accuracy.
+Layered columns carry about 17\,\% of reference signal on average. \Cref{tab:s:layered} uses the reconstructions from \cref{tab:s:e2e} for the 59 eligible crops. Against untrained coding, our plate lowers subset W1 by 34\,\% under TV, 42\,\% under pretrained PnP and 28\,\% under neuron-trained PnP. End-to-end has higher W1 than ours under TV, no established difference under either PnP method, and lower W1 with its own decoder. Several axial peaks can belong to one thick branch. The controlled crossing tests separation directly.
 
-A prespecified TV test did not establish a larger relative profile gain than centroid gain: the difference was $-0.7$ percentage points (95\,\% CI: $-2.9$ to $+1.5$). PnP subset statistics remain descriptive because earlier runs did not meet the prespecified $0.05$\,dB PSNR reproduction tolerance. \Cref{sec:s:evaluation} documents numerical checks for the completed full-field reruns.
+A prespecified TV test did not establish a larger relative profile gain than centroid gain: the difference was $-0.7$ percentage points (95\,\% CI: $-2.9$ to $+1.5$). We report the PnP subset estimates descriptively because differences between repeated reconstructions exceeded the prespecified $0.05$\,dB PSNR reproduction tolerance.
 
 \begin{table*}[t]
 \centering\small
 \widetab{\input{tables/supplement/layered_profiles.tex}}
-\caption{Profile W1 on layered reference columns: 59 eligible crops, $C=8$, five draws per crop, using the same completed reconstructions as the primary table. Errors and absolute end-to-end-minus-ours differences are in $\mu$m; brackets are paired cell-bootstrap 95\,\% intervals. Feed-forward decoders have the training histories in \cref{sec:s:joint}.}
+\caption{Profile W1 on layered reference columns: 59 eligible crops, $C=8$, five draws per crop, using the same reconstructions as the 60-crop comparison. Errors and absolute end-to-end-minus-ours differences are in $\mu$m; brackets are paired cell-bootstrap 95\,\% intervals. Feed-forward decoders have the training histories in \cref{sec:s:joint}.}
 \label{tab:s:layered}
 \end{table*}

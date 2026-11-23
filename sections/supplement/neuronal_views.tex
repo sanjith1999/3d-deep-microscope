@@ -4,32 +4,22 @@
 \paragraph{Reference-only selection.}
 Before inspecting reconstructions for figure selection, we compute reference features for all 60 crops. We require at least 10 skeleton endpoints (upper quartile) and a 10--90\,\% column-centroid range of at least $3.64\um$ (median). Eight crops meet these branch-count and depth-extent criteria. We rank them by reference signal in columns with multiple axial peaks, selecting SOM004\_cell2\_x7 first and SOM006\_cell1\_x7 as the highest-ranked crop from another animal.
 
-In these crops, the W1 gains over untrained coding rank 52nd and 45th among the 60 crops under TV (rank 1 is the largest gain). Their ranks are 45th and 46th under pretrained PnP and 23rd and 43rd under neuron-trained PnP. The main paper shows TV for both crops. \Cref{fig:s:mainviews,fig:s:companion} show the same draw for all three iterative methods.
+Under TV the gains in W1 over untrained coding for these two crops rank 52nd and 45th out of 60, with the largest gain ranked first. The main paper shows their TV reconstructions. \Cref{fig:s:mainviews,fig:s:companion} use the same acquisition (the first fixed set of 32 angles and its noise realization) for all three iterative methods.
 
-\paragraph{Reading the views.}
-In the main paper, we select the eight consecutive $y$ rows with the most reference signal in layered columns and center a 24-voxel $x$ window on that signal. In the axial views, depth runs downward and $x$ across. All plates share the same intensity range, from zero to the 99.5th percentile of the reference band. The full-cell projections use tissue coordinates. The axial views use the rescaled specimen coordinates in \cref{sec:s:evaluation}. Here we show another axial section from each crop. We select the three consecutive $x$ rows ($1.92\um$) with the most reference signal in layered columns. Within that band we choose the brightest layered column whose two highest reference peaks are at least three planes apart, using total column intensity. This gives $(x,y)=(35,44)$ and $(42,16)$, respectively. The first column lies three voxels from the crop edge.
+\paragraph{Where the profiles come from.}
+For the main axial views, we select the eight consecutive $y$ rows with the most reference signal in columns that contain multiple axial peaks. We center a 24-voxel $x$ window on that signal. The supplementary figures show another section through each crop. Here the band spans the three consecutive $x$ rows with the most such signal. Within it we choose the column with the largest total reference intensity among those whose two highest peaks are at least three reconstruction planes apart. The selected $(x,y)$ indices are $(35,44)$ and $(42,16)$. End-to-end has the lowest W1 at both selected columns under all three methods. The crop means beside the maps show how much smaller the differences are across each volume.
 
-Each band takes the maximum over its three rows and shows depth against $y$. Darker pixels indicate stronger fluorescence. All bands for a crop share a linear scale up to the 99.5th percentile of its reference maximum projection. The W1 maps use the main paper's lateral orientation ($x$ across, $y$ down). White marks columns outside the reference signal mask. In both crops end-to-end gives the lowest W1 at the selected column under all three methods. The crop averages printed below the maps show how much smaller the differences can be across a whole crop.
+Each supplementary band shows the maximum over its three $x$ rows, with depth downward and $y$ across. A darker pixel indicates stronger fluorescence. All bands for a crop use one linear scale up to the 99.5th percentile of its reference maximum projection. In the W1 maps, $x$ runs across and $y$ downward. White marks columns outside the reference signal mask.
 
 \begin{figure*}[p]
 \centering
-\includegraphics[width=.95\linewidth]{neuron_comparison_profiles.pdf}
-\caption{First reference-selected crop (SOM004), $C=8$, draw 0. Each row compares the same axial band and marked column across the three plates. Gray shading gives the reference. Every profile has unit mass. Each map gives W1 for individual columns. The number below it is the signal-weighted crop mean. The dotted strip marks the band. The scale bar is $5\um$ and map colors saturate at $1\um$.}
+\includegraphics[width=.935\linewidth]{neuron_comparison_profiles.pdf}
+\caption{First reference-selected crop (SOM004), $C=8$, first angle subset. Each row compares the same axial band and marked column across the three plates. Gray shading gives the reference. Every profile has unit mass. Each map gives W1 for individual columns. The number below it is the signal-weighted crop mean. The dotted strip marks the band. The scale bar is $5\um$ in simulation coordinates and map colors saturate at $1\um$.}
 \label{fig:s:mainviews}
 \par\medskip
-\includegraphics[width=.95\linewidth]{neuron_companion_profiles.pdf}
-\caption{Second reference-selected crop (SOM006, another animal), using the same draw and display conventions as \cref{fig:s:mainviews}. With TV, end-to-end gives lower W1 than ours at the marked column ($0.08$ versus $0.44\um$), while the corresponding crop means are $0.29$ and $0.30\um$.}
+\includegraphics[width=.935\linewidth]{neuron_companion_profiles.pdf}
+\caption{Second reference-selected crop (SOM006, another animal), using the same acquisition and display conventions as \cref{fig:s:mainviews}. With TV, end-to-end gives lower W1 than ours at the marked column ($0.08$ versus $0.44\um$), while the corresponding crop means are $0.29$ and $0.30\um$.}
 \label{fig:s:companion}
 \end{figure*}
 
 \clearpage
-
-\paragraph{A feature missed by both plates.}
-We return to the companion crop's reference-selected band in the main axial figure. The reference-only rule selects column $(x,y)=(18,3)$, inside this window, by its largest signal among layered columns in those rows whose two highest peaks are at least three planes apart. It has a weak shallow peak at plane 2 and a deeper peak at plane 9. The shallow peak is 24.5\,\% of the column maximum and carries 7.8\,\% of its signal in planes 1--3. Neither untrained coding nor our plate retains a matched shallow peak under any of the three methods; it becomes a low plateau (\cref{fig:s:weakprofile}). Lower average W1 therefore coexists with loss of this weak feature.
-
-\begin{figure}[!t]
-\centering
-\includegraphics[width=.96\linewidth]{neuron_weak_profile.pdf}
-\caption{Reference-selected weak-feature column in the companion crop. Profiles are normalized to unit mass. Untrained coding and our plate miss the shallow reference peak under all three priors, despite the lower average W1 of our plate. This column was fixed from reference structure before inspecting reconstructions.}
-\label{fig:s:weakprofile}
-\end{figure}
