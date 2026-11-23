@@ -32,4 +32,5 @@ branch includes build instructions and self-contained figures and references.
 Tags mark successive CVPR drafts: `cvpr-v0.1` on `paper/cvpr/dec-agn-depth`,
 `cvpr-v0.2` and `cvpr-v0.3` on `paper/cvpr/depth-sep`, and `cvpr-v0.4` to
 `cvpr-v0.8` on `paper/cvpr/axial-rec`. `cvpr-v1.0` on `paper/cvpr/axial-rec` is the
-latest version and the CVPR submission manuscript.
+CVPR submission manuscript. `cvpr-v1.2` on `paper/cvpr/axial-rec` is the latest
+version: the same manuscript with the revised supplement.
